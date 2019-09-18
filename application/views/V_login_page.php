@@ -10,9 +10,9 @@
                 echo $this->session->flashdata('alert');
             } ?>
             <?php echo form_open(""); ?>
-            <label class="col-md-7" for="nama_lengkap">No HP: </label>
+            <label class="col-md-7" for="nama_lengkap">Email</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" name="identity" id="identity" placeholder="No HP">
+                <input type="text" class="form-control" name="identity" id="identity" placeholder="Email">
                 <div class="input-group-append">
                     <div class="input-group-text">
                         <span class="fas fa-user"></span>

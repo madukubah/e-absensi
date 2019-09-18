@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 17, 2019 at 11:26 AM
+-- Generation Time: Sep 18, 2019 at 05:19 PM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 5.6.37
 
@@ -19,8 +19,65 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `fixlcore`
+-- Database: `e_absen`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attendance`
+--
+
+CREATE TABLE `attendance` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `pin` int(11) NOT NULL,
+  `fingerprint_id` int(10) UNSIGNED NOT NULL,
+  `timestamp` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `status` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee`
+--
+
+CREATE TABLE `employee` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `pin` int(11) NOT NULL,
+  `position` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`id`, `name`, `pin`, `position`) VALUES
+(1, 'alan', 123, 'qwe');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fingerprint`
+--
+
+CREATE TABLE `fingerprint` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `ip_address` varchar(100) NOT NULL,
+  `port` int(11) NOT NULL,
+  `key_finger` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `fingerprint`
+--
+
+INSERT INTO `fingerprint` (`id`, `name`, `ip_address`, `port`, `key_finger`) VALUES
+(1, 'DISPERINDAG', '102.168.1.2', 80, 1);
 
 -- --------------------------------------------------------
 
@@ -55,13 +112,6 @@ CREATE TABLE `login_attempts` (
   `time` int(11) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `login_attempts`
---
-
-INSERT INTO `login_attempts` (`id`, `ip_address`, `login`, `time`) VALUES
-(2, '::1', '081342989185', 1568683075);
-
 -- --------------------------------------------------------
 
 --
@@ -90,7 +140,13 @@ INSERT INTO `menus` (`id`, `menu_id`, `name`, `link`, `list_id`, `icon`, `status
 (103, 1, 'Setting', 'admin/menus', '-', 'cogs', 1, 3, '-'),
 (104, 1, 'User', 'admin/user_management', 'user_management_index', 'users', 1, 4, '-'),
 (106, 103, 'Menu', 'admin/menus', 'menus_index', 'circle', 1, 1, '-'),
-(107, 2, 'Beranda', 'user/home', 'home_index', 'home', 1, 1, '-');
+(107, 2, 'Beranda', 'user/home', 'home_index', 'home', 1, 1, '-'),
+(108, 2, 'Kepegawaian', 'user/', '-', 'home', 1, 1, '-'),
+(109, 108, 'Data Karyawan', 'user/employee', 'employee_index', 'home', 1, 1, '-'),
+(110, 108, 'Finger Print', 'user/fingerprint', 'fingerprint_index', 'home', 1, 2, '-'),
+(111, 2, 'Absensi', 'user/attendance', '-', 'home', 1, 3, '-'),
+(112, 111, 'Pilih Finger', 'user/fingerprint', 'fingerprint', 'home', 0, 1, '-'),
+(113, 111, 'Data Absensi', 'user/attendance', 'attendance_index', 'home', 1, 2, '-');
 
 -- --------------------------------------------------------
 
@@ -126,8 +182,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `phone`, `image`, `address`) VALUES
-(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1568712273, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
-(13, '::1', 'alan@gmail.com', '$2y$10$ePSr6CLuUbN8S/zuW8miDeukySiWhO24wRFLV9Njg/PDpvIP3.bla', 'alan@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1568678283, 1, 'alfalah', 'madukubah', '081342989185', 'USER_13_1568678463.jpg', 'jln mutiara no 8');
+(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1568810117, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
+(13, '::1', 'alan@gmail.com', '$2y$10$ePSr6CLuUbN8S/zuW8miDeukySiWhO24wRFLV9Njg/PDpvIP3.bla', 'alan@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1568811627, 1, 'alfalah', 'madukubah', '081342989185', 'USER_13_1568811670.jpeg', 'jln mutiara no 8');
 
 -- --------------------------------------------------------
 
@@ -152,6 +208,24 @@ INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `attendance`
+--
+ALTER TABLE `attendance`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `employee`
+--
+ALTER TABLE `employee`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fingerprint`
+--
+ALTER TABLE `fingerprint`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `groups`
@@ -195,6 +269,24 @@ ALTER TABLE `users_groups`
 --
 
 --
+-- AUTO_INCREMENT for table `attendance`
+--
+ALTER TABLE `attendance`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `employee`
+--
+ALTER TABLE `employee`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `fingerprint`
+--
+ALTER TABLE `fingerprint`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `groups`
 --
 ALTER TABLE `groups`
@@ -210,7 +302,7 @@ ALTER TABLE `login_attempts`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT for table `users`

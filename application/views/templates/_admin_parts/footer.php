@@ -59,6 +59,20 @@
     
   })
 </script>
+
+<script>
+
+  $(document).ready(function() {
+  var t = $('#summernote').summernote(
+  {
+    height: 500,
+    // focus: true
+  });
+  $("#btn").click(function(){
+      $('div.note-editable').height(150);
+    });
+  });
+</script>
 </body>
 
 </html>

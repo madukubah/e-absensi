@@ -21,16 +21,26 @@
                     <?php foreach ($header as $key => $value) : ?>
                         <td>
                             <?php
-                                    $attr = "";
-                                    if (is_numeric($row->$key) && ($key != 'phone' && $key != 'username'))
-                                        $attr = number_format($row->$key);
-                                    else
-                                        $attr = $row->$key;
-                                    if ($key == 'date' || $key == 'create_date' || $key == 'time')
-                                        $attr =  date("d/m/Y", $row->$key);
+                                if( $key == "images" || $key == "image" ):
+                            ?>
+                                    <img class=" img-fluid mb-2 " src="<?=$row->$key ?>" width="200" height="auto" >
+                            <?php 
+                                else :
+                            ?>
+                                    <?php
+                                        $attr = "";
+                                        if (is_numeric($row->$key) && ($key != 'phone' && $key != 'username'))
+                                            $attr = number_format($row->$key);
+                                        else
+                                            $attr = $row->$key;
+                                        if ($key == 'date' || $key == 'create_date' || $key == 'time')
+                                            $attr =  date("d/m/Y", $row->$key);
 
-                                    echo $attr;
+                                        echo $attr;
                                     ?>
+                            <?php
+                                endif;
+                            ?>
                         </td>
                     <?php endforeach; ?>
                     <?php if( isset( $action ) ):?>

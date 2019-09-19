@@ -8,7 +8,7 @@
     <meta name="author" content="<?php echo APP_AUTHOR ?>">
 
     <title><?php echo APP_NAME ?></title>
-    <link rel="shortcut icon" type="image/png" href="<?php echo base_url().FAVICON_IMAGE;?>"/>
+    <link rel="shortcut icon" type="image/png" href="<?php echo base_url() . FAVICON_IMAGE; ?>" />
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?= base_url('assets/') ?>plugins/fontawesome-free/css/all.min.css">
@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="<?= base_url('assets/') ?>dist/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="<?= base_url('assets/') ?>plugins/jquery/jquery.min.js"></script>
+    <!-- ChartJS -->
+    <script src="<?= base_url('assets/') ?>plugins/chart.js/Chart.min.js"></script>
 </head>
 
 <body class="hold-transition layout-top-nav layout-footer-fixed">

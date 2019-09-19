@@ -6,7 +6,8 @@ class MY_Controller extends CI_Controller {
     protected $data = array();
 
     public function __construct(){
-       parent::__construct();
+	   parent::__construct();
+	   $this->data["menu_list_id"] = $this->router->fetch_class() . '_' . $this->router->fetch_method() ; 
     }
 
     protected function render($the_view = NULL, $template = NULL){

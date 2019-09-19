@@ -1,17 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Employee extends User_Controller {
+class Opd_category extends Admin_Controller {
 	private $services = null;
     private $name = null;
-    private $parent_page = 'user';
-	private $current_page = 'user/employee/';
+    private $parent_page = 'admin';
+	private $current_page = 'admin/opd_category/';
 	
 	public function __construct(){
 		parent::__construct();
-		$this->load->library('services/Employee_services');
-		$this->services = new Employee_services;
+		$this->load->library('services/Group_services');
+		$this->services = new Group_services;
 		$this->load->model(array(
-			'employee_model',
+			'opd_category_model',
 		));
 
 	}
@@ -21,23 +21,34 @@ class Employee extends User_Controller {
 		// echo $page; return;
         //pagination parameter
         $pagination['base_url'] = base_url( $this->current_page ) .'/index';
-        $pagination['total_records'] = $this->employee_model->record_count() ;
+        $pagination['total_records'] = $this->opd_category_model->record_count() ;
         $pagination['limit_per_page'] = 10;
         $pagination['start_record'] = $page*$pagination['limit_per_page'];
         $pagination['uri_segment'] = 4;
 		//set pagination
 		if ($pagination['total_records'] > 0 ) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config( $this->current_page );
-		$table[ "rows" ] = $this->employee_model->employees( $pagination['start_record'], $pagination['limit_per_page'] )->result();
+		$table = $this->services->groups_table_config( $this->current_page );
+		$table[ "rows" ] = $this->opd_category_model->opd_categories( $pagination['start_record'], $pagination['limit_per_page'] )->result();
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
 		$this->data[ "contents" ] = $table;
 		$add_menu = array(
-			"name" => "Tambah Karyawan",
+			"name" => "Tambah Kategori OPD",
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
 			"url" => site_url( $this->current_page."add/"),
-			"form_data" =>$this->services->get_form_data(  )["form_data"] ,
+			"form_data" => array(
+				"name" => array(
+					'type' => 'text',
+					'label' => "Nama Kategori",
+					'value' => "",
+				),
+				"description" => array(
+					'type' => 'textarea',
+					'label' => "Deskripsi",
+					'value' => "-",
+				),
+			),
 			'data' => NULL
 		);
 
@@ -50,8 +61,8 @@ class Employee extends User_Controller {
 		$this->data["key"] = $this->input->get('key', FALSE);
 		$this->data["alert"] = (isset($alert)) ? $alert : NULL ;
 		$this->data["current_page"] = $this->current_page;
-		$this->data["block_header"] = "Karyawan";
-		$this->data["header"] = "Karyawan";
+		$this->data["block_header"] = "Kategori OPD";
+		$this->data["header"] = "Kategori OPD";
 		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
 		$this->render( "templates/contents/plain_content" );
 	}
@@ -65,21 +76,19 @@ class Employee extends User_Controller {
 		$this->form_validation->set_rules( $this->services->validation_config() );
         if ($this->form_validation->run() === TRUE )
         {
-			$data['fingerprint_id'] = $this->input->post( 'fingerprint_id' );
 			$data['name'] = $this->input->post( 'name' );
-			$data['position'] = $this->input->post( 'position' );
-			$data['pin'] = $this->input->post( 'pin' );
+			$data['description'] = $this->input->post( 'description' );
 
-			if( $this->employee_model->create( $data ) ){
-				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->employee_model->messages() ) );
+			if( $this->opd_category_model->create( $data ) ){
+				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->opd_category_model->messages() ) );
 			}else{
-				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->employee_model->errors() ) );
+				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->opd_category_model->errors() ) );
 			}
 		}
         else
         {
-          $this->data['message'] = (validation_errors() ? validation_errors() : ($this->employee_model->errors() ? $this->employee_model->errors() : $this->session->flashdata('message')));
-          if(  validation_errors() || $this->employee_model->errors() ) $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->data['message'] ) );
+          $this->data['message'] = (validation_errors() ? validation_errors() : ($this->opd_category_model->errors() ? $this->opd_category_model->errors() : $this->session->flashdata('message')));
+          if(  validation_errors() || $this->opd_category_model->errors() ) $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->data['message'] ) );
 		}
 		
 		redirect( site_url($this->current_page)  );
@@ -93,23 +102,21 @@ class Employee extends User_Controller {
 		$this->form_validation->set_rules( $this->services->validation_config() );
         if ($this->form_validation->run() === TRUE )
         {
-			$data['fingerprint_id'] = $this->input->post( 'fingerprint_id' );
 			$data['name'] = $this->input->post( 'name' );
-			$data['position'] = $this->input->post( 'position' );
-			$data['pin'] = $this->input->post( 'pin' );
+			$data['description'] = $this->input->post( 'description' );
 
 			$data_param['id'] = $this->input->post( 'id' );
 
-			if( $this->employee_model->update( $data, $data_param  ) ){
-				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->employee_model->messages() ) );
+			if( $this->opd_category_model->update( $data, $data_param  ) ){
+				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->opd_category_model->messages() ) );
 			}else{
-				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->employee_model->errors() ) );
+				$this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->opd_category_model->errors() ) );
 			}
 		}
         else
         {
-          $this->data['message'] = (validation_errors() ? validation_errors() : ($this->employee_model->errors() ? $this->employee_model->errors() : $this->session->flashdata('message')));
-          if(  validation_errors() || $this->employee_model->errors() ) $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->data['message'] ) );
+          $this->data['message'] = (validation_errors() ? validation_errors() : ($this->opd_category_model->errors() ? $this->opd_category_model->errors() : $this->session->flashdata('message')));
+          if(  validation_errors() || $this->opd_category_model->errors() ) $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->data['message'] ) );
 		}
 		
 		redirect( site_url($this->current_page)  );
@@ -119,10 +126,10 @@ class Employee extends User_Controller {
 		if( !($_POST) ) redirect( site_url($this->current_page) );
 	  
 		$data_param['id'] 	= $this->input->post('id');
-		if( $this->employee_model->delete( $data_param ) ){
-		  $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->employee_model->messages() ) );
+		if( $this->opd_category_model->delete( $data_param ) ){
+		  $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->opd_category_model->messages() ) );
 		}else{
-		  $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->employee_model->errors() ) );
+		  $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->opd_category_model->errors() ) );
 		}
 		redirect( site_url($this->current_page)  );
 	}

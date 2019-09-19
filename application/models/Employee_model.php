@@ -142,6 +142,14 @@ class Employee_model extends MY_Model
       {
         $this->limit( $limit );
       }
+      $this->select( $this->table.'.*' );
+      $this->select( "fingerprint.name as fingerprint_name" );
+      $this->join( 
+        "fingerprint" ,
+        "fingerprint.id = employee.fingerprint_id",
+        "inner"
+      );
+
       $this->offset( $start );
       $this->order_by($this->table.'.id', 'asc');
       return $this->fetch_data();

@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Fingerprint_model extends MY_Model
+class Opd_category_model extends MY_Model
 {
-  protected $table = "fingerprint";
+  protected $table = "opd_category";
 
   function __construct() {
       parent::__construct( $this->table );
-      parent::set_join_key( 'fingerprint_id' );
+      parent::set_join_key( 'opd_category_id' );
   }
 
   /**
@@ -97,11 +97,11 @@ class Fingerprint_model extends MY_Model
     /**
    * group
    *
-   * @param int|array|null $id = id_fingerprint
+   * @param int|array|null $id = id_opd_category
    * @return static
    * @author madukubah
    */
-  public function fingerprint( $id = NULL  )
+  public function opd_category( $id = NULL  )
   {
       if (isset($id))
       {
@@ -111,18 +111,18 @@ class Fingerprint_model extends MY_Model
       $this->limit(1);
       $this->order_by($this->table.'.id', 'desc');
 
-      $this->fingerprints(  );
+      $this->opd_categories(  );
 
       return $this;
   }
   // /**
-  //  * fingerprint
+  //  * opd_category
   //  *
   //  *
   //  * @return static
   //  * @author madukubah
   //  */
-  // public function fingerprint(  )
+  // public function opd_category(  )
   // {
       
   //     $this->order_by($this->table.'.id', 'asc');
@@ -130,26 +130,18 @@ class Fingerprint_model extends MY_Model
   // }
 
   /**
-   * fingerprint
+   * opd_category
    *
    *
    * @return static
    * @author madukubah
    */
-  public function fingerprints( $start = 0 , $limit = NULL )
+  public function opd_categories( $start = 0 , $limit = NULL )
   {
       if (isset( $limit ))
       {
         $this->limit( $limit );
       }
-      $this->select( $this->table.'.*' );
-      $this->select( "opd_category.name as opd_category_name" );
-      $this->join( 
-        "opd_category" ,
-        "opd_category.id = " .$this->table.'.opd_category_id' ,
-        "inner"
-      );
-
       $this->offset( $start );
       $this->order_by($this->table.'.id', 'asc');
       return $this->fetch_data();

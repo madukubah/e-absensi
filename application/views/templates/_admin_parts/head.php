@@ -25,5 +25,5 @@
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed" onload="menuActive('<?php echo $this->router->fetch_class() . '_' . $this->router->fetch_method() ?> ')" >
+<body class="hold-transition sidebar-mini layout-fixed" onload="menuActive('<?php echo $menu_list_id ?> ')" >
 <div class="wrapper">

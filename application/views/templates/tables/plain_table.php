@@ -22,7 +22,7 @@
                         <td>
                             <?php
                                     $attr = "";
-                                    if (is_numeric($row->$key) && ($key != 'phone' && $key != 'username'))
+                                    if (is_numeric($row->$key) && ($key != 'phone' && $key != 'username' && $key != 'employee_pin' ))
                                         $attr = number_format($row->$key);
                                     else
                                         $attr = $row->$key;

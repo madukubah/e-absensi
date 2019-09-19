@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 18, 2019 at 05:32 PM
+-- Generation Time: Sep 19, 2019 at 02:12 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 5.6.37
 
@@ -30,13 +30,21 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `attendance` (
   `id` int(10) UNSIGNED NOT NULL,
-  `pin` int(11) NOT NULL,
-  `fingerprint_id` int(10) UNSIGNED NOT NULL,
+  `employee_pin` int(11) NOT NULL,
   `timestamp` int(11) NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `attendance`
+--
+
+INSERT INTO `attendance` (`id`, `employee_pin`, `timestamp`, `date`, `time`, `status`) VALUES
+(11, 123, 1568851181, '2019-09-19', '07:59:41', 0),
+(12, 123, 1568851197, '2019-09-19', '16:59:57', 0),
+(14, 1212, 1568851214, '2019-09-19', '08:00:14', 0);
 
 -- --------------------------------------------------------
 
@@ -46,6 +54,7 @@ CREATE TABLE `attendance` (
 
 CREATE TABLE `employee` (
   `id` int(10) UNSIGNED NOT NULL,
+  `fingerprint_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) NOT NULL,
   `pin` int(11) NOT NULL,
   `position` varchar(200) NOT NULL
@@ -55,8 +64,9 @@ CREATE TABLE `employee` (
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`id`, `name`, `pin`, `position`) VALUES
-(1, 'alan', 123, 'qwe');
+INSERT INTO `employee` (`id`, `fingerprint_id`, `name`, `pin`, `position`) VALUES
+(3, 2, 'alan', 123, 'aa'),
+(4, 2, 'aaa', 1212, 'aaa');
 
 -- --------------------------------------------------------
 
@@ -66,6 +76,7 @@ INSERT INTO `employee` (`id`, `name`, `pin`, `position`) VALUES
 
 CREATE TABLE `fingerprint` (
   `id` int(10) UNSIGNED NOT NULL,
+  `opd_category_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) NOT NULL,
   `ip_address` varchar(100) NOT NULL,
   `port` int(11) NOT NULL,
@@ -76,8 +87,9 @@ CREATE TABLE `fingerprint` (
 -- Dumping data for table `fingerprint`
 --
 
-INSERT INTO `fingerprint` (`id`, `name`, `ip_address`, `port`, `key_finger`) VALUES
-(1, 'DISPERINDAG', '102.168.1.2', 80, 1);
+INSERT INTO `fingerprint` (`id`, `opd_category_id`, `name`, `ip_address`, `port`, `key_finger`) VALUES
+(2, 3, 'DISPERINDAG', '102.168.1.2', 80, 1),
+(3, 2, 'BPKAD', '102.168.1.2', 80, 1);
 
 -- --------------------------------------------------------
 
@@ -146,7 +158,29 @@ INSERT INTO `menus` (`id`, `menu_id`, `name`, `link`, `list_id`, `icon`, `status
 (110, 108, 'Finger Print', 'user/fingerprint', 'fingerprint_index', 'home', 1, 2, '-'),
 (111, 2, 'Absensi', 'user/attendance', '-', 'home', 1, 3, '-'),
 (112, 111, 'Pilih Finger', 'user/fingerprint', 'fingerprint', 'home', 0, 1, '-'),
-(113, 111, 'Data Absensi', 'user/attendance', 'attendance_index', 'home', 1, 2, '-');
+(113, 111, 'Data Absensi', 'user/attendance', 'attendance_index', 'home', 1, 2, '-'),
+(114, 103, 'Kategori OPD', 'admin/opd_category', 'opd_category_index', 'home', 1, 1, '-');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `opd_category`
+--
+
+CREATE TABLE `opd_category` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `opd_category`
+--
+
+INSERT INTO `opd_category` (`id`, `name`, `description`) VALUES
+(2, 'Badan', '-'),
+(3, 'Dinas', '-'),
+(4, 'Sekretariat', '-');
 
 -- --------------------------------------------------------
 
@@ -182,8 +216,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `phone`, `image`, `address`) VALUES
-(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1568810117, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
-(13, '::1', 'alan@gmail.com', '$2y$10$ePSr6CLuUbN8S/zuW8miDeukySiWhO24wRFLV9Njg/PDpvIP3.bla', 'alan@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1568811627, 1, 'alfalah', 'madukubah', '081342989185', 'USER_13_1568811670.jpeg', 'jln mutiara no 8');
+(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1568845676, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
+(13, '::1', 'alan@gmail.com', '$2y$10$ePSr6CLuUbN8S/zuW8miDeukySiWhO24wRFLV9Njg/PDpvIP3.bla', 'alan@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1568845090, 1, 'alfalah', 'madukubah', '081342989185', 'USER_13_1568811670.jpeg', 'jln mutiara no 8');
 
 -- --------------------------------------------------------
 
@@ -213,19 +247,23 @@ INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
 -- Indexes for table `attendance`
 --
 ALTER TABLE `attendance`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `employee_pin` (`employee_pin`);
 
 --
 -- Indexes for table `employee`
 --
 ALTER TABLE `employee`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `pin` (`pin`),
+  ADD KEY `fingerprint_id` (`fingerprint_id`);
 
 --
 -- Indexes for table `fingerprint`
 --
 ALTER TABLE `fingerprint`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `opd_category_id` (`opd_category_id`);
 
 --
 -- Indexes for table `groups`
@@ -243,6 +281,12 @@ ALTER TABLE `login_attempts`
 -- Indexes for table `menus`
 --
 ALTER TABLE `menus`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `opd_category`
+--
+ALTER TABLE `opd_category`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -272,37 +316,43 @@ ALTER TABLE `users_groups`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `fingerprint`
 --
 ALTER TABLE `fingerprint`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+
+--
+-- AUTO_INCREMENT for table `opd_category`
+--
+ALTER TABLE `opd_category`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -319,6 +369,18 @@ ALTER TABLE `users_groups`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `employee`
+--
+ALTER TABLE `employee`
+  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`fingerprint_id`) REFERENCES `fingerprint` (`id`);
+
+--
+-- Constraints for table `fingerprint`
+--
+ALTER TABLE `fingerprint`
+  ADD CONSTRAINT `fingerprint_ibfk_1` FOREIGN KEY (`opd_category_id`) REFERENCES `opd_category` (`id`);
 
 --
 -- Constraints for table `users_groups`

@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Fingerprint_model extends MY_Model
+class Attendance_model extends MY_Model
 {
-  protected $table = "fingerprint";
+  protected $table = "attendance";
 
   function __construct() {
       parent::__construct( $this->table );
-      parent::set_join_key( 'fingerprint_id' );
+      parent::set_join_key( 'attendance_id' );
   }
 
   /**
@@ -21,7 +21,7 @@ class Fingerprint_model extends MY_Model
   {
       // Filter the data passed
       $data = $this->_filter_data($this->table, $data);
-
+      
       $this->db->insert($this->table, $data);
       $id = $this->db->insert_id($this->table . '_id_seq');
     
@@ -97,11 +97,11 @@ class Fingerprint_model extends MY_Model
     /**
    * group
    *
-   * @param int|array|null $id = id_fingerprint
+   * @param int|array|null $id = id_attendance
    * @return static
    * @author madukubah
    */
-  public function fingerprint( $id = NULL  )
+  public function attendance( $id = NULL  )
   {
       if (isset($id))
       {
@@ -111,18 +111,18 @@ class Fingerprint_model extends MY_Model
       $this->limit(1);
       $this->order_by($this->table.'.id', 'desc');
 
-      $this->fingerprints(  );
+      $this->attendances(  );
 
       return $this;
   }
   // /**
-  //  * fingerprint
+  //  * attendance
   //  *
   //  *
   //  * @return static
   //  * @author madukubah
   //  */
-  // public function fingerprint(  )
+  // public function attendance(  )
   // {
       
   //     $this->order_by($this->table.'.id', 'asc');
@@ -130,26 +130,39 @@ class Fingerprint_model extends MY_Model
   // }
 
   /**
-   * fingerprint
+   * attendance
    *
    *
    * @return static
    * @author madukubah
    */
-  public function fingerprints( $start = 0 , $limit = NULL )
+  public function attendances( $start = 0 , $limit = NULL,  $fingerprint_id = NULL )
   {
       if (isset( $limit ))
       {
         $this->limit( $limit );
       }
+
       $this->select( $this->table.'.*' );
-      $this->select( "opd_category.name as opd_category_name" );
+      $this->select( $this->table.'.date as _date' );
+      $this->select( $this->table.'.time as _time' );
+      $this->select( $this->table.'.timestamp as date' );
+      $this->select( "employee.name as employee_name" );
       $this->join( 
-        "opd_category" ,
-        "opd_category.id = " .$this->table.'.opd_category_id' ,
+        "employee" ,
+        "employee.pin = " .$this->table.'.employee_pin' ,
+        "inner"
+      );
+      $this->join( 
+        "fingerprint" ,
+        "fingerprint.id = employee.fingerprint_id",
         "inner"
       );
 
+      if( $fingerprint_id != NULL )
+      {
+        $this->where( "fingerprint.id", $fingerprint_id );
+      }
       $this->offset( $start );
       $this->order_by($this->table.'.id', 'asc');
       return $this->fetch_data();

@@ -17,6 +17,7 @@ class Employee_services
   {
       $table["header"] = array(
         'name' => 'Nama Karyawan',
+        'fingerprint_name' => 'OPD',
         'position' => 'Jabatan',
         'pin' => 'Kode Pin',
       );
@@ -29,24 +30,7 @@ class Employee_services
                 "url" => site_url( $_page."edit/"),
                 "button_color" => "primary",
                 "param" => "id",
-                "form_data" => array(
-                    "id" => array(
-                      'type' => 'hidden',
-                      'label' => "ID",
-                      ),
-                    "name" => array(
-                      'type' => 'text',
-                      'label' => "Nama Lengkap",
-                    ),
-                    "position" => array(
-                      'type' => 'text',
-                      'label' => "Jabatan",
-                    ),
-                    "pin" => array(
-                      'type' => 'text',
-                      'label' => "Kode Pin",
-                    ),
-                ),
+                "form_data" => $this->get_form_data(  )["form_data"]  ,
                 "title" => "Group",
                 "data_name" => "name",
               ),
@@ -99,11 +83,27 @@ class Employee_services
 	 **/
 	public function get_form_data(  )
 	{
+    $this->load->model(array(
+			'fingerprint_model',
+    ));
+    
+    $opds = $this->fingerprint_model->fingerprints(  )->result();
+    $opd_select = array();
+    foreach( $opds as $opd )
+    {
+      $opd_select[ $opd->id ] = $opd->name;
+    }
+
 		$_data["form_data"] = array(
 			"id" => array(
 				'type' => 'hidden',
 				'label' => "ID",
-			  ),
+      ),
+      "fingerprint_id" => array(
+			  'type' => 'select',
+			  'label' => "Nama OPD",
+			  'options' => $opd_select,
+			),
 			"name" => array(
 			  'type' => 'text',
 			  'label' => "Nama Lengkap",

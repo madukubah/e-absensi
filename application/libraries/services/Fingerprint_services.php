@@ -12,11 +12,33 @@ class Fingerprint_services
   {
     return get_instance()->$var;
   }
-  
+  public function get_table_config_no_action( $_page, $start_number = 1 )
+  {
+      $table["header"] = array(
+        'name' => 'Nama OPD',
+        'opd_category_name' => 'Kategori OPD',
+        'ip_address' => 'Alamat IP',
+        'port' => 'Port',
+        'key_finger' => 'Key',
+      );
+      $table["number"] = $start_number;
+      $table[ "action" ] = array(
+              array(
+                "name" => "Detail",
+                "type" => "link",
+                "url" => site_url( $_page."fingerprint/"),
+                "button_color" => "primary",	
+                "param" => "id",
+                "data" => NULL,
+              ),
+    );
+    return $table;
+  }
   public function get_table_config( $_page, $start_number = 1 )
   {
       $table["header"] = array(
         'name' => 'Nama SKPD',
+        'opd_category_name' => 'Kategori OPD',
         'ip_address' => 'Alamat IP',
         'port' => 'Port',
         'key_finger' => 'Key',
@@ -30,28 +52,7 @@ class Fingerprint_services
                 "url" => site_url( $_page."edit/"),
                 "button_color" => "primary",
                 "param" => "id",
-                "form_data" => array(
-                      "id" => array(
-                        'type' => 'hidden',
-                        'label' => "ID",
-                      ),
-                      "name" => array(
-                        'type' => 'text',
-                        'label' => "Nama SKPD",
-                      ),
-                      "ip_address" => array(
-                        'type' => 'text',
-                        'label' => "Alamat IP",
-                      ),
-                      "port" => array(
-                        'type' => 'text',
-                        'label' => "Port",
-                      ),
-                      "key_finger" => array(
-                        'type' => 'text',
-                        'label' => "Key",
-                      ),
-                ),
+                "form_data" => $this->get_form_data(  )["form_data"]  ,
                 "title" => "Group",
                 "data_name" => "name",
               ),
@@ -109,14 +110,29 @@ class Fingerprint_services
 	 **/
 	public function get_form_data(  )
 	{
+    $this->load->model(array(
+			'opd_category_model',
+    ));
+    
+    $opds = $this->opd_category_model->opd_categories(  )->result();
+    $opd_select = array();
+    foreach( $opds as $opd )
+    {
+      $opd_select[ $opd->id ] = $opd->name;
+    }
 		$_data["form_data"] = array(
 			"id" => array(
 				'type' => 'hidden',
 				'label' => "ID",
       ),
+      "opd_category_id" => array(
+			  'type' => 'select',
+			  'label' => "Kategori OPD",
+			  'options' => $opd_select,
+			),
       "name" => array(
 			  'type' => 'text',
-			  'label' => "Nama SKPD",
+			  'label' => "Nama OPD",
 			),
 			"ip_address" => array(
 			  'type' => 'text',

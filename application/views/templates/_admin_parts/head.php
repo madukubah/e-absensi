@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,6 +25,11 @@
     <link rel="stylesheet" href="<?= base_url('assets/') ?>plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="<?= base_url('assets/') ?>plugins/jquery/jquery.min.js"></script>
+    <!-- ChartJS -->
+    <script src="<?= base_url('assets/') ?>plugins/chart.js/Chart.min.js"></script>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed" onload="menuActive('<?php echo $menu_list_id ?> ')" >
-<div class="wrapper">
+
+<body class="hold-transition sidebar-mini layout-fixed" onload="menuActive('<?php echo $menu_list_id ?> ')">
+    <div class="wrapper">

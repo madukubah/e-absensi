@@ -115,6 +115,28 @@ class Employee_model extends MY_Model
 
       return $this;
   }
+
+  /**
+   * group
+   *
+   * @param int|array|null $id = id_employee
+   * @return static
+   * @author madukubah
+   */
+  public function employee_by_pin( $pin = NULL  )
+  {
+      if (isset($pin))
+      {
+        $this->where($this->table.'.pin', $pin);
+      }
+
+      $this->limit(1);
+      $this->order_by($this->table.'.id', 'desc');
+
+      $this->employees(  );
+
+      return $this;
+  }
   // /**
   //  * employee
   //  *

@@ -32,9 +32,9 @@
               <p>OPD Badan</p>
             </div>
             <div class="icon">
-              <i class="ion ion-bag"></i>
+              <!-- <i class="ion ion-bag"></i> -->
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="<?= base_url('user/home/opd_category/2') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->
@@ -48,9 +48,9 @@
               <p>OPD Dinas</p>
             </div>
             <div class="icon">
-              <i class="ion ion-stats-bars"></i>
+              <!-- <i class="ion ion-stats-bars"></i> -->
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="<?= base_url('user/home/opd_category/3') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->
@@ -64,9 +64,9 @@
               <p>OPD Sekretariat</p>
             </div>
             <div class="icon">
-              <i class="ion ion-person-add"></i>
+              <!-- <i class="ion ion-person-add"></i> -->
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="<?= base_url('user/home/opd_category/4') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->

@@ -47,6 +47,11 @@ class Auth extends Public_Controller
                 }else{
                         $this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
                         if(  validation_errors() || $this->ion_auth->errors() ) $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::DANGER, $this->data['message'] ) );
+
+                        $this->data['chart'] = json_decode( file_get_contents( site_url( "api/attendance/chart/2?group_by=date&month=".date("m") ) ) );
+                        $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);
+                        $this->data['chart'] = $chart;
+                        
                         $this->render( "V_login_page" );
                 }
         }

@@ -21,24 +21,24 @@ class Attendance_services
         '_time' => 'Jam',
       );
       $table["number"] = $start_number;
-      $table[ "action" ] = array(
-            array(
-              "name" => 'X',
-              "type" => "modal_delete",
-              "modal_id" => "delete_",
-              "url" => site_url( $_page."delete/".$fingerprint_id),
-              "button_color" => "danger",
-              "param" => "id",
-              "form_data" => array(
-                "id" => array(
-                  'type' => 'hidden',
-                  'label' => "id",
-                ),
-              ),
-              "title" => "Group",
-              "data_name" => "_time",
-            ),
-    );
+    //   $table[ "action" ] = array(
+    //         array(
+    //           "name" => 'X',
+    //           "type" => "modal_delete",
+    //           "modal_id" => "delete_",
+    //           "url" => site_url( $_page."delete/".$fingerprint_id),
+    //           "button_color" => "danger",
+    //           "param" => "id",
+    //           "form_data" => array(
+    //             "id" => array(
+    //               'type' => 'hidden',
+    //               'label' => "id",
+    //             ),
+    //           ),
+    //           "title" => "Group",
+    //           "data_name" => "_time",
+    //         ),
+    // );
     return $table;
   }
   public function get_table_config( $_page, $start_number = 1 )

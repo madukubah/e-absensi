@@ -44,10 +44,6 @@
                                 </div>
                             </div>
                             </form>
-
-                            <p class="mt-4 mb-4 text-center">
-                                Tidak punya akun? <a href="<?= base_url('auth/') ?>register" class="text-center">Register</a>
-                            </p>
                         </div>
                     </div>
                 </div>

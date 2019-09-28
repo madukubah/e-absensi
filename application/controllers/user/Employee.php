@@ -43,7 +43,7 @@ class Employee extends User_Controller {
 
 		$add_menu= $this->load->view('templates/actions/modal_form', $add_menu, true ); 
 
-		$this->data[ "header_button" ] =  $add_menu;
+		// $this->data[ "header_button" ] =  $add_menu;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

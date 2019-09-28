@@ -2,10 +2,10 @@
         <canvas id="bar_absensi" style="height:230px; min-height:230px"></canvas>
     </div>
     <script>
-        var data_hadir = [28, 48, 40, 19, 86, 27, 90];
-        var data_alpa = [65, 59, 80, 81, 56, 55, 40];
+        var data_alpa = <?php echo json_encode( $count_attendance ) ?>;//'[28, 48, 40, 19, 86, 27, 90];
+        var data_hadir = <?php echo json_encode( $absences ) ?>;//[65, 59, 80, 81, 56, 55, 40];
         var areaChartData = {
-            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu', 'Minggu'],
+            labels: <?php echo json_encode( $days ) ?>,
             datasets: [{
                     label: 'Tidak Hadir',
                     backgroundColor: 'rgba(235,22,22,0.9)',

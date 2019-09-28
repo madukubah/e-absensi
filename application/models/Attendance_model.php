@@ -33,6 +33,32 @@ class Attendance_model extends MY_Model
       $this->set_error("gagal");
           return FALSE;
   }
+
+  /**
+   * create
+   *
+   * @param array  $data
+   * @return static
+   * @author madukubah
+   */
+  public function create_batch( $data_batch )
+  {
+    $this->db->trans_begin();
+
+    $this->db->insert_batch($this->table, $data_batch);
+    if ($this->db->trans_status() === FALSE)
+    {
+      $this->db->trans_rollback();
+
+      $this->set_error("gagal");
+      return FALSE;
+    }
+
+    $this->db->trans_commit();
+
+    $this->set_message("berhasil");
+    return TRUE;
+  }
   /**
    * update
    *
@@ -115,19 +141,104 @@ class Attendance_model extends MY_Model
 
       return $this;
   }
-  // /**
-  //  * attendance
-  //  *
-  //  *
-  //  * @return static
-  //  * @author madukubah
-  //  */
-  // public function attendance(  )
-  // {
-      
-  //     $this->order_by($this->table.'.id', 'asc');
-  //     return $this->fetch_data();
-  // }
+
+   /**
+   * group
+   *
+   * @param int|array|null $id = id_attendance
+   * @return static
+   * @author madukubah
+   */
+  public function attendance_by_pindate( $pin, $date  )
+  {
+      $this->where($this->table.'.employee_pin', $pin);
+      $this->where($this->table.'.date', $date);
+
+      $this->limit(1);
+      $this->order_by($this->table.'.id', 'desc');
+
+      $this->attendances(  );
+
+      return $this;
+  }
+
+  /**
+   * group
+   *
+   * @param int|array|null $id = id_attendance
+   * @return static
+   * @author madukubah
+   */
+  public function record_count_fingerprint_id( $fingerprint_id  )
+  {
+      // $this->db->distinct();
+      $this->db->join( 
+        "employee",
+        "employee.pin = ".$this->table.'.employee_pin',
+        "inner"
+      );
+      $this->db->where( 'employee.fingerprint_id', $fingerprint_id);
+
+      return  $this->db->count_all_results( $this->table );
+
+  }
+  /**
+   * attendance
+   *
+   *
+   * @return static
+   * @author madukubah
+   */
+  public function accumulation( $fingerprint_id , $group_by = NULL, $month = NULL, $employee_ids = NULL, $_is_coming = TRUE )
+  {
+      $come_out = [ 'time BETWEEN "12:01:00" AND "18:00:00" ' , ' time BETWEEN "06:00:00" AND "12:00:00"' ];
+      $_group = array(
+        'date' => $this->table.".date",
+        'month' => "month",
+      );
+      $this->db->select( [
+        "*",
+        "count(*) as count_attendance",
+      ] );
+      $this->db->from( "
+          (
+            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+              INNER JOIN employee 
+            ON employee.pin = attendance.employee_pin
+          ) 
+          attendance
+      " );
+      // $this
+      $this->db->where( $come_out[ $_is_coming ] ,  NULL );
+      if ( isset($month)  )
+      {
+        $this->db->where_in( $this->table.".month",  $month );
+          
+      }else{
+        $this->db->where_in( $this->table.".month",  date("m") );
+      }
+      if ( isset( $group_by ) )
+      {
+        foreach( $group_by as $group )
+        {
+          $this->db->group_by( $_group[ $group ] );	
+        }
+      }
+
+      if ( isset( $employee_ids ) )
+      {
+          foreach( $employee_ids as $employee_id )
+          {
+             $this->db->where( "employee_id", $employee_id );	 
+          }
+      }
+      $this->db->where( "fingerprint_id", $fingerprint_id );	 
+      $this->db->order_by( "date", "asc" );
+      return $this->db->get( ) ;
+
+      $query = $this->db->query(  $sql );
+      return $query;
+  }
 
   /**
    * attendance
@@ -164,7 +275,7 @@ class Attendance_model extends MY_Model
         $this->where( "fingerprint.id", $fingerprint_id );
       }
       $this->offset( $start );
-      $this->order_by($this->table.'.id', 'asc');
+      $this->order_by($this->table.'.date asc, '.$this->table.'.employee_pin asc, '.$this->table.'.time asc ', '');
       return $this->fetch_data();
   }
 

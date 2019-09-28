@@ -55,64 +55,11 @@
             <div class="col-7 float-left">
                 <div class="col-md-10 col-lg-10 col-xl-10 mt-5 float-right">
                     <div>
-                        <h3 class="row justify-content-center text-center">Grafik Kehadiran Pegawai Seluruh SKPD</h3>
-                        <div class="chart">
-                            <canvas id="barChart" style="height:230px; min-height:230px"></canvas>
-                        </div>
+                        <h3 class="row justify-content-center text-center">Grafik Kehadiran Pegawai</h3>
+                        <?= $chart?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    var areaChartData = {
-        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu', 'Minggu'],
-        datasets: [{
-                label: 'Tidak Hadir',
-                backgroundColor: 'rgba(235,22,22,0.9)',
-                borderColor: 'rgba(235,22,22,0.8)',
-                pointRadius: false,
-                pointColor: '#3b8bba',
-                pointStrokeColor: 'rgba(60,141,188,1)',
-                pointHighlightFill: '#fff',
-                pointHighlightStroke: 'rgba(60,141,188,1)',
-                data: [28, 48, 40, 19, 86, 27, 90]
-            },
-            {
-                label: 'Hadir',
-                backgroundColor: 'rgba(65, 193, 65, 1)',
-                borderColor: 'rgba(65, 193, 65, 1)',
-                pointRadius: false,
-                pointColor: 'rgba(210, 214, 222, 1)',
-                pointStrokeColor: '#c1c7d1',
-                pointHighlightFill: '#fff',
-                pointHighlightStroke: 'rgba(220,220,220,1)',
-                data: [65, 59, 80, 81, 56, 55, 40]
-            },
-        ]
-    }
-
-    //-------------
-    //- BAR CHART -
-    //-------------
-    var barChartCanvas = $('#barChart').get(0).getContext('2d')
-    var barChartData = jQuery.extend(true, {}, areaChartData)
-    var temp0 = areaChartData.datasets[0]
-    var temp1 = areaChartData.datasets[1]
-    barChartData.datasets[0] = temp1
-    barChartData.datasets[1] = temp0
-
-    var barChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        datasetFill: false
-    }
-
-    var barChart = new Chart(barChartCanvas, {
-        type: 'bar',
-        data: barChartData,
-        options: barChartOptions
-    })
-</script>

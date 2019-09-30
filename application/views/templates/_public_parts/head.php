@@ -24,6 +24,13 @@
     <script src="<?= base_url('assets/') ?>plugins/jquery/jquery.min.js"></script>
     <!-- ChartJS -->
     <script src="<?= base_url('assets/') ?>plugins/chart.js/Chart.min.js"></script>
+    <style>
+        body{
+            background : url(<?= base_url('assets/img/') . 'background.jpeg'?>);
+            background-repeat : no-repeat;
+            background-size : cover;
+        }
+    </style>
 </head>
 
 <body class="hold-transition layout-top-nav layout-footer-fixed">

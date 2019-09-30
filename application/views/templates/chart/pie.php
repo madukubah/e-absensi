@@ -1,5 +1,7 @@
-<div class="chart">
-    <canvas id="pieChart" style="height:230px; min-height:230px"></canvas>
+<div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
+    <div class="m-5 chart">
+        <canvas id="pieChart" style="height:230px; min-height:230px"></canvas>
+    </div>
 </div>
 <script>
     var data_hadir = [28, 48, 40, 19, 86, 27, 90];

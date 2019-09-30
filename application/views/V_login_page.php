@@ -55,7 +55,7 @@
             <div class="col-7 float-left">
                 <div class="col-md-10 col-lg-10 col-xl-10 mt-5 float-right">
                     <div>
-                        <h3 class="row justify-content-center text-center">Grafik Kehadiran Pegawai</h3>
+                        <h3 class="row justify-content-center text-center text-white">Grafik Kehadiran Pegawai</h3>
                         <?= $chart?>
                     </div>
                 </div>

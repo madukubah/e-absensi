@@ -1,5 +1,7 @@
-<div class="chart">
-    <canvas id="lineChart" style="height:250px; min-height:250px"></canvas>
+<div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
+    <div class="chart">
+        <canvas id="lineChart" style="height:250px; min-height:250px"></canvas>
+    </div>
 </div>
 <script>
     var data_hadir = <?php echo json_encode( $count_attendance ) ?>;//'[28, 48, 40, 19, 86, 27, 90];

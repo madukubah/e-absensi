@@ -161,6 +161,7 @@ class Attendance extends User_Controller
 		}
 
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&',$data));
+		
 		if( $result == FALSE ) 
 		{
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, "Koneksi Gagal" ));
@@ -265,10 +266,26 @@ class Attendance extends User_Controller
 		$chart["days"] = $days;
 		$chart["count_attendance"] = $count_attendance;
 		$chart["absences"] = $absences;
-		// $chart = $this->load->view('templates/chart/bar', $chart, true);
+		// $chart = $this->load->view('templates/chart/line', $chart, true);
 		$chart = $this->load->view('templates/chart/bar', $chart, true);
 		// $chart = $this->load->view('templates/chart/pie', $chart, true);
 		$this->data["contents"] = $chart;
+		$form_data["form_data"] = array(
+			"month" => array(
+				'type' => 'select',
+				'label' => "Bulan",
+				'options' => Util::MONTH,
+				'selected' => $month,
+			),
+			"group_by" => array(
+				'type' => 'hidden',
+				'label' => "Bulan",
+				'value' => "date"
+			),
+		);
+		$form_data["form_data"] = $this->load->view('templates/form/plain_form', $form_data , TRUE ) ;
+		$form_data = $this->load->view('templates/form/attendance', $form_data , TRUE ) ;
+		$this->data[ "header_button" ] =  $form_data ;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

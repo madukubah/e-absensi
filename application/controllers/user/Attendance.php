@@ -161,6 +161,7 @@ class Attendance extends User_Controller
 		}
 
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&',$data));
+		
 		if( $result == FALSE ) 
 		{
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, "Koneksi Gagal" ));

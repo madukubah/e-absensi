@@ -1,13 +1,17 @@
     <div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
-        <div class="m-5 chart">
+        <div class="mt-5 ml-5 mr-5 chart">
             <canvas id="bar_absensi" style="height:230px; min-height:230px"></canvas>
+        </div>
+        <div class="container ml-5">
+            <span>Jumlah Hadir :</span><br>
+            <span>Jumlah Tidak Hadir :</span>
         </div>
     </div>
     <script>
-        var data_alpa = <?php echo json_encode( $count_attendance ) ?>;//'[28, 48, 40, 19, 86, 27, 90];
-        var data_hadir = <?php echo json_encode( $absences ) ?>;//[65, 59, 80, 81, 56, 55, 40];
+        var data_alpa = <?php echo json_encode($count_attendance) ?>; //'[28, 48, 40, 19, 86, 27, 90];
+        var data_hadir = <?php echo json_encode($absences) ?>; //[65, 59, 80, 81, 56, 55, 40];
         var areaChartData = {
-            labels: <?php echo json_encode( $days ) ?>,
+            labels: <?php echo json_encode($days) ?>,
             datasets: [{
                     label: 'Tidak Hadir',
                     backgroundColor: 'rgba(235,22,22,0.9)',

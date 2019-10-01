@@ -1,49 +1,21 @@
 <div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
-    <div class="m-5 chart">
+    <div class="mt-5 ml-5 mr-5 chart">
         <canvas id="pieChart" style="height:230px; min-height:230px"></canvas>
+    </div>
+    <div class="container ml-3">
+        <span>Jumlah Hadir :</span><br>
+        <span>Jumlah Tidak Hadir :</span>
     </div>
 </div>
 <script>
-    var data_hadir = [28, 48, 40, 19, 86, 27, 90];
-    var data_alpa = [65, 59, 80, 81, 56, 55, 40];
-    var areaChartData = {
-        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu', 'Minggu'],
-        datasets: [{
-                label: 'Tidak Hadir',
-                backgroundColor: 'rgba(235,22,22,0.9)',
-                borderColor: 'rgba(235,22,22,0.8)',
-                pointRadius: false,
-                pointColor: '#3b8bba',
-                pointStrokeColor: 'rgba(60,141,188,1)',
-                pointHighlightFill: '#fff',
-                pointHighlightStroke: 'rgba(60,141,188,1)',
-                data: data_hadir
-            },
-            {
-                label: 'Hadir',
-                backgroundColor: 'rgba(65, 193, 65, 1)',
-                borderColor: 'rgba(65, 193, 65, 1)',
-                pointRadius: false,
-                pointColor: 'rgba(210, 214, 222, 1)',
-                pointStrokeColor: '#c1c7d1',
-                pointHighlightFill: '#fff',
-                pointHighlightStroke: 'rgba(220,220,220,1)',
-                data: data_alpa
-            },
-        ]
-    }
     var donutData = {
         labels: [
-            'Chrome',
-            'IE',
-            'FireFox',
-            'Safari',
-            'Opera',
-            'Navigator',
+            'Hadir',
+            'Tidak Hadir',
         ],
         datasets: [{
-            data: [700, 500, 400, 600, 300, 100],
-            backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+            data: [700, 500],
+            backgroundColor: ['rgba(65, 193, 65, 1)', 'rgba(235,22,22,0.9)'],
         }]
     }
     var donutOptions = {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name:    Ion Auth
  * Author:  Ben Edmunds
@@ -19,7 +20,7 @@
  * @link       http://github.com/benedmunds/CodeIgniter-Ion-Auth
  * @filesource
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Class Ion_auth
@@ -70,13 +71,13 @@ class Ion_auth
 	 */
 	public function __construct()
 	{
-		$this->id		='';
-		$this->identity		='';
-		$this->first_name	="";
-		$this->last_name	="";
-		$this->phone		="";
-		$this->address		="";
-		$this->email		="";
+		$this->id		= '';
+		$this->identity		= '';
+		$this->first_name	= "";
+		$this->last_name	= "";
+		$this->phone		= "";
+		$this->address		= "";
+		$this->email		= "";
 		$this->group_id		= '';
 		// Check compat first
 		$this->check_compatibility();
@@ -84,18 +85,17 @@ class Ion_auth
 		$this->config->load('ion_auth', TRUE);
 		$this->load->library(['email']);
 		$this->lang->load('ion_auth');
-		$this->load->helper(['cookie', 'language','url']);
+		$this->load->helper(['cookie', 'language', 'url']);
 
 		$this->load->library('session');
 
 		$this->load->model('ion_auth_model');
 
-		$this->_cache_user_in_group =& $this->ion_auth_model->_cache_user_in_group;
-	
+		$this->_cache_user_in_group = &$this->ion_auth_model->_cache_user_in_group;
+
 		$email_config = $this->config->item('email_config', 'ion_auth');
 
-		if ($this->config->item('use_ci_email', 'ion_auth') && isset($email_config) && is_array($email_config))
-		{
+		if ($this->config->item('use_ci_email', 'ion_auth') && isset($email_config) && is_array($email_config)) {
 			$this->email->initialize($email_config);
 		}
 
@@ -115,19 +115,16 @@ class Ion_auth
 	 */
 	public function __call($method, $arguments)
 	{
-		if (!method_exists( $this->ion_auth_model, $method) )
-		{
+		if (!method_exists($this->ion_auth_model, $method)) {
 			throw new Exception('Undefined method Ion_auth::' . $method . '() called');
 		}
-		if($method == 'create_user')
-		{
+		if ($method == 'create_user') {
 			return call_user_func_array([$this, 'register'], $arguments);
 		}
-		if($method=='update_user')
-		{
+		if ($method == 'update_user') {
 			return call_user_func_array([$this, 'update'], $arguments);
 		}
-		return call_user_func_array( [$this->ion_auth_model, $method], $arguments);
+		return call_user_func_array([$this->ion_auth_model, $method], $arguments);
 	}
 
 	/**
@@ -158,28 +155,23 @@ class Ion_auth
 	{
 		// Retrieve user information
 		$user = $this->where($this->ion_auth_model->identity_column, $identity)
-					 ->where('active', 1)
-					 ->users()->row();
+			->where('active', 1)
+			->users()->row();
 
-		if ($user)
-		{
+		if ($user) {
 			// Generate code
 			$code = $this->ion_auth_model->forgotten_password($identity);
 
-			if ($code)
-			{
+			if ($code) {
 				$data = [
 					'identity' => $identity,
 					'forgotten_password_code' => $code
 				];
 
-				if (!$this->config->item('use_ci_email', 'ion_auth'))
-				{
+				if (!$this->config->item('use_ci_email', 'ion_auth')) {
 					$this->set_message('forgot_password_successful');
 					return $data;
-				}
-				else
-				{
+				} else {
 					$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->config->item('email_forgot_password', 'ion_auth'), $data, TRUE);
 					$this->email->clear();
 					$this->email->from($this->config->item('admin_email', 'ion_auth'), $this->config->item('site_title', 'ion_auth'));
@@ -187,8 +179,7 @@ class Ion_auth
 					$this->email->subject($this->config->item('site_title', 'ion_auth') . ' - ' . $this->lang->line('email_forgotten_password_subject'));
 					$this->email->message($message);
 
-					if ($this->email->send())
-					{
+					if ($this->email->send()) {
 						$this->set_message('forgot_password_successful');
 						return TRUE;
 					}
@@ -212,19 +203,14 @@ class Ion_auth
 	{
 		$user = $this->ion_auth_model->get_user_by_forgotten_password_code($code);
 
-		if (!is_object($user))
-		{
+		if (!is_object($user)) {
 			$this->set_error('password_change_unsuccessful');
 			return FALSE;
-		}
-		else
-		{
-			if ($this->config->item('forgot_password_expiration', 'ion_auth') > 0)
-			{
+		} else {
+			if ($this->config->item('forgot_password_expiration', 'ion_auth') > 0) {
 				//Make sure it isn't expired
 				$expiration = $this->config->item('forgot_password_expiration', 'ion_auth');
-				if (time() - $user->forgotten_password_time > $expiration)
-				{
+				if (time() - $user->forgotten_password_time > $expiration) {
 					//it has expired
 					$identity = $user->{$this->config->item('identity', 'ion_auth')};
 					$this->ion_auth_model->clear_forgotten_password_code($identity);
@@ -258,25 +244,18 @@ class Ion_auth
 
 		$id = $this->ion_auth_model->register($identity, $password, $email, $additional_data, $group_ids);
 
-		if (!$email_activation)
-		{
-			if ($id !== FALSE)
-			{
+		if (!$email_activation) {
+			if ($id !== FALSE) {
 				$this->set_message('account_creation_successful');
 				$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful']);
 				return $id;
-			}
-			else
-			{
+			} else {
 				$this->set_error('account_creation_unsuccessful');
 				$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_unsuccessful']);
 				return FALSE;
 			}
-		}
-		else
-		{
-			if (!$id)
-			{
+		} else {
+			if (!$id) {
 				$this->set_error('account_creation_unsuccessful');
 				return FALSE;
 			}
@@ -288,8 +267,7 @@ class Ion_auth
 			$this->ion_auth_model->clear_messages();
 
 
-			if (!$deactivate)
-			{
+			if (!$deactivate) {
 				$this->set_error('deactivate_unsuccessful');
 				$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_unsuccessful']);
 				return FALSE;
@@ -305,15 +283,12 @@ class Ion_auth
 				'email'      => $email,
 				'activation' => $activation_code,
 			];
-			if(!$this->config->item('use_ci_email', 'ion_auth'))
-			{
+			if (!$this->config->item('use_ci_email', 'ion_auth')) {
 				$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_successful']);
 				$this->set_message('activation_email_successful');
 				return $data;
-			}
-			else
-			{
-				$message = $this->load->view($this->config->item('email_templates', 'ion_auth').$this->config->item('email_activate', 'ion_auth'), $data, true);
+			} else {
+				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->config->item('email_activate', 'ion_auth'), $data, true);
 
 				$this->email->clear();
 				$this->email->from($this->config->item('admin_email', 'ion_auth'), $this->config->item('site_title', 'ion_auth'));
@@ -321,13 +296,11 @@ class Ion_auth
 				$this->email->subject($this->config->item('site_title', 'ion_auth') . ' - ' . $this->lang->line('email_activation_subject'));
 				$this->email->message($message);
 
-				if ($this->email->send() === TRUE)
-				{
+				if ($this->email->send() === TRUE) {
 					$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_successful']);
 					$this->set_message('activation_email_successful');
 					return $id;
 				}
-
 			}
 
 			$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_unsuccessful', 'activation_email_unsuccessful']);
@@ -380,8 +353,7 @@ class Ion_auth
 		$recheck = $this->ion_auth_model->recheck_session();
 
 		// auto-login the user if they are remembered
-		if (!$recheck && get_cookie($this->config->item('remember_cookie_name', 'ion_auth')))
-		{
+		if (!$recheck && get_cookie($this->config->item('remember_cookie_name', 'ion_auth'))) {
 			$recheck = $this->ion_auth_model->login_remembered_user();
 		}
 
@@ -395,8 +367,7 @@ class Ion_auth
 	public function get_user_id()
 	{
 		$user_id = $this->session->userdata('user_id');
-		if (!empty($user_id))
-		{
+		if (!empty($user_id)) {
 			return $user_id;
 		}
 		return NULL;
@@ -425,8 +396,7 @@ class Ion_auth
 	protected function check_compatibility()
 	{
 		// PHP password_* function sanity check
-		if (!function_exists('password_hash') || !function_exists('password_verify'))
-		{
+		if (!function_exists('password_hash') || !function_exists('password_verify')) {
 			show_error("PHP function password_hash or password_verify not found. " .
 				"Are you using CI 2 and PHP < 5.5? " .
 				"Please upgrade to CI 3, or PHP >= 5.5 " .
@@ -434,15 +404,13 @@ class Ion_auth
 		}
 
 		// Sanity check for CI2
-		if (substr(CI_VERSION, 0, 1) === '2')
-		{
+		if (substr(CI_VERSION, 0, 1) === '2') {
 			show_error("Ion Auth 3 requires CodeIgniter 3. Update to CI 3 or downgrade to Ion Auth 2.");
 		}
 
 		// Compatibility check for CSPRNG
 		// See functions used in Ion_auth_model::_random_token()
-		if (!function_exists('random_bytes') && !function_exists('mcrypt_create_iv') && !function_exists('openssl_random_pseudo_bytes'))
-		{
+		if (!function_exists('random_bytes') && !function_exists('mcrypt_create_iv') && !function_exists('openssl_random_pseudo_bytes')) {
 			show_error("No CSPRNG functions to generate random enough token. " .
 				"Please update to PHP 7 or use random_compat (https://github.com/paragonie/random_compat).");
 		}
@@ -452,13 +420,10 @@ class Ion_auth
 	{
 		$this->trigger_events('deactivate');
 
-		if (!isset($id))
-		{
+		if (!isset($id)) {
 			$this->set_error('deactivate_unsuccessful');
 			return FALSE;
-		}
-		else if ($this->logged_in() && $this->user()->row()->id == $id)
-		{
+		} else if ($this->logged_in() && $this->user()->row()->id == $id) {
 			$this->set_error('deactivate_current_user_unsuccessful');
 			return FALSE;
 		}
@@ -472,63 +437,55 @@ class Ion_auth
 	 * @return true
 	 * @author alanHetfielD
 	 **/
-	public function upload_photo( $file )
+	public function upload_photo($file)
 	{
 		$success = FALSE;
 
-		$user = $this->ion_auth->user()->row();//curr user
+		$user = $this->ion_auth->user()->row(); //curr user
 		$upload = $this->config->item('upload', 'ion_auth');
 
-		if( strlen( $file ) > 200 )//gambar adalalah base64
+		if (strlen($file) > 200) //gambar adalalah base64
 		{
 			$_data =  $file;
 			list($type, $_data) = explode(';', $_data);
 			list(, $_data)      = explode(',', $_data);
 			$_data = base64_decode($_data);
-			
-			
-			$file_name = $upload['file_name'].$user->id."_".time().'.jpg';
+
+
+			$file_name = $upload['file_name'] . $user->id . "_" . time() . '.jpg';
 			$upload_path = $upload['upload_path'];
 
-			if( file_put_contents($upload_path.$file_name, $_data) )
-			{
+			if (file_put_contents($upload_path . $file_name, $_data)) {
 				$data['image'] 			= $file_name;
 				$success = TRUE;
 			}
-		}
-		else
-		{
+		} else {
 			$config                         = $upload;
-			$config['file_name'] 			=  $config['file_name'].$user->id."_".time();
+			$config['file_name'] 			=  $config['file_name'] . $user->id . "_" . time();
 
 			$this->load->library('upload', $config);
-			if ( ! $this->upload->do_upload( $file ) )
-			{
-				$this->set_error( $this->upload->display_errors() );
-				$this->set_error( 'upload_unsuccessful' );
+			if (!$this->upload->do_upload($file)) {
+				$this->set_error($this->upload->display_errors());
+				$this->set_error('upload_unsuccessful');
 				return FALSE;
-			}
-			else
-			{
+			} else {
 				$file_data = $this->upload->data();
 				$data['image'] = $file_data['file_name'];
 				$success = TRUE;
 			}
 		}
 
-		if( $success )
-		{
-			if ( $this->ion_auth_model->update( $user->id, $data) )
-			{
+		if ($success) {
+			if ($this->ion_auth_model->update($user->id, $data)) {
 				$this->set_message('upload_successful');
-				$this->remove_photo( $user->image );
-				$this->session->set_userdata(array( 'user_image'=> $data['image'] ) ) ;
+				$this->remove_photo($user->image);
+				$this->session->set_userdata(array('user_image' => $data['image']));
 				return TRUE;
 			}
 		}
 
-		
-		$this->set_error( 'upload_unsuccessful' );
+
+		$this->set_error('upload_unsuccessful');
 		return FALSE;
 	}
 	/**
@@ -538,12 +495,12 @@ class Ion_auth
 	 * @return true
 	 * @author alanHetfielD
 	 **/
-	public function remove_photo( $file_name )
+	public function remove_photo($file_name)
 	{
 		$upload = $this->config->item('upload', 'ion_auth');
 		$config['upload_path']          = $upload['upload_path'];
 
-		return @unlink( $config['upload_path'].$file_name );
+		return @unlink($config['upload_path'] . $file_name);
 	}
 	/**
 	 * update
@@ -551,19 +508,17 @@ class Ion_auth
 	 * @return true
 	 * @author alanHetfielD
 	 **/
-	public function update( $id_user, $data)
+	public function update($id_user, $data)
 	{
-		if (array_key_exists('old_password', $data))
-		{
+		if (array_key_exists('old_password', $data)) {
 			$user = $this->user($id_user)->row();
-			if( !$this->ion_auth_model->verify_password( $data["old_password"] , $user->password) )
-			{
+			if (!$this->ion_auth_model->verify_password($data["old_password"], $user->password)) {
 				$this->set_error('old_password_incorrect');
 				$this->set_error('update_unsuccessful');
 				return FALSE;
 			}
 		}
-		return $this->ion_auth_model->update( $id_user, $data) ;
+		return $this->ion_auth_model->update($id_user, $data);
 	}
 
 	/**
@@ -580,53 +535,51 @@ class Ion_auth
 		$config = array(
 			array(
 				'field' => 'first_name',
-				 'label' => 'Nama Depan',
-				 'rules' =>  'trim|required',
+				'label' => 'Nama Depan',
+				'rules' =>  'trim|required',
 			),
 			array(
 				'field' => 'last_name',
-				 'label' => 'Nama Belakang',
-				 'rules' =>  'trim|required',
+				'label' => 'Nama Belakang',
+				'rules' =>  'trim|required',
 			),
 			array(
 				'field' => 'email',
-				 'label' => 'Email',
-				 'rules' =>  'trim|required|valid_email',
+				'label' => 'Email',
+				'rules' =>  'trim|required|valid_email',
 			),
 			array(
 				'field' => 'phone',
-				 'label' =>('No Telepon'),
-				 'rules' =>  'trim|required',
+				'label' => ('No Telepon'),
+				'rules' =>  'trim|required',
 			),
 			array(
 				'field' => 'address',
-				 'label' => 'Alamat',
-				 'rules' =>  'trim|required',
+				'label' => 'Alamat',
+				'rules' =>  'trim|required',
 			),
 			array(
 				'field' => 'password',
-				 'label' => "Kata Sandi",
-				 'rules' =>  'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]',
-			 ),
-			 array(
+				'label' => "Kata Sandi",
+				'rules' =>  'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]',
+			),
+			array(
 				'field' => 'password_confirm',
-				 'label' => "konfirmasi Kata Sandi",
-				 'rules' =>  'trim|required',
-			 ),
-			 array(
+				'label' => "konfirmasi Kata Sandi",
+				'rules' =>  'trim|required',
+			),
+			array(
 				'field' => 'group_id',
-				 'label' => "User Group",
-				 'rules' =>  'trim|required',
-			 ),
+				'label' => "User Group",
+				'rules' =>  'trim|required',
+			),
 		);
-		if( $this->router->fetch_method() == "edit" )
-		{
+		if ($this->router->fetch_method() == "edit") {
 			unset($config[7]);
-			
 		}
 		unset($config[6]);
 		unset($config[5]);
-		
+
 		return $config;
 	}
 	/**
@@ -635,11 +588,10 @@ class Ion_auth
 	 * @return array
 	 * @author madukubah
 	 **/
-	public function get_form_data( $user_id = -1 )
+	public function get_form_data($user_id = -1)
 	{
-		if( $user_id != -1 )
-		{
-			$user 				= $this->ion_auth_model->user( $user_id )->row();
+		if ($user_id != -1) {
+			$user 				= $this->ion_auth_model->user($user_id)->row();
 			$this->identity		= $user->username;
 			$this->first_name	= $user->first_name;
 			$this->last_name	= $user->last_name;
@@ -651,21 +603,19 @@ class Ion_auth
 		}
 		// echo var_dump($user);
 
-		$groups = $this->ion_auth_model->groups(  )->result();
+		$groups = $this->ion_auth_model->groups()->result();
 
-		$group_options ="";
-		foreach($groups as $n => $item)
-		{	
-			
-			$group_options .= form_radio("group_id", $item->id ,set_checkbox('group_id', $item->id), ' id="basic_checkbox_'.$n.'"');
-			$group_options .= '<label for="basic_checkbox_'.$n.'"> '. $item->name .'</label><br>';
+		$group_options = "";
+		foreach ($groups as $n => $item) {
+
+			$group_options .= form_radio("group_id", $item->id, set_checkbox('group_id', $item->id), ' id="basic_checkbox_' . $n . '"');
+			$group_options .= '<label for="basic_checkbox_' . $n . '"> ' . $item->name . '</label><br>';
 		}
 		$data['groups'] = $group_options;
 		$group_select = array();
-		foreach( $groups as $group )
-		{
-			if( $group->id == 1 ) continue;
-			$group_select[ $group->id ] = $group->name;
+		foreach ($groups as $group) {
+			if ($group->id == 1) continue;
+			$group_select[$group->id] = $group->name;
 		}
 
 		$_data["form_data"] = array(
@@ -673,32 +623,32 @@ class Ion_auth
 				'type' => 'hidden',
 				'label' => "ID",
 				'value' => $this->form_validation->set_value('id', $this->id),
-			  ),
+			),
 			"first_name" => array(
-			  'type' => 'text',
-			  'label' => "Nama Depan",
-			  'value' => $this->form_validation->set_value('first_name', $this->first_name),
+				'type' => 'text',
+				'label' => "Nama Depan",
+				'value' => $this->form_validation->set_value('first_name', $this->first_name),
 			),
 			"last_name" => array(
-			  'type' => 'text',
-			  'label' => "Nama Belakang",
-			  'value' => $this->form_validation->set_value('last_name', $this->last_name),
-			  
+				'type' => 'text',
+				'label' => "Nama Belakang",
+				'value' => $this->form_validation->set_value('last_name', $this->last_name),
+
 			),
 			"address" => array(
 				'type' => 'text',
 				'label' => "Alamat",
-				'value' => $this->form_validation->set_value('address', $this->address),			  
+				'value' => $this->form_validation->set_value('address', $this->address),
 			),
 			"email" => array(
-			  'type' => 'text',
-			  'label' => "Email",
-			  'value' => $this->form_validation->set_value('email', $this->email),			  
+				'type' => 'text',
+				'label' => "Email",
+				'value' => $this->form_validation->set_value('email', $this->email),
 			),
 			"phone" => array(
-			  'type' => 'number',
-			  'label' => "Nomor Telepon",
-			  'value' => $this->form_validation->set_value('phone', $this->phone),			  
+				'type' => 'number',
+				'label' => "Nomor Telepon",
+				'value' => $this->form_validation->set_value('phone', $this->phone),
 			),
 			"group_id" => array(
 				'type' => 'select',
@@ -706,7 +656,7 @@ class Ion_auth
 				'options' => $group_select,
 				'selected' => $this->group_id,
 			),
-		  );
+		);
 		return $_data;
 	}
 }

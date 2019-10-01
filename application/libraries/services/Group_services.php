@@ -81,4 +81,3 @@ class Group_services
     return $config;
   }
 }
-?>

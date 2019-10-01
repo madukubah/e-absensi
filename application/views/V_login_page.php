@@ -1,14 +1,10 @@
 <div class="content">
     <div class="container-fluid">
         <div class="mt-5 clearfix">
-            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3 float-right mr-5">
-                <div class="login-box float-left" style="width:100%">
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 float-right">
+                <div class="login-box float-left" style="width:80%">
                     <div class="card">
                         <div class="card-body login-card-body">
-                            <div class="login-logo">
-                                <a href="<?= base_url() ?>index2.html"><b>Login</b></a>
-                            </div>
-
                             <?php
                             if ($this->session->flashdata('alert')) {
                                 echo $this->session->flashdata('alert');
@@ -25,9 +21,6 @@
                             </div>
                             <div class="row">
                                 <label class="col-md-7" for="nama_lengkap">Password: </label>
-                                <p class="mb-1 col-md-5">
-                                    <a href="#">Lupa password?</a>
-                                </p>
                             </div>
                             <div class="input-group mb-3">
                                 <input type="password" class="form-control" name="user_password" id="user_password" placeholder="password">
@@ -48,11 +41,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-7 float-left">
-                <div class="col-md-10 col-lg-10 col-xl-10 mt-5 float-right">
-                    <div>
-                        <h3 class="row justify-content-center text-center text-white">Grafik Kehadiran Pegawai</h3>
-                        <?= $chart?>
+            <div class="col-9 float-left">
+                <div class="container row">
+                    <div class="col-2 text-white"><?= $header_button ?></div>
+                    <h3 class="row col-8 justify-content-center text-center text-white">Grafik Kehadiran Pegawai</h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 mt-5">
+                        <?= $pie ?>
+                    </div>
+                    <div class="col-md-9 col-lg-9 col-xl-9 mt-5 float-right">
+                        <div>
+                            <?= $chart ?>
+                        </div>
                     </div>
                 </div>
             </div>

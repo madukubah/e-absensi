@@ -1615,7 +1615,8 @@ class Ion_auth_model extends MY_Model
 
 		$this->limit( $limit );
 		$this->offset( $start );
-		// $this->where($this->tables['users'].'.id != 1 ');
+		$this->where( "users_groups.group_id != 1", NULL );
+		$this->where( "users_groups.group_id != 2", NULL );
 		$this->users( $groups );
 
 		return $this;

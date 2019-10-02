@@ -28,7 +28,34 @@ class User_services
   {
     return get_instance()->$var;
   }
-  
+  public function get_table_config_no_delete( $_page, $start_number = 1 )
+  {
+    $table["header"] = array(
+			'username' => 'username',
+			'group_name' => 'Group',
+			'user_fullname' => 'Nama Lengkap',
+			'phone' => 'No Telepon',
+			'email' => 'Email',
+		  );
+		  $table["number"] = $start_number ;
+		  $table[ "action" ] = array(
+			array(
+			  "name" => "Detail",
+			  "type" => "link",
+			  "url" => site_url($_page."detail/"),
+			  "button_color" => "primary",
+			  "param" => "id",
+			),
+			array(
+			  "name" => "Edit",
+			  "type" => "link",
+			  "url" => site_url($_page."edit/"),
+			  "button_color" => "primary",
+			  "param" => "id",
+			),
+		);
+    return $table;
+  }
   public function groups_table_config( $_page, $start_number = 1 )
   {
     $table["header"] = array(

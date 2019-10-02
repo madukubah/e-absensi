@@ -10,6 +10,11 @@ class Auth extends Public_Controller
                 $this->config->load('ion_auth', TRUE);
                 $this->load->helper(array('url', 'language'));
                 $this->lang->load('auth');
+                $this->load->model(array(
+			'fingerprint_model',
+			'attendance_model',
+			'employee_model',
+		));
         }
 
         public function login()
@@ -46,6 +51,14 @@ class Auth extends Public_Controller
 
                         $month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
                         $month = (int) $month;
+                        $opd = ($this->input->get('opd', FALSE )) ? $this->input->get('opd', FALSE ) : 1 ;
+                        $opd = (int) $opd;
+                        $fingerprints = $this->fingerprint_model->fingerprints(  )->result();
+                        $fingerprints_select = array();
+                        foreach( $fingerprints as $fingerprint )
+                        {
+                                $fingerprints_select[ $fingerprint->id ] = $fingerprint->name;
+                        }
                         $form_data["form_data"] = array(
                                 "month" => array(
                                         'type' => 'select',
@@ -56,8 +69,8 @@ class Auth extends Public_Controller
                                 "opd" => array(
                                         'type' => 'select',
                                         'label' => "OPD",
-                                        'options' => Util::MONTH,
-                                        'selected' => $month,
+                                        'options' => $fingerprints_select,
+                                        'selected' => $opd,
                                 ),
                                 "group_by" => array(
                                         'type' => 'hidden',
@@ -69,11 +82,11 @@ class Auth extends Public_Controller
                         $form_data = $this->load->view('templates/form/attendance', $form_data, TRUE);
                         $this->data["header_button"] =  $form_data;
 
-                        $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/2?group_by=date&month=" . date("m"))));
+                        $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$opd."?group_by=date&month=" . $month )));
                         $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);
                         $this->data['chart'] = $chart;
 
-                        $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/2?group_by=date&month=" . date("m"))));
+                        $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$opd."?group_by=date&month=" . $month )));
                         $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
                         $this->data['pie'] = $pie;
 

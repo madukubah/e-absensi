@@ -34,6 +34,7 @@ class Auth extends Public_Controller
 
                                 if ($this->ion_auth->is_admin()) redirect(site_url('/admin'));
                                 if ($this->ion_auth->in_group("admin_opd")) redirect(site_url('/opd'));
+                                if ($this->ion_auth->in_group("admin_bkd")) redirect(site_url('/bkd'));
 
                                 redirect(site_url('/user'), 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
                         } else {
@@ -75,6 +76,23 @@ class Auth extends Public_Controller
                         );
                         $form_data = $this->load->view('templates/form/filter_login', $form_data, TRUE);
                         $this->data["header_button"] =  $form_data;
+
+                        $form_login["form_data"] = array(
+                                "identity" => array(
+                                        'type' => 'text',
+                                        'label' => "Email",
+                                        "value" => NULL
+                                ),
+                                "user_password" => array(
+                                        'type' => 'password',
+                                        'label' => "Password",
+                                        "value" => NULL
+                                ),
+                        );
+                        $form_login["form"] = $this->load->view('templates/form/plain_form_horizontal', $form_login, TRUE);
+
+                        $form_login = $this->load->view('templates/form/login_horizontal', $form_login, TRUE);
+                        $this->data["form_login"] =  $form_login;
 
                         $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
                         $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);

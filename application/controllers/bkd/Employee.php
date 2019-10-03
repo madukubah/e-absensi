@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Employee extends Opd_Controller {
+class Employee extends Bkd_Controller {
 	private $services = null;
     private $name = null;
     private $parent_page = 'bkd';
@@ -17,21 +17,69 @@ class Employee extends Opd_Controller {
 	}
 	public function index()
 	{
-		$fingerprint = $this->data["fingerprint"];
-		$fingerprint_id = $this->data["fingerprint"]->id;
+		$this->load->library('services/Fingerprint_services');
+		$this->services = new Fingerprint_services;
 
-		$page = ($this->uri->segment(4)) ? ($this->uri->segment(4) -  1 ) : 0;
+		$page = ($this->uri->segment(4)) ? ($this->uri->segment(4) -  1) : 0;
+		// echo $page; return;
+		//pagination parameter
+		$pagination['base_url'] = base_url($this->current_page) . '/index';
+		$pagination['total_records'] = $this->fingerprint_model->record_count();
+		$pagination['limit_per_page'] = 10;
+		$pagination['start_record'] = $page * $pagination['limit_per_page'];
+		$pagination['uri_segment'] = 4;
+		//set pagination
+		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
+		#################################################################3
+		$table = $this->services->get_table_config_no_action($this->current_page);
+		$table["rows"] = $this->fingerprint_model->fingerprints($pagination['start_record'], $pagination['limit_per_page'])->result();
+		$table = $this->load->view('templates/tables/plain_table', $table, true);
+		$this->data["contents"] = $table;
+
+		$export =
+			array(
+				"name" => "Export",
+				"modal_id" => "export_",
+				"button_color" => "success",
+				"url" => site_url($this->current_page . "export/"),
+				"form_data" => array(
+					'month' => array(
+						'type' => 'select',
+						'label' => "Bulan Awal",
+						'options' => Util::MONTH,
+					)
+				),
+				'data' => NULL
+			);
+		// $this->data["header_button"] =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
+		#################################################################3
+		$alert = $this->session->flashdata('alert');
+		$this->data["key"] = $this->input->get('key', FALSE);
+		$this->data["alert"] = (isset($alert)) ? $alert : NULL;
+		$this->data["current_page"] = $this->current_page;
+		$this->data["block_header"] = "Data Pegawai";
+		$this->data["header"] = "Data Pegawai";
+		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
+		$this->render("templates/contents/plain_content");
+	}
+
+	public function fingerprint($fingerprint_id)	
+	{
+		$this->data["menu_list_id"] = "employee_index"; //overwrite menu_list_id
+
+
+		$page = ($this->uri->segment(4 +1 )) ? ($this->uri->segment(4 +1 ) -  1 ) : 0;
 		// echo $page; return;
         //pagination parameter
-        $pagination['base_url'] = base_url( $this->current_page ) .'/index';
+        $pagination['base_url'] = base_url( $this->current_page ) . '/fingerprint/' . $fingerprint_id;
         $pagination['total_records'] = $this->employee_model->count_by_fingerprint_id( $fingerprint_id );
         $pagination['limit_per_page'] = 10;
         $pagination['start_record'] = $page*$pagination['limit_per_page'];
-        $pagination['uri_segment'] = 4;
+        $pagination['uri_segment'] = 4 +1;
 		//set pagination
 		if ($pagination['total_records'] > 0 ) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config( $this->current_page );
+		$table = $this->services->get_table_config_no_action( $this->current_page, $pagination['start_record'] +1 );
 		$table[ "rows" ] = $this->employee_model->employee_by_fingerprint_id( $pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id )->result();
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
 		$this->data[ "contents" ] = $table;

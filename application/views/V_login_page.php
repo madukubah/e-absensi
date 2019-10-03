@@ -43,9 +43,9 @@
             </div>
             <div class="col-9 float-left">
                 <div class="container row">
-                    <div class="col-2 text-white"><?= $header_button ?></div>
-                    <h3 class="row col-8 justify-content-center text-center text-white"><?= $header ?></h3>
+                    <div class="col-6 text-white"><?= $header_button ?></div>
                 </div>
+                <h3 class="row justify-content-center text-center text-white"><?= $header ?></h3>
                 <div class="row">
                     <div class="col-lg-3 mt-5">
                         <?= $pie ?>

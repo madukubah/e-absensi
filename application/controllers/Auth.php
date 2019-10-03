@@ -11,10 +11,10 @@ class Auth extends Public_Controller
                 $this->load->helper(array('url', 'language'));
                 $this->lang->load('auth');
                 $this->load->model(array(
-			'fingerprint_model',
-			'attendance_model',
-			'employee_model',
-		));
+                        'fingerprint_model',
+                        'attendance_model',
+                        'employee_model',
+                ));
         }
 
         public function login()
@@ -33,7 +33,7 @@ class Auth extends Public_Controller
 
 
                                 if ($this->ion_auth->is_admin()) redirect(site_url('/admin'));
-                                if ( $this->ion_auth->in_group( "admin_opd" ) ) redirect(site_url('/opd'));
+                                if ($this->ion_auth->in_group("admin_opd")) redirect(site_url('/opd'));
 
                                 redirect(site_url('/user'), 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
                         } else {
@@ -51,14 +51,13 @@ class Auth extends Public_Controller
 
                         $month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
                         $month = (int) $month;
-                        $opd = ($this->input->get('opd', FALSE )) ? $this->input->get('opd', FALSE ) : -1 ;
+                        $opd = ($this->input->get('opd', FALSE)) ? $this->input->get('opd', FALSE) : -1;
                         $opd = (int) $opd;
-                        $fingerprints = $this->fingerprint_model->fingerprints(  )->result();
+                        $fingerprints = $this->fingerprint_model->fingerprints()->result();
                         $fingerprints_select = array();
-                        $fingerprints_select[ -1 ] = "Semua OPD";
-                        foreach( $fingerprints as $fingerprint )
-                        {
-                                $fingerprints_select[ $fingerprint->id ] = $fingerprint->name;
+                        $fingerprints_select[-1] = "Semua OPD";
+                        foreach ($fingerprints as $fingerprint) {
+                                $fingerprints_select[$fingerprint->id] = $fingerprint->name;
                         }
                         $form_data["form_data"] = array(
                                 "month" => array(
@@ -73,25 +72,19 @@ class Auth extends Public_Controller
                                         'options' => $fingerprints_select,
                                         'selected' => $opd,
                                 ),
-                                "group_by" => array(
-                                        'type' => 'hidden',
-                                        'label' => "Bulan",
-                                        'value' => "date"
-                                ),
                         );
-                        $form_data["form_data"] = $this->load->view('templates/form/plain_form', $form_data, TRUE);
-                        $form_data = $this->load->view('templates/form/attendance', $form_data, TRUE);
+                        $form_data = $this->load->view('templates/form/filter_login', $form_data, TRUE);
                         $this->data["header_button"] =  $form_data;
 
-                        $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$opd."?group_by=date&month=" . $month )));
+                        $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
                         $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);
                         $this->data['chart'] = $chart;
 
-                        $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$opd."?group_by=date&month=" . $month )));
+                        $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
                         $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
                         $this->data['pie'] = $pie;
 
-                        $this->data['header'] = "Grafik Kehadiran Pegawai ".Util::MONTH[ $month ];
+                        $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         $this->render("V_login_page");
                 }
         }

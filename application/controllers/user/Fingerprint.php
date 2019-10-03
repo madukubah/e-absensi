@@ -67,8 +67,8 @@ class Fingerprint extends User_Controller
 		if ($this->form_validation->run() === TRUE) {
 
 			$data['name'] = $this->input->post('name');
-
-			$email = strtolower($data['name']) . '@gmail.com';
+			$name = str_replace(" ", "_",  strtolower($data['name']) ) ; 
+			$email = $name . '@gmail.com';
 			$identity = $email;
 			$additional_data = array(
 				'first_name' => 'admin',
@@ -77,7 +77,7 @@ class Fingerprint extends User_Controller
 				'phone' => '-',
 				'address' => '-',
 			);
-			$password = strtolower($data['name']);
+			$password = $name ;
 			$user_id =  $this->ion_auth->register($identity, $password, $email, $additional_data, [4]);
 
 			$data['user_id'] = $user_id;

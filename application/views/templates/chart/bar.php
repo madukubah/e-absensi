@@ -3,9 +3,17 @@
             <canvas id="bar_absensi" style="height:230px; min-height:230px"></canvas>
         </div>
         <div class="container ml-5">
-            <span>Jumlah Hadir :</span><br>
-            <span>Jumlah Tidak Hadir :</span>
+            <div class="row" >
+                <div class="col-6" >
+                    <span>Jumlah Hadir : <?= ( $sum_attendances )?></span><br>
+                    <span>Jumlah Tidak Hadir : <?= $sum_absences?> </span>
+                </div>
+                <div class="col-6" >
+                    <span>Jumlah Pegawai : <?= ( $employee_count )?></span><br>
+                </div>
+            </div>
         </div>
+        <br>
     </div>
     <script>
         var data_alpa = <?php echo json_encode($count_attendance) ?>; //'[28, 48, 40, 19, 86, 27, 90];

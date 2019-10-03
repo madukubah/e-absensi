@@ -111,6 +111,24 @@ class Fingerprint_model extends MY_Model
 
     return $this;
   }
+  /**
+   * group
+   *
+   * @param int|array|null $id = id_fingerprint
+   * @return static
+   * @author madukubah
+   */
+  public function fingerprint_by_user_id( $user_id = NULL)
+  {
+    $this->where($this->table . '.user_id', $user_id);
+
+    $this->limit(1);
+    $this->order_by($this->table . '.id', 'desc');
+
+    $this->fingerprints();
+
+    return $this;
+  }
   // /**
   //  * fingerprint
   //  *

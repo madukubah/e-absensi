@@ -100,9 +100,9 @@ class Employee_services
 				'label' => "ID",
       ),
       "fingerprint_id" => array(
-			  'type' => 'select',
+			  'type' => 'hidden',
 			  'label' => "Nama OPD",
-			  'options' => $opd_select,
+			  // 'options' => $opd_select,
 			),
 			"name" => array(
 			  'type' => 'text',
@@ -113,7 +113,7 @@ class Employee_services
 			  'label' => "Jabatan",
 			),
 			"pin" => array(
-			  'type' => 'text',
+			  'type' => 'hidden',
 			  'label' => "Kode Pin",
 			),
 		

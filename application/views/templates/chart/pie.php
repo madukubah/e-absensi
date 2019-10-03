@@ -2,10 +2,11 @@
     <div class="mt-5 ml-5 mr-5 chart">
         <canvas id="pieChart" style="height:230px; min-height:230px"></canvas>
     </div>
-    <div class="container ml-3">
-        <span>Jumlah Hadir :</span><br>
-        <span>Jumlah Tidak Hadir :</span>
+    <div class="container ml-5">
+        <span>Jumlah Hadir : <?= ( $sum_attendances )?></span><br>
+        <span>Jumlah Tidak Hadir : <?= $sum_absences?> </span>
     </div>
+    <br>
 </div>
 <script>
     var donutData = {
@@ -14,7 +15,7 @@
             'Tidak Hadir',
         ],
         datasets: [{
-            data: [700, 500],
+            data: [ <?= ( $sum_attendances )?>, <?= $sum_absences?> ],
             backgroundColor: ['rgba(65, 193, 65, 1)', 'rgba(235,22,22,0.9)'],
         }]
     }

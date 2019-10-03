@@ -11,9 +11,9 @@
                     <?php endif; ?>
                     </li>
                 <?php else : ?>
-                    <li class="nav-item d-none d-sm-inline-block">
+                    <!-- <li class="nav-item d-none d-sm-inline-block">
                         <a href="<?= site_url() . $this->ion_auth->group($this->ion_auth->user()->row()->group_id)->row()->name ?>" class="btn btn-default nav-link">Dashboard</a>
-                    </li>
+                    </li> -->
                 <?php endif; ?>
         </ul>
         </div>

@@ -137,19 +137,43 @@ class Employee_model extends MY_Model
 
       return $this;
   }
-  // /**
-  //  * employee
-  //  *
-  //  *
-  //  * @return static
-  //  * @author madukubah
-  //  */
-  // public function employee(  )
-  // {
-      
-  //     $this->order_by($this->table.'.id', 'asc');
-  //     return $this->fetch_data();
-  // }
+
+  /**
+   * group
+   *
+   * @param int|array|null $id = id_employee
+   * @return static
+   * @author madukubah
+   */
+  public function count_by_fingerprint_id( $fingerprint_id = NULL )
+  {
+      if (isset($fingerprint_id ))
+      {
+        $this->where($this->table.'.fingerprint_id', $fingerprint_id);
+      }
+
+      return $this->record_count(  ) ;
+  }
+  /**
+   * group
+   *
+   * @param int|array|null $id = id_employee
+   * @return static
+   * @author madukubah
+   */
+  public function employee_by_fingerprint_id( $start = 0 , $limit = NULL, $fingerprint_id = NULL )
+  {
+      if (isset($fingerprint_id ))
+      {
+        $this->where($this->table.'.fingerprint_id', $fingerprint_id);
+      }
+
+      $this->order_by($this->table.'.id', 'asc');
+
+      $this->employees( $start , $limit  );
+
+      return $this;
+  }
 
   /**
    * employee

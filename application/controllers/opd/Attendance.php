@@ -2,12 +2,12 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . "/libraries/Util.php";
 
-class Attendance extends User_Controller
+class Attendance extends Opd_Controller
 {
 	private $services = null;
 	private $name = null;
-	private $parent_page = 'user';
-	private $current_page = 'user/attendance/';
+	private $parent_page = 'opd';
+	private $current_page = 'opd/attendance/';
 
 	public function __construct()
 	{
@@ -22,75 +22,29 @@ class Attendance extends User_Controller
 			'employee_model',
 		));
 	}
-	public function index()
-	{
-		$this->load->library('services/Fingerprint_services');
-		$this->services = new Fingerprint_services;
-
-		$page = ($this->uri->segment(4)) ? ($this->uri->segment(4) -  1) : 0;
-		// echo $page; return;
-		//pagination parameter
-		$pagination['base_url'] = base_url($this->current_page) . '/index';
-		$pagination['total_records'] = $this->fingerprint_model->record_count();
-		$pagination['limit_per_page'] = 10;
-		$pagination['start_record'] = $page * $pagination['limit_per_page'];
-		$pagination['uri_segment'] = 4;
-		//set pagination
-		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
-		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page);
-		$table["rows"] = $this->fingerprint_model->fingerprints($pagination['start_record'], $pagination['limit_per_page'])->result();
-		$table = $this->load->view('templates/tables/plain_table', $table, true);
-		$this->data["contents"] = $table;
-
-		$export =
-			array(
-				"name" => "Export",
-				"modal_id" => "export_",
-				"button_color" => "success",
-				"url" => site_url($this->current_page . "export/"),
-				"form_data" => array(
-					'month' => array(
-						'type' => 'select',
-						'label' => "Bulan Awal",
-						'options' => Util::MONTH,
-					)
-				),
-				'data' => NULL
-			);
-		$this->data["header_button"] =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
-		#################################################################3
-		$alert = $this->session->flashdata('alert');
-		$this->data["key"] = $this->input->get('key', FALSE);
-		$this->data["alert"] = (isset($alert)) ? $alert : NULL;
-		$this->data["current_page"] = $this->current_page;
-		$this->data["block_header"] = "Data Absensi";
-		$this->data["header"] = "Data Absensi";
-		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
-		$this->render("templates/contents/plain_content");
-	}
 
 
-	public function fingerprint($fingerprint_id)
+	public function index(  )
 	{
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
-
+		$fingerprint = $this->data["fingerprint"];
+		$fingerprint_id = $this->data["fingerprint"]->id;
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
-		$page = ($this->uri->segment(4 + 1)) ? ($this->uri->segment(4 + 1) -  1) : 0;
+		$page = ($this->uri->segment(4 )) ? ($this->uri->segment(4) -  1) : 0;
 		// echo $page; return;
 		//pagination parameter
-		$pagination['base_url'] = base_url($this->current_page) . '/fingerprint/' . $fingerprint_id;
+		$pagination['base_url'] = base_url($this->current_page)."index/";
 		$pagination['total_records'] = $this->attendance_model->record_count_fingerprint_id($fingerprint_id);
-		// echo var_dump( $this->attendance_model->db );return;
+		// echo var_dump( $page );return;
 		$pagination['limit_per_page'] = 50;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
-		$pagination['uri_segment'] = 4 + 1;
+		$pagination['uri_segment'] = 4 ;
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] +1, $fingerprint_id);		
-		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
+		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] +1, $fingerprint_id);
+		$table["rows"] = $this->attendance_model->attendances( $pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		// echo var_dump( $this->attendance_model->db );return;
 
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
@@ -146,7 +100,7 @@ class Attendance extends User_Controller
 			);
 		$btn_export =  $this->load->view('templates/actions/link', $export, TRUE);;
 
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart;
+		$this->data["header_button"] =  $link_refresh . " " . $btn_export ;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -199,7 +153,7 @@ class Attendance extends User_Controller
 
 		if ($result == FALSE) {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, "Koneksi Gagal"));
-			redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
+			redirect(site_url($this->current_page));
 		}
 		$attendances = explode("\n", $result);
 
@@ -236,12 +190,13 @@ class Attendance extends User_Controller
 			}
 		}
 		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
-		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
+		redirect(site_url($this->current_page) );
 		return;
 	}
 
 	public function chart($fingerprint_id)
 	{
+		
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
 		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
 		$month = (int) $month;
@@ -252,15 +207,24 @@ class Attendance extends User_Controller
 		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
 		// echo var_dump( $month );return;
+		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id)->result();
+		$employee_count = $this->employee_model->record_count();
+		// var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
+		$count_days = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+
+		$days = $this->services->extract_days($attendances);
+		$count_attendance = $this->services->extract_attendances($attendances, $employee_count)->attendances;
+		$absences = $this->services->extract_attendances($attendances, $employee_count)->absences;
+
+
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
-		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$fingerprint_id."?group_by=date&month=" . $month )));
-		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
-
-		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$fingerprint_id."?group_by=date&month=" . $month )));
-		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
-		######################################################
+		$chart["days"] = $days;
+		$chart["count_attendance"] = $count_attendance;
+		$chart["absences"] = $absences;
+		// $chart = $this->load->view('templates/chart/line', $chart, true);
+		$bar = $this->load->view('templates/chart/bar', $chart, true);
+		$pie = $this->load->view('templates/chart/pie', $chart, true);
 		$this->data["contents"] = $bar . " " . $pie;
 		$form_data["form_data"] = array(
 			"month" => array(

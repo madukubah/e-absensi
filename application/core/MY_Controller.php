@@ -121,6 +121,30 @@ class Admin_Controller extends User_Controller
 	}
 }
 
+class Opd_Controller extends User_Controller
+{
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model(array(
+			'fingerprint_model',
+		));
+		$user_id = $this->ion_auth->get_user_id();
+		if ( !$this->ion_auth->in_group( "admin_opd" )  ) {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->lang->line('login_must_admin')));
+			redirect(site_url('/auth/login'));
+		} else { 
+			$this->data["fingerprint"] = $this->fingerprint_model->fingerprint_by_user_id( $user_id )->row();
+		}
+	}
+
+	protected function render($the_view = NULL, $template = 'admin_master')
+	{
+		parent::render($the_view, $template);
+	}
+}
+
 class Public_Controller extends MY_Controller
 {
 

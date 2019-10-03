@@ -45,7 +45,7 @@ class Users extends User_Controller
 		array(
 			"name" => "Tambah",
 			"type" => "link",
-			"url" => site_url( $this->current_page."create/"),
+			"url" => site_url( $this->current_page."add/"),
 			"button_color" => "primary",	
 			"data" => NULL,
 		);
@@ -55,8 +55,8 @@ class Users extends User_Controller
 		$this->data["key"] = $this->input->get('key', FALSE);
 		$this->data["alert"] = (isset($alert)) ? $alert : NULL ;
 		$this->data["current_page"] = $this->current_page;
-		$this->data["block_header"] = "";//$this->_user_groups[ $user_groups ];
-		$this->data["header"] = "";//$this->_user_groups[ $user_groups ];
+		$this->data["block_header"] = "Pengguna";//$this->_user_groups[ $user_groups ];
+		$this->data["header"] = "Pengguna";//$this->_user_groups[ $user_groups ];
 		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
 		$this->render( "templates/contents/plain_content" );
 	}
@@ -75,7 +75,7 @@ class Users extends User_Controller
 
           $email = $this->input->post('email') ;
           $phone = $this->input->post('phone') ;
-          $identity = $phone ;
+          $identity = $email ;
           $password = $phone ;
 
 
@@ -90,7 +90,7 @@ class Users extends User_Controller
         if ($this->form_validation->run() === TRUE && ( $user_id =  $this->ion_auth->register($identity, $password, $email,$additional_data, [$group_id], "phone" ) ) )
         {
             $this->session->set_flashdata('alert', $this->alert->set_alert( Alert::SUCCESS, $this->ion_auth->messages() ) );
-            redirect( site_url($this->current_page.$this->ion_auth->group( $group_id )->row()->name)  );
+            redirect( site_url($this->current_page )  );
         }
         else
         {

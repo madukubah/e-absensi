@@ -31,9 +31,9 @@ class Auth extends Public_Controller
                                 //redirect them back to the home page
                                 $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->ion_auth->messages()));
 
-                                // echo $this->ion_auth->messages();return;
 
                                 if ($this->ion_auth->is_admin()) redirect(site_url('/admin'));
+                                if ( $this->ion_auth->in_group( "admin_opd" ) ) redirect(site_url('/opd'));
 
                                 redirect(site_url('/user'), 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
                         } else {
@@ -51,10 +51,11 @@ class Auth extends Public_Controller
 
                         $month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
                         $month = (int) $month;
-                        $opd = ($this->input->get('opd', FALSE )) ? $this->input->get('opd', FALSE ) : 1 ;
+                        $opd = ($this->input->get('opd', FALSE )) ? $this->input->get('opd', FALSE ) : -1 ;
                         $opd = (int) $opd;
                         $fingerprints = $this->fingerprint_model->fingerprints(  )->result();
                         $fingerprints_select = array();
+                        $fingerprints_select[ -1 ] = "Semua OPD";
                         foreach( $fingerprints as $fingerprint )
                         {
                                 $fingerprints_select[ $fingerprint->id ] = $fingerprint->name;
@@ -90,6 +91,7 @@ class Auth extends Public_Controller
                         $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
                         $this->data['pie'] = $pie;
 
+                        $this->data['header'] = "Grafik Kehadiran Pegawai ".Util::MONTH[ $month ];
                         $this->render("V_login_page");
                 }
         }

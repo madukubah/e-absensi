@@ -216,6 +216,38 @@ class Attendance_services
     );
 
 		return $_data;
+  }
+  
+  public function extract_days($attendances)
+	{
+		$ARRA_DAYS = array();
+		foreach ($attendances as $ind => $attendance) {
+			$ARRA_DAYS[] = $attendance->day;
+		}
+		return $ARRA_DAYS;
 	}
+
+	public function extract_attendances($attendances, $employee_count)
+	{
+		$ARR_DAYS = array();
+    $ARR_ABSENCE = array();
+    $sum_attendances = 0;
+    $sum_absences = 0;
+		foreach ($attendances as $ind => $attendance) {
+      $sum_attendances += $attendance->count_attendance;
+      $sum_absences    += $employee_count - $attendance->count_attendance;
+      
+			$ARR_DAYS[] = $attendance->count_attendance;
+      $ARR_ABSENCE[] =  $employee_count - $attendance->count_attendance;
+      
+		}
+		return (object) array(
+			"attendances" => $ARR_DAYS,
+			"absences" => $ARR_ABSENCE,
+			"sum_attendances" => $sum_attendances,
+			"sum_absences" => $sum_absences,
+		);
+  }
+  
 }
 ?>

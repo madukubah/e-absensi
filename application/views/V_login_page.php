@@ -44,7 +44,7 @@
             <div class="col-9 float-left">
                 <div class="container row">
                     <div class="col-2 text-white"><?= $header_button ?></div>
-                    <h3 class="row col-8 justify-content-center text-center text-white">Grafik Kehadiran Pegawai</h3>
+                    <h3 class="row col-8 justify-content-center text-center text-white"><?= $header ?></h3>
                 </div>
                 <div class="row">
                     <div class="col-lg-3 mt-5">

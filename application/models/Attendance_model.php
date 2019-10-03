@@ -171,15 +171,18 @@ class Attendance_model extends MY_Model
    */
   public function record_count_fingerprint_id( $fingerprint_id  )
   {
-      // $this->db->distinct();
-      $this->db->join( 
+      $this->join( 
         "employee",
         "employee.pin = ".$this->table.'.employee_pin',
         "inner"
       );
-      $this->db->where( 'employee.fingerprint_id', $fingerprint_id);
 
-      return  $this->db->count_all_results( $this->table );
+      if (isset($fingerprint_id ))
+      {
+        $this->where( 'employee.fingerprint_id', $fingerprint_id);
+      }
+
+      return $this->record_count(  ) ;
 
   }
   /**
@@ -189,7 +192,7 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function accumulation( $fingerprint_id , $group_by = NULL, $month = NULL, $employee_ids = NULL, $_is_coming = TRUE )
+  public function accumulation( $fingerprint_id = NULL , $group_by = NULL, $month = NULL, $employee_ids = NULL, $_is_coming = TRUE )
   {
       $come_out = [ 'time BETWEEN "12:01:00" AND "18:00:00" ' , ' time BETWEEN "06:00:00" AND "12:00:00"' ];
       $_group = array(
@@ -232,7 +235,11 @@ class Attendance_model extends MY_Model
              $this->db->where( "employee_id", $employee_id );	 
           }
       }
-      $this->db->where( "fingerprint_id", $fingerprint_id );	 
+
+      if ( isset( $fingerprint_id ) )
+      {
+        $this->db->where( "fingerprint_id", $fingerprint_id );	 
+      }
       $this->db->order_by( "date", "asc" );
       return $this->db->get( ) ;
 
@@ -275,7 +282,7 @@ class Attendance_model extends MY_Model
         $this->where( "fingerprint.id", $fingerprint_id );
       }
       $this->offset( $start );
-      $this->order_by($this->table.'.date asc, '.$this->table.'.employee_pin asc, '.$this->table.'.time asc ', '');
+      $this->order_by($this->table.'.date desc, '.$this->table.'.employee_pin asc, '.$this->table.'.time asc ', '');
       return $this->fetch_data();
   }
 

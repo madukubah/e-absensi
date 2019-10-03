@@ -139,7 +139,7 @@ $config['identity']                   = 'email';	        /* You can use any uniq
 															    IMPORTANT: If you are changing it from the default (email),
 															    		   update the UNIQUE constraint in your DB */
 $config['min_password_length']        = 5;                   // Minimum Required Length of Password (not enforced by lib - see note above)
-$config['max_password_length']        = 10;                   // Minimum Required Length of Password (not enforced by lib - see note above)
+$config['max_password_length']        = 20;                   // Minimum Required Length of Password (not enforced by lib - see note above)
 $config['email_activation']           = FALSE;               // Email Activation for registration
 $config['manual_activation']          = FALSE;               // Manual Activation for registration
 $config['remember_users']             = TRUE;                // Allow users to be remembered and enable auto-login

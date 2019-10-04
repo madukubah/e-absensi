@@ -89,7 +89,7 @@ class Attendance extends User_Controller
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] +1, $fingerprint_id);		
+		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id);
 		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		// echo var_dump( $this->attendance_model->db );return;
 
@@ -144,7 +144,7 @@ class Attendance extends User_Controller
 				),
 				'data' => NULL
 			);
-		$btn_export =  $this->load->view('templates/actions/link', $export, TRUE);;
+		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
 
 		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart;
 		// return;
@@ -255,10 +255,10 @@ class Attendance extends User_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$fingerprint_id."?group_by=date&month=" . $month )));
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
-		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$fingerprint_id."?group_by=date&month=" . $month )));
+		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
 		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
 		######################################################
 		$this->data["contents"] = $bar . " " . $pie;
@@ -355,8 +355,12 @@ class Attendance extends User_Controller
 		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
-	public function export($fingerprint_id = null)
+	public function export()
 	{
-		$this->excel->excel_config('A');
+		$month = $this->input->post('month');
+		$fingerprint_id = $this->input->post('fingerprint_id');
+		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
+
+		$this->excel->excel_config($data);
 	}
 }

@@ -24,7 +24,7 @@ require_once APPPATH . "/libraries/Util.php";
  */
 class Attendance extends REST_Controller
 {
-    private $services = null;
+	private $services = null;
 	private $name = null;
 	private $parent_page = 'user';
 	private $current_page = 'user/home/';
@@ -41,43 +41,43 @@ class Attendance extends REST_Controller
 		));
 	}
 
-    public function chart_get( $fingerprint_id = NULL)
-    {
-        $fingerprint_id = ( $fingerprint_id == -1 ) ? NULL : $fingerprint_id ;
+	public function chart_get($fingerprint_id = NULL)
+	{
+		$fingerprint_id = ($fingerprint_id == -1) ? NULL : $fingerprint_id;
 
-        $this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
-        $month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
-        $month = (int) $month;
-        // $month = NULL;
+		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
+		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
+		$month = (int) $month;
+		// $month = NULL;
 
-        $group_by = ($this->input->get('group_by', 1)) ? $this->input->get('group_by', 1) : [];
-        $group_by = (empty($group_by)) ? [] : explode("|", $group_by);
+		$group_by = ($this->input->get('group_by', 1)) ? $this->input->get('group_by', 1) : [];
+		$group_by = (empty($group_by)) ? [] : explode("|", $group_by);
 
-        $employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
-        $employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
-        // echo var_dump( $month );return;
-        $attendances = $this->attendance_model->accumulation( $fingerprint_id, $group_by, $month, $employee_id)->result();
-        $employee_count = $this->employee_model->count_by_fingerprint_id( $fingerprint_id );
-        // var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
-        $count_days = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
+		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
+		// echo var_dump( $month );return;
+		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id)->result();
+		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
+		// var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
+		$count_days = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
 
-        $days = $this->services->extract_days($attendances);
-        $ATTENDANCE = $this->services->extract_attendances($attendances, $employee_count) ;
+		$days = $this->services->extract_days($attendances);
+		$ATTENDANCE = $this->services->extract_attendances($attendances, $employee_count);
 		$count_attendance = $ATTENDANCE->attendances;
 		$absences = $ATTENDANCE->absences;
 
-        $fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
+		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
-        $chart["days"] = $days;
-        $chart["count_attendance"] = $ATTENDANCE->attendances;
-        $chart["absences"] = $ATTENDANCE->absences;
-        $chart["employee_count"] = $employee_count;
+		$chart["days"] = $days;
+		$chart["count_attendance"] = $ATTENDANCE->attendances;
+		$chart["absences"] = $ATTENDANCE->absences;
+		$chart["employee_count"] = $employee_count;
 
-        $chart["sum_attendances"] = $ATTENDANCE->sum_attendances;
-        $chart["sum_absences"] = $ATTENDANCE->sum_absences;
-        $this->set_response($chart, REST_Controller::HTTP_OK); // CREATED (201) being the HTTP response code
-    }
-    protected function post_download($url, $data)
+		$chart["sum_attendances"] = $ATTENDANCE->sum_attendances;
+		$chart["sum_absences"] = $ATTENDANCE->sum_absences;
+		$this->set_response($chart, REST_Controller::HTTP_OK); // CREATED (201) being the HTTP response code
+	}
+	protected function post_download($url, $data)
 	{
 		$process = curl_init();
 		$options = array(
@@ -93,30 +93,28 @@ class Attendance extends REST_Controller
 		$return = curl_exec($process);
 		curl_close($process);
 		return $return;
-    }
-    
-    public function sync_get($fingerprint_id = NULL)
+	}
+
+	public function sync_get($fingerprint_id = NULL)
 	{
-        if ($fingerprint_id === NULL)
-        {
-            $result = array(
-                "message" =>  "url tidak valid", 
-                "status" => 0,
-            );
-            $this->set_response( $result , REST_Controller::HTTP_NOT_FOUND); 
-            return;
-        }
+		if ($fingerprint_id === NULL) {
+			$result = array(
+				"message" =>  "url tidak valid",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_NOT_FOUND);
+			return;
+		}
 		#######################################################################
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
-        if ($fingerprint === NULL)
-        {
-            $result = array(
-                "message" =>  "fingerprint tidak Ada", 
-                "status" => 0,
-            );
-            $this->set_response( $result , REST_Controller::HTTP_OK); 
-            return;
-        }
+		if ($fingerprint === NULL) {
+			$result = array(
+				"message" =>  "fingerprint tidak Ada",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
 		$tanggal_awal = date("Y") . '-1-01 00:00:00';
 		$tanggal_akhir = date("Y") . '-12-30 23:00:00';
 		$jumlah_karyawan = 200;
@@ -132,12 +130,12 @@ class Attendance extends REST_Controller
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
 
 		if ($result == FALSE) {
-            $result = array(
-                "message" =>  "Koneksi Gagal", 
-                "status" => 0,
-            );
-            $this->set_response( $result , REST_Controller::HTTP_OK); 
-            return;
+			$result = array(
+				"message" =>  "Koneksi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
 		}
 		$attendances = explode("\n", $result);
 
@@ -173,14 +171,40 @@ class Attendance extends REST_Controller
 				if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 			}
 		}
-        if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
-        ############################
-        $result = array(
-            "message" =>  "Sinkronisasi Selesai", 
-            "status" => 1,
-        );
-        $this->set_response( $result , REST_Controller::HTTP_OK); 
-        return;
+		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
+		############################
+		$result = array(
+			"message" =>  "Sinkronisasi Selesai",
+			"status" => 1,
+		);
+		$this->set_response($result, REST_Controller::HTTP_OK);
+		return;
 	}
-   
+
+	public function export_get($fingerprint_id = null)
+	{
+		$fingerprint_id = ($fingerprint_id == -1) ? NULL : $fingerprint_id;
+
+		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
+		$month = (int) $month;
+		// $month = NULL;
+
+		$group_by = ($this->input->get('group_by', 1)) ? $this->input->get('group_by', 1) : [];
+		$group_by = (empty($group_by)) ? [] : explode("|", $group_by);
+
+		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
+		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
+		// echo var_dump( $month ); return;
+		$employee_name = $this->employee_model->employee_by_fingerprint_id(0, null, $fingerprint_id)->result();
+		$count_days = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+
+		for ($i = 1; $i <= $count_days; $i++) {
+			$attendances[$i] = $this->attendance_model->employee_attendance($fingerprint_id, $month, $i)->result();
+		}
+
+		$data['attendances'] = $attendances;
+		$data['days'] = $count_days;
+		$data['employee'] = $employee_name;
+		$this->set_response($data, REST_Controller::HTTP_OK); // CREATED (201) being the HTTP response code
+	}
 }

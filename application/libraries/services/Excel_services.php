@@ -9,6 +9,9 @@ class Excel_services
 
     public function excel_config($data)
     {
+        $employees = $data->employee;
+        $days = $data->days;
+        $attendances = $data->attendances;
 
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel.php');
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
@@ -37,7 +40,7 @@ class Excel_services
         $PHPExcel->getActiveSheet()->setCellValue('D4', 'Kehadiran');
 
 
-        for ($i = 0; $i < 31; $i++) {
+        for ($i = 0; $i < $days; $i++) {
             $column = chr(68 + $i);
             if ((68 + $i) > 90) {
                 $column = 'A' . chr(65 + $i - 23);
@@ -49,28 +52,40 @@ class Excel_services
 
 
         ##############################################################################
-        //nama pegawai
-        // $row = 6;
-        // foreach ($rows as $key => $value) {
-        //     $PHPExcel->getActiveSheet()->setCellValue('B' . $row, ($row - 5));
-        //     // $PHPExcel->getActiveSheet()->getStyle('B' . $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        // nama pegawai
+        $row = 6;
+        foreach ($employees as $key => $employee) {
+            $PHPExcel->getActiveSheet()->setCellValue('B' . $row, ($row - 5));
+            // $PHPExcel->getActiveSheet()->getStyle('B' . $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-        //     $PHPExcel->getActiveSheet()->setCellValue('C' . $row, $value->name);
+            $PHPExcel->getActiveSheet()->setCellValue('C' . $row, $employee->name);
 
-        //     $row++;
-        // }
+            $row++;
+        }
+        //data absensi
+        for ($i = 1; $i <= $days; $i++) {
+            $id = 0;
+            $row = 6;
+            foreach ($employees as $key => $employee) {
+                $attendance = $attendances->$i;
+                $column = chr(67 + $i);
+                if ((67 + $i) > 90)
+                    $column = 'A' . chr(65 + $i - 24);
 
-        // //data absensi
-        // for ($i = 0; $i < count($attendances); $i++) {
-        //     foreach ($attendances as $key => $attendance) {
-        //         $column = chr(68 + $i);
-        //         if ((68 + $i) == 90)
-        //             $column = 'A' . chr(65 + $i);
-
-        //         $PHPExcel->getActiveSheet()->setCellValue($column . (6 + $i), $attendance);
-        //         $cell++;
-        //     }
-        // }
+                if (isset($attendance[$id])) {
+                    if ($employee->name == $attendance[$id]->name) {
+                        $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
+                        $id++;
+                    } else {
+                        $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
+                    }
+                    $row++;
+                } else {
+                    $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
+                    $row++;
+                }
+            }
+        }
 
 
 

@@ -58,18 +58,19 @@
     $(document).ready(function() {
       function sync()
       {
-        var a = $("#fingerprint").val();
-        console.log(a);
+        var fingerprint_id = $("#fingerprint").val();
+        console.log( fingerprint_id );
         $.ajax({
-          url: "http://localhost/e-absensi/api/attendance/sync/2", 
+          url: "<?= site_url() ?>/api/attendance/sync/"+ fingerprint_id  , 
           success: function(result){
-            // result = JSON.parse( result );
-            console.log( result );
+            // result = jQuery.parseJSON( result );
+            console.log( result.message );
           }
         });
         
       }
-
-      sync();
+      // setInterval(function(){  sync(); }, 1000 *  );
+      // sync();
+     
     });
 </script>

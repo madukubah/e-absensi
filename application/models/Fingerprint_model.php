@@ -169,4 +169,23 @@ class Fingerprint_model extends MY_Model
     $this->order_by($this->table . '.id', 'asc');
     return $this->fetch_data();
   }
+
+  /**
+   * group
+   *
+   * @param int|array|null $id = id_attendance
+   * @return static
+   * @author madukubah
+   */
+  public function record_count_opd_category_id( $opd_category_id = NULL  )
+  {
+
+      if (isset($opd_category_id ))
+      {
+        $this->where( $this->table.'.opd_category_id', $opd_category_id);
+      }
+
+      return $this->record_count(  ) ;
+
+  }
 }

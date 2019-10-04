@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Home extends Opd_Controller
+class Home extends Bkd_Controller
 {
 	private $services = null;
 	private $name = null;

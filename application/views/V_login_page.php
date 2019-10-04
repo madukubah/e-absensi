@@ -1,7 +1,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="mt-5 clearfix">
-            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 float-right">
+            <!-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 float-right">
                 <div class="login-box float-left" style="width:80%">
                     <div class="card">
                         <div class="card-body login-card-body">
@@ -40,10 +40,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-9 float-left">
-                <div class="container row">
+            </div> -->
+            <!-- <div class="col-12 float-left"> -->
+                <div class="row">
                     <div class="col-6 text-white"><?= $header_button ?></div>
+                    
                 </div>
                 <h3 class="row justify-content-center text-center text-white"><?= $header ?></h3>
                 <div class="row">
@@ -56,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 </div>

@@ -359,8 +359,12 @@ class Attendance extends User_Controller
 	{
 		$month = $this->input->post('month');
 		$fingerprint_id = $this->input->post('fingerprint_id');
+
+		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
 
+		$data->month = Util::MONTH[$month];
+		$data->name = $fingerprint->name;
 		$this->excel->excel_config($data);
 	}
 }

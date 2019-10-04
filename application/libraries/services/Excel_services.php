@@ -12,7 +12,8 @@ class Excel_services
         $employees = $data->employee;
         $days = $data->days;
         $attendances = $data->attendances;
-
+        $month = $data->month;
+        $name = $data->name;
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel.php');
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
 
@@ -33,7 +34,7 @@ class Excel_services
         $styleArray = array('borders' => array('allborders' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '0000'))));
 
         //Header
-        $PHPExcel->getActiveSheet()->setCellValue('B2', 'Data Absensi Pegawai DISPERINDAG bulan Oktober');
+        $PHPExcel->getActiveSheet()->setCellValue('B2', 'Data Absensi Pegawai ' . $name . ' bulan ' . $month);
 
         $PHPExcel->getActiveSheet()->setCellValue('B4', 'No');
         $PHPExcel->getActiveSheet()->setCellValue('C4', 'Nama Pegawai');
@@ -88,7 +89,6 @@ class Excel_services
         }
 
 
-
         ############    style aligment   ####################
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -121,6 +121,7 @@ class Excel_services
         #################  style border column   ##########################
         $PHPExcel->getActiveSheet()->getStyle('B2:AH2')->applyFromArray($styleArray);
         $PHPExcel->getActiveSheet()->getStyle('B4:AH5')->applyFromArray($styleArray);
+        $PHPExcel->getActiveSheet()->getStyle('B6:' . $column . ($row - 1))->applyFromArray($styleArray);
 
         ###################################################################################
         $filename = 'Data Absensi.xlsx';

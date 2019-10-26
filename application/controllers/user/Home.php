@@ -14,7 +14,7 @@ class Home extends User_Controller
 		$this->load->library('services/Home_services');
 		$this->services = new Home_services;
 		$this->load->model(array(
-			'employee_model',
+			'employee_model',    
 			'fingerprint_model',
 			'opd_category_model',
 		));

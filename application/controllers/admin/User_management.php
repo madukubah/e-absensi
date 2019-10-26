@@ -186,7 +186,7 @@ class User_management extends Admin_Controller
 		if (!($_POST)) redirect(site_url('admin'));
 
 		$id_user = $this->input->post('id');
-		if ($this->ion_auth->delete_user($id_user)) {
+		if ( $this->ion_auth->delete_user($id_user)) {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->ion_auth->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->ion_auth->errors()));

@@ -58,7 +58,7 @@ class Attendance extends User_Controller
 				),
 				'data' => NULL
 			);
-		$this->data["header_button"] =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
+		// $this->data["header_button"] =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
 		$this->data["key"] = $this->input->get('key', FALSE);

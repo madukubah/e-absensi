@@ -67,7 +67,8 @@ class Fingerprint extends User_Controller
 		if ($this->form_validation->run() === TRUE) {
 
 			$data['name'] = $this->input->post('name');
-			$name = str_replace(" ", "_",  strtolower($data['name']) ) ; 
+			$data['acronym'] = $this->input->post('acronym');
+			$name = str_replace(" ", "_",  strtolower($data['acronym']) ) ; 
 			$email = $name . '@gmail.com';
 			$identity = $email;
 			$additional_data = array(
@@ -111,6 +112,7 @@ class Fingerprint extends User_Controller
 			$data['port'] = $this->input->post('port');
 			$data['key_finger'] = $this->input->post('key_finger');
 			$data['opd_category_id'] = $this->input->post('opd_category_id');
+			$data['acronym'] = $this->input->post('acronym');
 
 
 			$data_param['id'] = $this->input->post('id');
@@ -133,7 +135,9 @@ class Fingerprint extends User_Controller
 		if (!($_POST)) redirect(site_url($this->current_page));
 
 		$data_param['id'] 	= $this->input->post('id');
+		$id_user 	= $this->input->post('user_id');
 		if ($this->fingerprint_model->delete($data_param)) {
+			$this->ion_auth->delete_user($id_user);
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->fingerprint_model->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->fingerprint_model->errors()));

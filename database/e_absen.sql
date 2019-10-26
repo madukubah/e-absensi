@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 03, 2019 at 12:27 PM
+-- Generation Time: Oct 25, 2019 at 07:55 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 5.6.37
 
@@ -492,17 +492,18 @@ CREATE TABLE `fingerprint` (
   `name` varchar(200) NOT NULL,
   `ip_address` varchar(100) NOT NULL,
   `port` int(11) NOT NULL,
-  `key_finger` int(11) NOT NULL
+  `key_finger` int(11) NOT NULL,
+  `acronym` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `fingerprint`
 --
 
-INSERT INTO `fingerprint` (`id`, `user_id`, `opd_category_id`, `name`, `ip_address`, `port`, `key_finger`) VALUES
-(2, 18, 3, 'DISPERINDAG', '192.168.2.80', 4370, 1),
-(6, 17, 2, 'BPKAD', '192.168.1.224', 1234, 1),
-(8, 20, 2, 'BKD', '111', 1234, 1);
+INSERT INTO `fingerprint` (`id`, `user_id`, `opd_category_id`, `name`, `ip_address`, `port`, `key_finger`, `acronym`) VALUES
+(2, 18, 3, 'DISPERINDAG', '192.168.2.80', 4370, 1, ''),
+(6, 17, 2, 'BPKAD', '192.168.1.224', 1234, 1, ''),
+(8, 20, 2, 'BKD', '111', 1234, 1, '');
 
 -- --------------------------------------------------------
 
@@ -544,13 +545,7 @@ CREATE TABLE `login_attempts` (
 --
 
 INSERT INTO `login_attempts` (`id`, `ip_address`, `login`, `time`) VALUES
-(1, '::1', 'bpkad@admin.com', 1570055201),
-(2, '::1', 'bpkad@admin.com', 1570055501),
-(5, '::1', 'yu_hu@gmail.com', 1570079783),
-(6, '::1', '081342989185', 1570091158),
-(7, '::1', '081342989185', 1570091187),
-(8, '::1', '081342989185', 1570091361),
-(9, '::1', 'bkd@gmial.com', 1570094808);
+(1, '::1', 'admin@gmail', 1571977885);
 
 -- --------------------------------------------------------
 
@@ -651,12 +646,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `phone`, `image`, `address`) VALUES
-(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1570094746, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
-(13, '::1', 'admin@gmail.com', '$2y$10$I7MIaImGBkCp98G1KUb9wO8WZezKlLvyi/a2rzXjVAozQDZpKWAgi', 'admin@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1570096761, 1, 'admin', 'admin', '081342989185', 'USER_13_1569560490.jpg', 'jln mutiara no 8'),
+(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1571977901, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
+(13, '::1', 'admin@gmail.com', '$2y$10$I7MIaImGBkCp98G1KUb9wO8WZezKlLvyi/a2rzXjVAozQDZpKWAgi', 'admin@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1571978008, 1, 'admin', 'admin', '081342989185', 'USER_13_1569560490.jpg', 'jln mutiara no 8'),
 (14, '::1', 'opd@gmail.com', '$2y$10$LbX.zK69zZ4RNKimAcsFz.zgpRAH3Qx0Z.gqCzHTx/e2qGE3ARNlm', 'opd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1569937155, 1569937186, 1, 'admin', 'OPD', '-', '', '-'),
-(17, '::1', 'bpkad@gmail.com', '$2y$10$vY1yuJKdxgG.N38N6SbsFusWepJlfmJYZndz5iiEZ3tBrnDqwZ0di', 'bpkad@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570031149, 1570082044, 1, 'admi', 'BPKAD', '11', 'USER_17_1570053935.jpg', '-'),
-(18, '::1', 'disperindag@gmail.com', '$2y$10$BEjbh8j6JyVwt0D5i27XvOFOvWArsyCxD8BEXkTLDY748UqBhMZ0u', 'disperindag@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570057014, 1570094007, 1, 'admin', 'disperindag', '1234432341', '', 'alamat'),
-(20, '::1', 'bkd@gmail.com', '$2y$10$leOU6xrRpRGg0cN1rfMwluMkPkbVFKUOUY/ncw8PxQNHtLCJdRpoK', 'bkd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570094697, 1570094865, 1, 'admin', 'BKD', '111', '', '-');
+(17, '::1', 'bpkad@gmail.com', '$2y$10$vY1yuJKdxgG.N38N6SbsFusWepJlfmJYZndz5iiEZ3tBrnDqwZ0di', 'bpkad@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570031149, 1570159956, 1, 'admi', 'BPKAD', '11', 'USER_17_1570053935.jpg', '-'),
+(18, '::1', 'disperindag@gmail.com', '$2y$10$BEjbh8j6JyVwt0D5i27XvOFOvWArsyCxD8BEXkTLDY748UqBhMZ0u', 'disperindag@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570057014, 1571704015, 1, 'admin', 'disperindag', '1234432341', '', 'alamat'),
+(20, '::1', 'bkd@gmail.com', '$2y$10$leOU6xrRpRGg0cN1rfMwluMkPkbVFKUOUY/ncw8PxQNHtLCJdRpoK', 'bkd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570094697, 1571979174, 1, 'admin', 'BKD', '111', '', '-');
 
 -- --------------------------------------------------------
 
@@ -783,7 +778,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `menus`

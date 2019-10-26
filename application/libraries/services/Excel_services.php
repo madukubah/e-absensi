@@ -14,6 +14,7 @@ class Excel_services
         $attendances = $data->attendances;
         $month = $data->month;
         $name = $data->name;
+        
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel.php');
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
 
@@ -64,16 +65,19 @@ class Excel_services
             $row++;
         }
         //data absensi
-        for ($i = 1; $i <= $days; $i++) {
+        for ($i = 1; $i <= $days; $i++) 
+        {
             $id = 0;
             $row = 6;
-            foreach ($employees as $key => $employee) {
+            foreach ($employees as $key => $employee) 
+            {
                 $attendance = $attendances->$i;
                 $column = chr(67 + $i);
                 if ((67 + $i) > 90)
                     $column = 'A' . chr(65 + $i - 24);
 
-                if (isset($attendance[$id])) {
+                if (isset($attendance[$id])) 
+                {
                     if ($employee->name == $attendance[$id]->name) {
                         $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
                         $id++;
@@ -98,8 +102,8 @@ class Excel_services
         $PHPExcel->getActiveSheet()->getStyle('C4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('C4')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('D4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $PHPExcel->getActiveSheet()->getStyle('D:AH')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $PHPExcel->getActiveSheet()->getStyle('D:AH')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('D:'.$column.'')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('D:'.$column.'')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
         #####################   style global width colum  #########################
         $PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(1.45);
@@ -112,19 +116,19 @@ class Excel_services
         $PHPExcel->getActiveSheet()->getStyle('B2')->getFont()->setName('Times New Roman');
 
         #################  style merge column   ##########################
-        $PHPExcel->getActiveSheet()->mergeCells('B2:AH2');
+        $PHPExcel->getActiveSheet()->mergeCells('B2:'.$column.'2');
         $PHPExcel->getActiveSheet()->mergeCells('B4:B5');
         $PHPExcel->getActiveSheet()->mergeCells('C4:C5');
-        $PHPExcel->getActiveSheet()->mergeCells('D4:AH4');
+        $PHPExcel->getActiveSheet()->mergeCells('D4:'.$column.'4');
 
 
         #################  style border column   ##########################
-        $PHPExcel->getActiveSheet()->getStyle('B2:AH2')->applyFromArray($styleArray);
-        $PHPExcel->getActiveSheet()->getStyle('B4:AH5')->applyFromArray($styleArray);
+        $PHPExcel->getActiveSheet()->getStyle('B2:'.$column.'2')->applyFromArray($styleArray);
+        $PHPExcel->getActiveSheet()->getStyle('B4:'.$column.'5')->applyFromArray($styleArray);
         $PHPExcel->getActiveSheet()->getStyle('B6:' . $column . ($row - 1))->applyFromArray($styleArray);
 
         ###################################################################################
-        $filename = 'Data Absensi.xlsx';
+        $filename = 'Data Absensi '.$name.' Bulan '.$month.'.xlsx';
 
         header('Content-Type: appliaction/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

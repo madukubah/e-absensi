@@ -67,6 +67,10 @@ class Fingerprint_services
             'type' => 'hidden',
             'label' => "id",
           ),
+          "user_id" => array(
+            'type' => 'hidden',
+            'label' => "user_id",
+          ),
         ),
         "title" => "Group",
         "data_name" => "name",
@@ -132,6 +136,10 @@ class Fingerprint_services
       "name" => array(
         'type' => 'text',
         'label' => "Nama OPD",
+      ),
+      "acronym" => array(
+        'type' => 'text',
+        'label' => "Singkatan OPD",
       ),
       "ip_address" => array(
         'type' => 'text',

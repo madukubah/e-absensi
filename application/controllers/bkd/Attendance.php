@@ -144,7 +144,7 @@ class Attendance extends Bkd_Controller
 				),
 				'data' => NULL
 			);
-		$btn_export =  $this->load->view('templates/actions/link', $export, TRUE);;
+		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);
 
 		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart;
 		// return;
@@ -355,8 +355,16 @@ class Attendance extends Bkd_Controller
 		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
-	public function export($fingerprint_id = null)
+	public function export()
 	{
-		$this->excel->excel_config('A');
+		$month = $this->input->post('month');
+		$fingerprint_id = $this->input->post('fingerprint_id');
+
+		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
+		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
+
+		$data->month = Util::MONTH[$month];
+		$data->name = $fingerprint->name;
+		$this->excel->excel_config($data);
 	}
 }

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 25, 2019 at 07:55 AM
--- Server version: 10.1.34-MariaDB
--- PHP Version: 5.6.37
+-- Generation Time: Oct 29, 2019 at 09:47 AM
+-- Server version: 10.1.37-MariaDB
+-- PHP Version: 7.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -175,8 +175,8 @@ INSERT INTO `attendance` (`id`, `employee_pin`, `timestamp`, `date`, `time`, `st
 (1745, 6, 1568781786, '2019-09-18', '12:43:06', 0),
 (1746, 6, 1569198804, '2019-09-23', '08:33:24', 0),
 (1747, 6, 1569217981, '2019-09-23', '13:53:01', 0),
-(1748, 6, 1569305491, '2019-09-24', '14:11:31', 0),
-(1749, 6, 1569308638, '2019-09-24', '15:03:58', 0),
+(1748, 6, 0, '0000-00-00', '00:00:00', 1),
+(1749, 6, 0, '0000-00-00', '00:00:00', 1),
 (1750, 7, 1564449031, '2019-07-30', '09:10:31', 0),
 (1751, 7, 1564451718, '2019-07-30', '09:55:18', 0),
 (1752, 7, 1564452065, '2019-07-30', '10:01:05', 0),
@@ -437,7 +437,10 @@ INSERT INTO `attendance` (`id`, `employee_pin`, `timestamp`, `date`, `time`, `st
 (2007, 19, 1569468618, '2019-09-26', '11:30:18', 0),
 (2008, 20, 1569468474, '2019-09-26', '11:27:54', 0),
 (2009, 20, 1569468602, '2019-09-26', '11:30:02', 0),
-(2010, 20, 1569563727, '2019-09-27', '13:55:27', 0);
+(2010, 20, 1569563727, '2019-09-27', '13:55:27', 0),
+(2011, 7, 1572326526, '2019-10-29', '01:22:06', 0),
+(2012, 19, 1572326832, '2019-10-29', '01:27:12', 0),
+(2013, 19, 1572327122, '2019-10-29', '01:32:02', 2);
 
 -- --------------------------------------------------------
 
@@ -450,34 +453,36 @@ CREATE TABLE `employee` (
   `fingerprint_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) NOT NULL,
   `pin` int(11) NOT NULL,
-  `position` varchar(200) NOT NULL
+  `position` varchar(200) NOT NULL,
+  `faction` int(10) NOT NULL,
+  `image` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`id`, `fingerprint_id`, `name`, `pin`, `position`) VALUES
-(5, 6, 'HAMRUDDIN.SE.M.Si', 2, 'position'),
-(6, 6, 'NURMUSLIMAT.SP.M.M', 5, 'position'),
-(7, 6, 'FARIDA ADRIATI RIMBUATA.', 3, 'position'),
-(8, 6, 'ANDI MUH. IQBAL TONGASA.', 1, 'position'),
-(9, 6, 'HENDRAWATI.SE', 4, 'position'),
-(10, 6, 'MUH ALFIAN KARIM.S.Sos.', 6, 'position'),
-(11, 6, 'NUR ALAM', 7, 'position'),
-(12, 6, 'PURNAMA ADIWINATA.S.Sos.', 8, 'position'),
-(13, 2, 'MUSMULIADI', 9, 'position'),
-(14, 2, 'AGUS SURIANTO.S.Pd.', 10, 'position'),
-(15, 2, 'MIRNAWATI.S.Kom.', 12, 'position'),
-(16, 2, 'LILI MALAGA.S.Pd.H', 14, 'position'),
-(17, 2, 'SRI RAHAYU.SE.', 13, 'position'),
-(18, 2, 'MUH. HAYKAL MOKODOMPIT', 11, 'position'),
-(19, 2, 'HAMSIAH.A.Md.', 15, 'position'),
-(20, 2, 'NI LUH MADE WIYARINI', 16, 'position'),
-(21, 2, 'yesinta tandipayu.A.Md', 17, 'position'),
-(22, 2, 'evi.A.Md', 18, 'position'),
-(23, 2, 'Muhammad Alfalah', 20, 'position'),
-(24, 2, 'Al Zidni', 19, 'position');
+INSERT INTO `employee` (`id`, `fingerprint_id`, `name`, `pin`, `position`, `faction`, `image`) VALUES
+(5, 6, 'HAMRUDDIN.SE.M.Si', 2, 'position', 0, '5_1572338609.jpg'),
+(6, 6, 'NURMUSLIMAT.SP.M.M', 5, 'position', 0, ''),
+(7, 6, 'FARIDA ADRIATI RIMBUATA.', 3, 'position', 0, ''),
+(8, 6, 'ANDI MUH. IQBAL TONGASA.', 1, 'position', 0, ''),
+(9, 6, 'HENDRAWATI.SE', 4, 'position', 0, ''),
+(10, 6, 'MUH ALFIAN KARIM.S.Sos.', 6, 'position', 0, ''),
+(11, 6, 'NUR ALAM', 7, 'position', 0, ''),
+(12, 6, 'PURNAMA ADIWINATA.S.Sos.', 8, 'position', 0, ''),
+(13, 2, 'MUSMULIADI', 9, 'position', 0, ''),
+(14, 2, 'AGUS SURIANTO.S.Pd.', 10, 'position', 0, ''),
+(15, 2, 'MIRNAWATI.S.Kom.', 12, 'position', 0, ''),
+(16, 2, 'LILI MALAGA.S.Pd.H', 14, 'position', 0, ''),
+(17, 2, 'SRI RAHAYU.SE.', 13, 'position', 0, ''),
+(18, 2, 'MUH. HAYKAL MOKODOMPIT', 11, 'position', 0, ''),
+(19, 2, 'HAMSIAH.A.Md.', 15, 'position', 0, ''),
+(20, 2, 'NI LUH MADE WIYARINI', 16, 'position', 0, ''),
+(21, 2, 'yesinta tandipayu.A.Md', 17, 'position', 0, ''),
+(22, 2, 'evi.A.Md', 18, 'position', 0, ''),
+(23, 2, 'Muhammad Alfalah', 20, 'position', 0, ''),
+(24, 2, 'Al Zidni', 19, 'position', 0, '');
 
 -- --------------------------------------------------------
 
@@ -545,7 +550,7 @@ CREATE TABLE `login_attempts` (
 --
 
 INSERT INTO `login_attempts` (`id`, `ip_address`, `login`, `time`) VALUES
-(1, '::1', 'admin@gmail', 1571977885);
+(2, '::1', 'dinas@gmail.com', 1572280789);
 
 -- --------------------------------------------------------
 
@@ -646,12 +651,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `phone`, `image`, `address`) VALUES
-(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1571977901, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
-(13, '::1', 'admin@gmail.com', '$2y$10$I7MIaImGBkCp98G1KUb9wO8WZezKlLvyi/a2rzXjVAozQDZpKWAgi', 'admin@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1571978008, 1, 'admin', 'admin', '081342989185', 'USER_13_1569560490.jpg', 'jln mutiara no 8'),
+(1, '127.0.0.1', 'admin@fixl.com', '$2y$12$XpBgMvQ5JzfvN3PTgf/tA.XwxbCOs3mO0a10oP9/11qi1NUpv46.u', 'admin@fixl.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1572280827, 1, 'Admin', 'istrator', '081342989185', 'USER_1_1568678001.jpeg', 'admin'),
+(13, '::1', 'admin@gmail.com', '$2y$10$I7MIaImGBkCp98G1KUb9wO8WZezKlLvyi/a2rzXjVAozQDZpKWAgi', 'admin@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1568678256, 1572338588, 1, 'admin', 'admin', '081342989185', 'USER_13_1569560490.jpg', 'jln mutiara no 8'),
 (14, '::1', 'opd@gmail.com', '$2y$10$LbX.zK69zZ4RNKimAcsFz.zgpRAH3Qx0Z.gqCzHTx/e2qGE3ARNlm', 'opd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1569937155, 1569937186, 1, 'admin', 'OPD', '-', '', '-'),
-(17, '::1', 'bpkad@gmail.com', '$2y$10$vY1yuJKdxgG.N38N6SbsFusWepJlfmJYZndz5iiEZ3tBrnDqwZ0di', 'bpkad@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570031149, 1570159956, 1, 'admi', 'BPKAD', '11', 'USER_17_1570053935.jpg', '-'),
-(18, '::1', 'disperindag@gmail.com', '$2y$10$BEjbh8j6JyVwt0D5i27XvOFOvWArsyCxD8BEXkTLDY748UqBhMZ0u', 'disperindag@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570057014, 1571704015, 1, 'admin', 'disperindag', '1234432341', '', 'alamat'),
-(20, '::1', 'bkd@gmail.com', '$2y$10$leOU6xrRpRGg0cN1rfMwluMkPkbVFKUOUY/ncw8PxQNHtLCJdRpoK', 'bkd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570094697, 1571979174, 1, 'admin', 'BKD', '111', '', '-');
+(17, '::1', 'bpkad@gmail.com', '$2y$10$vY1yuJKdxgG.N38N6SbsFusWepJlfmJYZndz5iiEZ3tBrnDqwZ0di', 'bpkad@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570031149, 1572338541, 1, 'admi', 'BPKAD', '11', 'USER_17_1570053935.jpg', '-'),
+(18, '::1', 'disperindag@gmail.com', '$2y$10$BEjbh8j6JyVwt0D5i27XvOFOvWArsyCxD8BEXkTLDY748UqBhMZ0u', 'disperindag@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570057014, 1572338569, 1, 'admin', 'disperindag', '1234432341', '', 'alamat'),
+(20, '::1', 'bkd@gmail.com', '$2y$10$leOU6xrRpRGg0cN1rfMwluMkPkbVFKUOUY/ncw8PxQNHtLCJdRpoK', 'bkd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1570094697, 1572338500, 1, 'admin', 'BKD', '111', '', '-');
 
 -- --------------------------------------------------------
 
@@ -754,7 +759,7 @@ ALTER TABLE `users_groups`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2011;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2014;
 
 --
 -- AUTO_INCREMENT for table `employee`
@@ -778,7 +783,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `menus`

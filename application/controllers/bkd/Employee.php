@@ -84,7 +84,7 @@ class Employee extends Bkd_Controller
 		$table["rows"] = $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		$table['index'] = ['Non-PNS', 'PNS'];
 
-		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
+		$table = $this->load->view('templates/tables/plain_table_image', $table, true);
 		$this->data["contents"] = $table;
 		$add_menu = array(
 			"name" => "Tambah Pegawai",
@@ -147,6 +147,20 @@ class Employee extends Bkd_Controller
 			$data['position'] = $this->input->post('position');
 			$data['pin'] = $this->input->post('pin');
 
+			$this->load->library('upload'); // Load librari upload
+			$config = $this->services->get_photo_upload_config($this->input->post('id'));
+
+			$this->upload->initialize($config);
+			// echo var_dump($data); return;
+			if ($_FILES['image']['name'] != "")
+				if ($this->upload->do_upload("image")) {
+					$data['image'] = $this->upload->data()["file_name"];
+					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
+				} else {
+					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
+					redirect(site_url($this->current_page));
+				}
+
 			$data_param['id'] = $this->input->post('id');
 
 			if ($this->employee_model->update($data, $data_param)) {
@@ -166,8 +180,13 @@ class Employee extends Bkd_Controller
 	{
 		if (!($_POST)) redirect(site_url($this->current_page));
 
+		$this->load->library('upload'); // Load librari upload
+		$config = $this->services->get_photo_upload_config($this->input->post('id'));
+
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
+			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
+
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->employee_model->errors()));

@@ -12,8 +12,9 @@ class Employee_services
     return get_instance()->$var;
   }
 
-  public function get_photo_upload_config($name = null)
+  public function get_photo_upload_config($name = "")
   {
+    // $filename = $name . "_" . time();
     $filename = $name . "_" . time();
     $upload_path = 'uploads/employee/';
 
@@ -21,7 +22,7 @@ class Employee_services
     $config['image_path'] = base_url() . $upload_path;
     $config['allowed_types'] = "gif|jpg|png|jpeg";
     $config['overwrite'] = "true";
-    $config['max_size'] = "2048";
+    // $config['max_size'] = "2048";
     $config['file_name'] = '' . $filename;
 
     return $config;
@@ -33,7 +34,8 @@ class Employee_services
       'fingerprint_name' => 'OPD',
       'position' => 'Jabatan',
       'pin' => 'Kode Pin',
-      'faction' => 'Golongan'
+      'faction' => 'Golongan',
+      '_image' => 'Foto Pegawai',
     );
     $table["number"] = $start_number;
     return $table;
@@ -46,7 +48,7 @@ class Employee_services
       'position' => 'Jabatan',
       'pin' => 'Kode Pin',
       'faction' => 'Golongan',
-      'image' => 'Foto Pegawai',
+      '_image' => 'Foto Pegawai',
     );
     $table["number"] = $start_number;
     $table["action"] = array(
@@ -72,6 +74,10 @@ class Employee_services
           "id" => array(
             'type' => 'hidden',
             'label' => "id",
+          ),
+          "image_old" => array(
+            'type' => 'hidden',
+            'label' => "Foto Pegawai",
           ),
         ),
         "title" => "Group",
@@ -155,7 +161,10 @@ class Employee_services
         'type' => 'file',
         'label' => "Foto Pegawai",
       ),
-
+      "image_old" => array(
+        'type' => 'hidden',
+        'label' => "Foto Pegawai",
+      ),
     );
     return $_data;
   }

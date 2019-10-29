@@ -21,7 +21,7 @@
                     <?php foreach ($header as $key => $value) : ?>
                         <td>
                             <?php
-                                    if ($key == "images" || $key == "image") :
+                                    if ($key == "images" || $key == "image" || $key == "_image") :
                                         ?>
                                 <img class=" img-fluid mb-2 " src="<?= $row->$key ?>" width="200" height="auto">
                             <?php

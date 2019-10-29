@@ -102,14 +102,14 @@ class Employee extends Opd_Controller
 			$data['faction'] = $this->input->post('faction');
 
 			$this->load->library('upload'); // Load librari upload
-			$config = $this->services->get_photo_upload_config($data['name']);
+			$config = $this->services->get_photo_upload_config($this->input->post('id'));
 
 			$this->upload->initialize($config);
-			// echo var_dump($_FILES['image']['name']);
-			// return;
+			// echo var_dump($data); return;
 			if ($_FILES['image']['name'] != "")
 				if ($this->upload->do_upload("image")) {
 					$data['image'] = $this->upload->data()["file_name"];
+					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
 					redirect(site_url($this->current_page));
@@ -134,8 +134,13 @@ class Employee extends Opd_Controller
 	{
 		if (!($_POST)) redirect(site_url($this->current_page));
 
+		$this->load->library('upload'); // Load librari upload
+		$config = $this->services->get_photo_upload_config($this->input->post('id'));
+
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
+			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
+
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->employee_model->errors()));

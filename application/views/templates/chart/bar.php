@@ -5,8 +5,10 @@
         <div class="container ml-5">
             <div class="row">
                 <div class="col-6">
-                    <span>Jumlah Hadir : <?= ($sum_attendances) ?></span><br>
-                    <span>Jumlah Tidak Hadir : <?= $sum_absences ?> </span>
+                    <a href="<?= base_url('home/view/0') . '?fingerprint_id=' . $fingerprint_id . '&date=' . $date . '&month=' . $month ?>">Jumlah Hadir : <?= ($sum_attendances) ?></a><br>
+                    <a href="<?= base_url('home/view/1') . '?fingerprint_id=' . $fingerprint_id ?>">Jumlah Sakit : <?= ($sum_sick) ?></a><br>
+                    <a href="<?= base_url('home/view/2') . '?fingerprint_id=' . $fingerprint_id ?>">Jumlah izin : <?= ($sum_permission) ?></a><br>
+                    <a href="<?= base_url('home/view/3') . '?fingerprint_id=' . $fingerprint_id ?>">Jumlah Tidak Hadir : <?= $sum_absences ?> </a>
                 </div>
                 <div class="col-6">
                     <span>Jumlah Pegawai : <?= ($employee_count) ?></span><br>

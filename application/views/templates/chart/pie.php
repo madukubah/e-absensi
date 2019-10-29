@@ -4,6 +4,8 @@
     </div>
     <div class="container ml-5">
         <span>Jumlah Hadir : <?= ($sum_attendances) ?></span><br>
+        <span>Jumlah Sakit : <?= ($sum_sick) ?></span><br>
+        <span>Jumlah izin : <?= ($sum_permission) ?></span><br>
         <span>Jumlah Tidak Hadir : <?= $sum_absences ?> </span>
     </div>
     <br>

@@ -55,6 +55,19 @@ class Attendance_services
     );
     return $table;
   }
+
+  public function table_config_view()
+  {
+    $table["header"] = array(
+      'employee_name' => 'Nama Karyawan',
+      'employee_pin' => 'Kode Pin',
+      '_date' => 'tanggal',
+      '_time' => 'Jam',
+      'status' => 'Keterangan',
+    );
+    $table["number"] = 1;
+    return $table;
+  }
   public function get_table_config($_page, $start_number = 1)
   {
     $table["header"] = array(

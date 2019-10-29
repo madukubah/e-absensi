@@ -296,7 +296,7 @@ class Attendance_model extends MY_Model
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($month)) {
-      $this->db->where_in($this->table . ".month",  $month);
+      $this->db->where_in($this->table . ".montha",  $month);
     } else {
       $this->db->where_in($this->table . ".month",  date("m"));
     }
@@ -314,5 +314,44 @@ class Attendance_model extends MY_Model
 
     $query = $this->db->query($sql);
     return $query;
+  }
+
+  public function get_attendances($fingerprint_id = NULL, $status = NULL, $month = NULL, $date = NULL)
+  {
+    $this->select($this->table . '.*');
+    $this->select('employee.*');
+    $this->select($this->table . '.date as _date');
+    $this->select($this->table . '.time as _time');
+    $this->select($this->table . '.timestamp as date');
+    $this->select('day( attendance.date ) as day');
+    $this->select('month( attendance.date ) as month');
+    $this->select("fingerprint.name as fingerprint_name");
+    $this->select("fingerprint.name as fingerprint_name");
+    $this->select("employee.name as employee_name");
+    $this->join(
+      "fingerprint",
+      "fingerprint.id = employee.fingerprint_id",
+      "inner"
+    );
+    $this->join(
+      "attendance",
+      "attendance.employee_pin = employee.pin",
+      "inner"
+    );
+
+    if ($fingerprint_id != NULL) {
+      $this->where("fingerprint.id", $fingerprint_id);
+    }
+    if ($date != NULL) {
+      $this->where("attendance.day ", $date);
+    }
+    if ($month != NULL) {
+      $this->where("attendance.month", $month);
+    }
+    if ($status != NULL) {
+      $this->where("attendance.status", $status);
+    }
+    $this->order_by($this->table . '.date desc, ' . $this->table . '.employee_pin asc, ' . $this->table . '.time asc ', '');
+    return $this->db->get('employee');
   }
 }

@@ -5,6 +5,8 @@ class Auth extends Public_Controller
         function __construct()
         {
                 parent::__construct();
+                $this->load->library('services/Attendance_services');
+                $this->services = new Attendance_services;
                 $this->load->library(array('form_validation'));
                 $this->load->helper('form');
                 $this->config->load('ion_auth', TRUE);
@@ -52,6 +54,8 @@ class Auth extends Public_Controller
 
                         $month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
                         $month = (int) $month;
+                        $date = ($this->input->get('date', date("d"))) ? $this->input->get('date', date("d")) : date("d");
+                        $date = (int) $date;
                         $opd = ($this->input->get('opd', FALSE)) ? $this->input->get('opd', FALSE) : -1;
                         $opd = (int) $opd;
                         $fingerprints = $this->fingerprint_model->fingerprints()->result();
@@ -60,7 +64,15 @@ class Auth extends Public_Controller
                         foreach ($fingerprints as $fingerprint) {
                                 $fingerprints_select[$fingerprint->id] = $fingerprint->name;
                         }
+                        for ($i = 1; $i <= 31; $i++) {
+                                $_date[$i] = $i;
+                        }
                         $form_data["form_data"] = array(
+                                "date" => array(
+                                        'type' => 'select',
+                                        'label' => "Tanggal",
+                                        'options' => $_date,
+                                ),
                                 "month" => array(
                                         'type' => 'select',
                                         'label' => "Bulan",
@@ -105,13 +117,15 @@ class Auth extends Public_Controller
 
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         } else {
-                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd)));
+                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date)));
                                 // var_dump($this->data['chart']);
                                 // die;
                                 $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 
-                                $this->data['pie'] = '';
+                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date)));
+                                $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
+                                $this->data['pie'] = $pie;
 
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         }

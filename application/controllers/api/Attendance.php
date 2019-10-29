@@ -52,10 +52,11 @@ class Attendance extends REST_Controller
 			$date = NULL;
 			// $month = NULL;
 		} else {
-			// $month = date('m');
-			$month = 9;
-			// $date = date('d');
-			$date = 23;
+			$month = date('m');
+			// $month = 9;
+			$date = ($this->input->get('date', date("d"))) ? $this->input->get('date', date("d")) : date("d");
+			$date = (int) $date;
+			// $date = 23;
 		}
 		$group_by = ($this->input->get('group_by', 1)) ? $this->input->get('group_by', 1) : [];
 		$group_by = (empty($group_by)) ? [] : explode("|", $group_by);
@@ -86,6 +87,12 @@ class Attendance extends REST_Controller
 		$chart["sum_absences"] = $ATTENDANCE->sum_absences;
 		$chart["sum_permission"] = $ATTENDANCE->sum_permission;
 		$chart["sum_sick"] = $ATTENDANCE->sum_sick;
+
+		$fingerprint_id = (!$fingerprint_id) ? -1 : $fingerprint_id;
+
+		$chart['fingerprint_id'] = $fingerprint_id;
+		$chart['date'] = $date;
+		$chart['month'] = $month;
 		$this->set_response($chart, REST_Controller::HTTP_OK); // CREATED (201) being the HTTP response code
 	}
 

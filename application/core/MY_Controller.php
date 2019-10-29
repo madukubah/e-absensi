@@ -131,11 +131,11 @@ class Opd_Controller extends User_Controller
 			'fingerprint_model',
 		));
 		$user_id = $this->ion_auth->get_user_id();
-		if ( !$this->ion_auth->in_group( "admin_opd" )  ) {
+		if (!$this->ion_auth->in_group("admin_opd")) {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->lang->line('login_must_admin')));
 			redirect(site_url('/auth/login'));
-		} else { 
-			$this->data["fingerprint"] = $this->fingerprint_model->fingerprint_by_user_id( $user_id )->row();
+		} else {
+			$this->data["fingerprint"] = $this->fingerprint_model->fingerprint_by_user_id($user_id)->row();
 		}
 	}
 
@@ -154,11 +154,11 @@ class Bkd_Controller extends User_Controller
 			'fingerprint_model',
 		));
 		$user_id = $this->ion_auth->get_user_id();
-		if ( !$this->ion_auth->in_group( "admin_bkd" )  ) {
+		if (!$this->ion_auth->in_group("admin_bkd")) {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->lang->line('login_must_admin')));
 			redirect(site_url('/auth/login'));
-		} else { 
-			$this->data["fingerprint"] = $this->fingerprint_model->fingerprint_by_user_id( $user_id )->row();
+		} else {
+			$this->data["fingerprint"] = $this->fingerprint_model->fingerprint_by_user_id($user_id)->row();
 		}
 	}
 

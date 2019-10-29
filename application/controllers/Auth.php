@@ -94,15 +94,27 @@ class Auth extends Public_Controller
                         $form_login = $this->load->view('templates/form/login_horizontal', $form_login, TRUE);
                         $this->data["form_login"] =  $form_login;
 
-                        $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
-                        $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);
-                        $this->data['chart'] = $chart;
+                        if ($opd == -1) {
+                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
+                                $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);
+                                $this->data['chart'] = $chart;
 
-                        $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
-                        $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
-                        $this->data['pie'] = $pie;
+                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
+                                $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
+                                $this->data['pie'] = $pie;
 
-                        $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
+                                $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
+                        } else {
+                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd)));
+                                // var_dump($this->data['chart']);
+                                // die;
+                                $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
+                                $this->data['chart'] = $chart;
+
+                                $this->data['pie'] = '';
+
+                                $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
+                        }
                         $this->render("V_login_page");
                 }
         }

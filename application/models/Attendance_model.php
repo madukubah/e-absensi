@@ -185,16 +185,21 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function accumulation($fingerprint_id = NULL, $group_by = NULL, $month = NULL, $employee_ids = NULL, $_is_coming = TRUE)
+  public function accumulation($fingerprint_id = NULL, $group_by = NULL, $month = NULL, $employee_ids = NULL, $date = NULL, $_is_coming = TRUE)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
     $_group = array(
       'date' => $this->table . ".date",
+      'status' => $this->table . ".status",
       'month' => "month",
     );
+
     $this->db->select([
       "*",
       "count(*) as count_attendance",
+      "count(CASE WHEN status = 0 THEN 1 ELSE NULL end) as total_attendance",
+      "count(CASE WHEN status = 1 THEN 1 ELSE NULL end) as count_permission",
+      "count(CASE WHEN status = 2 THEN 1 ELSE NULL end) as count_sick",
     ]);
     $this->db->from("
           (
@@ -206,11 +211,15 @@ class Attendance_model extends MY_Model
       ");
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
+    if (isset($date)) {
+      $this->db->where($this->table . ".day", $date);
+    }
     if (isset($month)) {
       $this->db->where_in($this->table . ".month",  $month);
     } else {
       $this->db->where_in($this->table . ".month",  date("m"));
     }
+
     if (isset($group_by)) {
       foreach ($group_by as $group) {
         $this->db->group_by($_group[$group]);

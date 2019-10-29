@@ -89,11 +89,12 @@ class Attendance extends Bkd_Controller
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] +1, $fingerprint_id);		
+		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id);
 		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
+		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
 		// echo var_dump( $this->attendance_model->db );return;
 
-		$table = $this->load->view('templates/tables/plain_table', $table, true);
+		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
 		$this->data["contents"] = $table;
 		$add_menu = array(
 			"name" => "Tambah Absensi",
@@ -146,7 +147,7 @@ class Attendance extends Bkd_Controller
 			);
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);
 
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart;
+		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -255,10 +256,10 @@ class Attendance extends Bkd_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$fingerprint_id."?group_by=date&month=" . $month )));
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
-		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/".$fingerprint_id."?group_by=date&month=" . $month )));
+		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
 		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
 		######################################################
 		$this->data["contents"] = $bar . " " . $pie;
@@ -320,11 +321,11 @@ class Attendance extends Bkd_Controller
 		if (!($_POST)) redirect(site_url($this->current_page));
 
 		// echo var_dump( $data );return;
-		$this->form_validation->set_rules($this->services->validation_config());
+		$this->form_validation->set_rules('status', 'status', 'required');
 		if ($this->form_validation->run() === TRUE) {
-			$data['timestamp'] = $this->input->post('timestamp');
-			$data['date'] = $this->input->post('date');
-			$data['time'] = $this->input->post('time');
+			// $data['timestamp'] = $this->input->post('timestamp');
+			// $data['date'] = $this->input->post('date');
+			// $data['time'] = $this->input->post('time');
 			$data['status'] = $this->input->post('status');
 
 			$data_param['id'] = $this->input->post('id');
@@ -339,7 +340,7 @@ class Attendance extends Bkd_Controller
 			if (validation_errors() || $this->attendance_model->errors()) $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->data['message']));
 		}
 
-		redirect(site_url($this->current_page) . "/fingerprint/" . $this->input->post('fingerprint_id'));
+		redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
 	}
 
 	public function delete($fingerprint_id)

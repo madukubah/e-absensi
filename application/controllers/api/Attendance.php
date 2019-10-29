@@ -46,20 +46,27 @@ class Attendance extends REST_Controller
 		$fingerprint_id = ($fingerprint_id == -1) ? NULL : $fingerprint_id;
 
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
-		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
-		$month = (int) $month;
-		// $month = NULL;
-
+		if ($this->input->get('month') !== NULL) {
+			$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
+			$month = (int) $month;
+			$date = NULL;
+			// $month = NULL;
+		} else {
+			// $month = date('m');
+			$month = 9;
+			// $date = date('d');
+			$date = 23;
+		}
 		$group_by = ($this->input->get('group_by', 1)) ? $this->input->get('group_by', 1) : [];
 		$group_by = (empty($group_by)) ? [] : explode("|", $group_by);
 
 		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
 		// echo var_dump( $month );return;
-		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id)->result();
+		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date)->result();
 		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
 		// var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
-		$count_days = cal_days_in_month(CAL_GREGORIAN, $month , date("Y"));
+		$count_days = cal_days_in_month(CAL_GREGORIAN, $month, date("Y"));
 
 		$days = $this->services->extract_days($attendances);
 		$ATTENDANCE = $this->services->extract_attendances($attendances, $employee_count);
@@ -71,13 +78,17 @@ class Attendance extends REST_Controller
 		$chart["days"] = $days;
 		$chart["count_attendance"] = $ATTENDANCE->attendances;
 		$chart["absences"] = $ATTENDANCE->absences;
+		$chart["permission"] = $ATTENDANCE->permission;
+		$chart["sick"] = $ATTENDANCE->sick;
 		$chart["employee_count"] = $employee_count;
 
 		$chart["sum_attendances"] = $ATTENDANCE->sum_attendances;
 		$chart["sum_absences"] = $ATTENDANCE->sum_absences;
+		$chart["sum_permission"] = $ATTENDANCE->sum_permission;
+		$chart["sum_sick"] = $ATTENDANCE->sum_sick;
 		$this->set_response($chart, REST_Controller::HTTP_OK); // CREATED (201) being the HTTP response code
 	}
-	
+
 	protected function post_download($url, $data)
 	{
 		$process = curl_init();
@@ -197,10 +208,9 @@ class Attendance extends REST_Controller
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
 		// echo var_dump( $month ); return;
 		$employee_name = $this->employee_model->employee_by_fingerprint_id(0, null, $fingerprint_id)->result();
-		$count_days = cal_days_in_month(CAL_GREGORIAN, $month , date("Y"));
+		$count_days = cal_days_in_month(CAL_GREGORIAN, $month, date("Y"));
 
-		for ($i = 1; $i <= $count_days; $i++) 
-		{
+		for ($i = 1; $i <= $count_days; $i++) {
 			$attendances[$i] = $this->attendance_model->employee_attendance($fingerprint_id, $month, $i)->result();
 		}
 

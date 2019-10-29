@@ -86,11 +86,20 @@
         var barChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
-            datasetFill: false
+            datasetFill: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 10,
+                        max: 20
+                    },
+                }]
+            }
         }
 
         var barChart = new Chart(barChartCanvas, {
-            type: 'bar',
+            type: 'horizontalBar',
             data: barChartData,
             options: barChartOptions
         })

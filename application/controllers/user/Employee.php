@@ -31,7 +31,9 @@ class Employee extends User_Controller
 		#################################################################3
 		$table = $this->services->get_table_config($this->current_page);
 		$table["rows"] = $this->employee_model->employees($pagination['start_record'], $pagination['limit_per_page'])->result();
-		$table = $this->load->view('templates/tables/plain_table', $table, true);
+		$table['index'] = ['Non-PNS', 'PNS'];
+
+		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
 		$this->data["contents"] = $table;
 		$add_menu = array(
 			"name" => "Tambah Pegawai",
@@ -93,6 +95,7 @@ class Employee extends User_Controller
 			$data['name'] = $this->input->post('name');
 			$data['position'] = $this->input->post('position');
 			$data['pin'] = $this->input->post('pin');
+			$data['faction'] = $this->input->post('faction');
 
 			$data_param['id'] = $this->input->post('id');
 

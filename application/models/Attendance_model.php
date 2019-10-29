@@ -296,7 +296,7 @@ class Attendance_model extends MY_Model
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($month)) {
-      $this->db->where_in($this->table . ".montha",  $month);
+      $this->db->where_in($this->table . ".month",  $month);
     } else {
       $this->db->where_in($this->table . ".month",  date("m"));
     }
@@ -304,7 +304,7 @@ class Attendance_model extends MY_Model
     if (isset($fingerprint_id)) {
       $this->db->where("fingerprint_id", $fingerprint_id);
     }
-    if (isset($fingerprint_id)) {
+    if (isset($day)) {
       $this->db->where("day", $day);
     }
     $this->db->group_by('name');
@@ -316,42 +316,66 @@ class Attendance_model extends MY_Model
     return $query;
   }
 
-  public function get_attendances($fingerprint_id = NULL, $status = NULL, $month = NULL, $date = NULL)
+  public function get_attendances($fingerprint_id = NULL, $status = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
   {
-    $this->select($this->table . '.*');
-    $this->select('employee.*');
-    $this->select($this->table . '.date as _date');
-    $this->select($this->table . '.time as _time');
-    $this->select($this->table . '.timestamp as date');
-    $this->select('day( attendance.date ) as day');
-    $this->select('month( attendance.date ) as month');
-    $this->select("fingerprint.name as fingerprint_name");
-    $this->select("fingerprint.name as fingerprint_name");
-    $this->select("employee.name as employee_name");
-    $this->join(
-      "fingerprint",
-      "fingerprint.id = employee.fingerprint_id",
-      "inner"
-    );
-    $this->join(
-      "attendance",
-      "attendance.employee_pin = employee.pin",
-      "inner"
-    );
+    $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
+    $this->db->select([
+      "*",
+      "attendance.date as _date",
+      "attendance.time as _time",
+    ]);
+    $this->db->from("
+          (
+            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+              INNER JOIN employee 
+            ON employee.pin = attendance.employee_pin
+          ) 
+          attendance
+      ");
+    // $this
+    $this->db->where($come_out[$_is_coming],  NULL);
+    if (isset($month)) {
+      $this->db->where_in($this->table . ".month",  $month);
+    } else {
+      $this->db->where_in($this->table . ".month",  date("m"));
+    }
 
-    if ($fingerprint_id != NULL) {
-      $this->where("fingerprint.id", $fingerprint_id);
+    if (isset($fingerprint_id)) {
+      $this->db->where("fingerprint_id", $fingerprint_id);
     }
-    if ($date != NULL) {
-      $this->where("attendance.day ", $date);
+    if (isset($date)) {
+      $this->db->where("day", $date);
     }
-    if ($month != NULL) {
-      $this->where("attendance.month", $month);
+    if (isset($month)) {
+      $this->db->where("month", $month);
     }
-    if ($status != NULL) {
-      $this->where("attendance.status", $status);
+    if ($status) {
+      if (is_array($status)) {
+        $this->db->where_in("status", $status);
+      } else
+        $this->db->where("status", $status);
     }
-    $this->order_by($this->table . '.date desc, ' . $this->table . '.employee_pin asc, ' . $this->table . '.time asc ', '');
-    return $this->db->get('employee');
+    $this->db->group_by('name');
+    $this->db->order_by("date", "asc");
+    $this->db->order_by("employee_id", "asc");
+    return $this->db->get();
+
+    $query = $this->db->query($sql);
+    return $query;
+  }
+
+  public function get_absences($fingerprint_id = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
+  {
+    $status = [0, 1, 2];
+    $employees = $this->get_attendances($fingerprint_id, $status, $month, $date, $_is_coming = TRUE)->result();
+    $id = [];
+    foreach ($employees as $key => $employee) {
+      $id[] = $employee->employee_id;
+    }
+    $this->db->select('*');
+    $this->db->from('employee');
+    $this->db->where("fingerprint_id", $fingerprint_id);
+    $this->db->where_not_in('id', $id);
+    return $this->db->get();
   }
 }

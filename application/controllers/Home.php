@@ -10,6 +10,7 @@ class Home extends Public_Controller
 		$this->load->library('services/Attendance_services');
 		$this->services = new Attendance_services;
 		$this->load->model(array(
+			'fingerprint_model',
 			'attendance_model',
 		));
 	}
@@ -33,14 +34,19 @@ class Home extends Public_Controller
 		$month = $this->input->get('month');
 		#################################################################3
 
-		$table = $this->services->table_config_view();
 		if ($status != 3) {
+			$table = $this->services->table_config_view();
 			$table["rows"] = $this->attendance_model->get_attendances($fingerprint_id, $status, $month, $date)->result();
-		} else
-			return;
-		// echo var_dump( $this->attendance_model->db );return;
-		var_dump($table["rows"]);
-		die;
+		} else {
+			$table['header'] = array(
+				'name' => 'Nama Karyawan',
+				'pin' => 'Kode Pin',
+			);
+			$table["number"] = 1;
+			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date)->result();
+		}
+		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
+
 		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
 		$this->data["contents"] = $table;
 		$form_login["form_data"] = array(

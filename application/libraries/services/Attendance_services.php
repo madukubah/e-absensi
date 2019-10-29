@@ -59,7 +59,7 @@ class Attendance_services
   public function table_config_view()
   {
     $table["header"] = array(
-      'employee_name' => 'Nama Karyawan',
+      'name' => 'Nama Karyawan',
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',

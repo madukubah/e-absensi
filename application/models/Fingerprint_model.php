@@ -118,7 +118,7 @@ class Fingerprint_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function fingerprint_by_user_id( $user_id = NULL)
+  public function fingerprint_by_user_id($user_id = NULL)
   {
     $this->where($this->table . '.user_id', $user_id);
 
@@ -177,15 +177,13 @@ class Fingerprint_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function record_count_opd_category_id( $opd_category_id = NULL  )
+  public function record_count_opd_category_id($opd_category_id = NULL)
   {
 
-      if (isset($opd_category_id ))
-      {
-        $this->where( $this->table.'.opd_category_id', $opd_category_id);
-      }
+    if (isset($opd_category_id)) {
+      $this->where($this->table . '.opd_category_id', $opd_category_id);
+    }
 
-      return $this->record_count(  ) ;
-
+    return $this->record_count();
   }
 }

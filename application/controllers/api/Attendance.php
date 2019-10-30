@@ -52,8 +52,8 @@ class Attendance extends REST_Controller
 			$date = NULL;
 			// $month = NULL;
 		} else {
-			// $month = date('m');
-			$month = 9;
+			$month = date('m');
+			// $month = 9;
 			$date = ($this->input->get('date', date("d"))) ? $this->input->get('date', date("d")) : date("d");
 			$date = (int) $date;
 			// $date = 23;

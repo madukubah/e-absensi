@@ -52,6 +52,22 @@ class Attendance_services
         "title" => "Group",
         "data_name" => "name",
       ),
+      array(
+        "name" => 'X',
+        "type" => "modal_delete",
+        "modal_id" => "delete_",
+        "url" => site_url($_page . "delete/" . $fingerprint_id),
+        "button_color" => "danger",
+        "param" => "id",
+        "form_data" => array(
+          "id" => array(
+            'type' => 'hidden',
+            'label' => "id",
+          ),
+        ),
+        "title" => "Group",
+        "data_name" => "employee_name",
+      ),
     );
     return $table;
   }

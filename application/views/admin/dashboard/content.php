@@ -27,7 +27,7 @@
           <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3>5</h3>
+              <h3><?= $badan ?></h3>
 
               <p>OPD Badan</p>
             </div>
@@ -43,7 +43,7 @@
           <!-- small box -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>19<sup style="font-size: 20px"></sup></h3>
+              <h3><?= $dinas ?></h3>
 
               <p>OPD Dinas</p>
             </div>
@@ -59,7 +59,7 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>3</h3>
+              <h3><?= $sekretariat ?></h3>
 
               <p>OPD Sekretariat</p>
             </div>
@@ -80,22 +80,21 @@
   <!-- /.content -->
 </div>
 <script type="text/javascript">
-    $(document).ready(function() {
-      function sync_all()
-      {
-        var fingerprint_id = $("#fingerprint").val();
-        console.log( fingerprint_id );
-        $.ajax({
-          url: "<?= site_url() ?>/api/attendance/sync_all" , 
-          success: function(result){
-            // result = jQuery.parseJSON( result );
-            console.log( result.message );
-          }
-        });
-        
-      }
-      // setInterval(function(){  sync(); }, 1000 *  );
-      // sync_all();
-     
-    });
+  $(document).ready(function() {
+    function sync_all() {
+      var fingerprint_id = $("#fingerprint").val();
+      console.log(fingerprint_id);
+      $.ajax({
+        url: "<?= site_url() ?>/api/attendance/sync_all",
+        success: function(result) {
+          // result = jQuery.parseJSON( result );
+          console.log(result.message);
+        }
+      });
+
+    }
+    // setInterval(function(){  sync(); }, 1000 *  );
+    // sync_all();
+
+  });
 </script>

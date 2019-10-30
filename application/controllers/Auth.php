@@ -72,6 +72,7 @@ class Auth extends Public_Controller
                                         'type' => 'select',
                                         'label' => "Tanggal",
                                         'options' => $_date,
+                                        'selected' => $date,
                                 ),
                                 "month" => array(
                                         'type' => 'select',
@@ -118,8 +119,6 @@ class Auth extends Public_Controller
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         } else {
                                 $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date)));
-                                // var_dump($this->data['chart']);
-                                // die;
                                 $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 

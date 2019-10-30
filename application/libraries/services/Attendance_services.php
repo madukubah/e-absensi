@@ -79,6 +79,7 @@ class Attendance_services
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',
+      '_image' => 'Foto Pegawai',
       'status' => 'Keterangan',
     );
     $table["number"] = 1;
@@ -286,6 +287,8 @@ class Attendance_services
     $sum_sick = 0;
     $sum_absences = 0;
     foreach ($attendances as $ind => $attendance) {
+      if ($attendance->day == null)
+        break;
       $sum_attendances += $attendance->total_attendance;
       // $sum_attendances += $attendance->count_attendance;
       $sum_absences    += $employee_count - $attendance->count_attendance;

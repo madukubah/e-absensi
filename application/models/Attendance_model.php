@@ -198,8 +198,8 @@ class Attendance_model extends MY_Model
       "*",
       "count(*) as count_attendance",
       "count(CASE WHEN status = 0 THEN 1 ELSE NULL end) as total_attendance",
-      "count(CASE WHEN status = 1 THEN 1 ELSE NULL end) as count_permission",
-      "count(CASE WHEN status = 2 THEN 1 ELSE NULL end) as count_sick",
+      "count(CASE WHEN status = 1 THEN 1 ELSE NULL end) as count_sick",
+      "count(CASE WHEN status = 2 THEN 1 ELSE NULL end) as count_permission",
     ]);
     $this->db->from("
           (
@@ -326,7 +326,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image, employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
             ON employee.pin = attendance.employee_pin
           ) 
@@ -340,21 +340,19 @@ class Attendance_model extends MY_Model
       $this->db->where_in($this->table . ".month",  date("m"));
     }
 
-    if (isset($fingerprint_id)) {
+    if ($fingerprint_id != null) {
       $this->db->where("fingerprint_id", $fingerprint_id);
     }
-    if (isset($date)) {
+    if ($date != null) {
       $this->db->where("day", $date);
     }
-    if (isset($month)) {
+    if ($month != null) {
       $this->db->where("month", $month);
     }
-    if ($status) {
-      if (is_array($status)) {
-        $this->db->where_in("status", $status);
-      } else
-        $this->db->where("status", $status);
-    }
+    if (is_array($status)) {
+      $this->db->where_in("status", $status);
+    } else
+      $this->db->where("status", $status);
     $this->db->group_by('name');
     $this->db->order_by("date", "asc");
     $this->db->order_by("employee_id", "asc");
@@ -372,10 +370,14 @@ class Attendance_model extends MY_Model
     foreach ($employees as $key => $employee) {
       $id[] = $employee->employee_id;
     }
+    // return (object) array("result" => []);
     $this->db->select('*');
+    $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");
     $this->db->from('employee');
-    $this->db->where("fingerprint_id", $fingerprint_id);
-    $this->db->where_not_in('id', $id);
+    if ($fingerprint_id != null)
+      $this->db->where("fingerprint_id", $fingerprint_id);
+    if (!empty($id))
+      $this->db->where_not_in('id', $id);
     return $this->db->get();
   }
 }

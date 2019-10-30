@@ -9,7 +9,7 @@
                 );
                 $attr = $form_data['date'];
                 $form['options'] = $attr['options'];
-                // $form['selected'] = $attr['selected'];
+                $form['selected'] = $attr['selected'];
                 echo '<label for="" class="control-label">' . $attr["label"] . '</label>';
                 echo form_dropdown($form);
                 ?>

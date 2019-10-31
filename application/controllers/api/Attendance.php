@@ -46,13 +46,14 @@ class Attendance extends REST_Controller
 		$fingerprint_id = ($fingerprint_id == -1) ? NULL : $fingerprint_id;
 
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
-		if ($this->input->get('month') !== NULL) {
+		if ($this->input->get('date') === null) {
 			$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
 			$month = (int) $month;
 			$date = NULL;
 			// $month = NULL;
 		} else {
-			$month = date('m');
+			$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
+			$month = (int) $month;
 			// $month = 9;
 			$date = ($this->input->get('date', date("d"))) ? $this->input->get('date', date("d")) : date("d");
 			$date = (int) $date;

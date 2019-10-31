@@ -118,11 +118,11 @@ class Auth extends Public_Controller
 
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         } else {
-                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date)));
+                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month)));
                                 $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 
-                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date)));
+                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month)));
                                 $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
                                 $this->data['pie'] = $pie;
 

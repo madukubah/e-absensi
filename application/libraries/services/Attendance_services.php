@@ -202,7 +202,7 @@ class Attendance_services
         'label' => "Kode Pin",
       ),
       "timestamp" => array(
-        'type' => 'text',
+        'type' => 'hidden',
         'label' => "timestamp",
         "value" => time(),
       ),

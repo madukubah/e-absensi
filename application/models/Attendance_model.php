@@ -178,6 +178,22 @@ class Attendance_model extends MY_Model
 
     return $this->record_count();
   }
+
+  public function record_count_filter_fingerprint_id($fingerprint_id, $date = NULL)
+  {
+    $this->db->join(
+      "employee",
+      "employee.pin = " . $this->table . '.employee_pin',
+      "inner"
+    );
+    if ($fingerprint_id) {
+      $this->db->where('employee.fingerprint_id', $fingerprint_id);
+    }
+    if ($date) {
+      $this->db->where('date', $date);
+    }
+    return $this->db->count_all_results($this->table);
+  }
   /**
    * attendance
    *
@@ -249,7 +265,7 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function attendances($start = 0, $limit = NULL,  $fingerprint_id = NULL)
+  public function attendances($start = 0, $limit = NULL,  $fingerprint_id = NULL, $date = NULL)
   {
     if (isset($limit)) {
       $this->limit($limit);
@@ -273,6 +289,9 @@ class Attendance_model extends MY_Model
 
     if ($fingerprint_id != NULL) {
       $this->where("fingerprint.id", $fingerprint_id);
+    }
+    if ($date != NULL) {
+      $this->where("date", $date);
     }
     $this->offset($start);
     $this->order_by($this->table . '.date desc, ' . $this->table . '.employee_pin asc, ' . $this->table . '.time asc ', '');

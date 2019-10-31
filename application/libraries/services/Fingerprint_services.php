@@ -101,6 +101,11 @@ class Fingerprint_services
         'label' => 'key_finger',
         'rules' =>  'trim|required',
       ),
+      array(
+        'field' => 'range_pin',
+        'label' => 'range_pin',
+        'rules' =>  'trim|required',
+      ),
     );
 
     return $config;
@@ -153,6 +158,10 @@ class Fingerprint_services
         'type' => 'text',
         'label' => "Key",
       ),
+      "range_pin" => array(
+        'type' => 'number',
+        'label' => "pin finger tertinggi",
+      ), 
     );
     return $_data;
   }

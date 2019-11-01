@@ -73,6 +73,13 @@ class Attendance extends User_Controller
 
 	public function fingerprint($fingerprint_id)
 	{
+		$date = ($this->input->get('date', date("d"))) ? $this->input->get('date', date("d")) : NULL;
+		$date = (int) $date;
+		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : NULL;
+		$month = (int) $month;
+		$year = ($this->input->get('year', date("Y"))) ? $this->input->get('year', date("Y")) : NULL;
+		$year = (int) $year;
+
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
@@ -82,6 +89,9 @@ class Attendance extends User_Controller
 		//pagination parameter
 		$pagination['base_url'] = base_url($this->current_page) . '/fingerprint/' . $fingerprint_id;
 		$pagination['total_records'] = $this->attendance_model->record_count_fingerprint_id($fingerprint_id);
+		if ($date && $month && $year) {
+			$pagination['total_records'] = $this->attendance_model->record_count_filter_fingerprint_id($fingerprint_id, $year . '-' . $month . '-' . $date);
+		}
 		// echo var_dump( $this->attendance_model->db );return;
 		$pagination['limit_per_page'] = 50;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
@@ -91,9 +101,18 @@ class Attendance extends User_Controller
 		#################################################################3
 		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id);
 		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
+		if ($date && $month && $year) {
+			$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id, $year . '-' . $month . '-' . $date)->result();
+		}
 		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
 		// echo var_dump( $this->attendance_model->db );return;
 
+		for ($i = 1; $i <= 31; $i++) {
+			$_date[$i] = $i;
+		}
+		for ($i = 0; $i <= 10; $i++) {
+			$_year[2019 + $i] = 2019 + $i;
+		}
 		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
 		$this->data["contents"] = $table;
 		$add_menu = array(
@@ -146,9 +165,29 @@ class Attendance extends User_Controller
 				'data' => NULL
 			);
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
+		$form_data["form_data"] = array(
+			"date" => array(
+				'type' => 'select',
+				'label' => "Tanggal",
+				'options' => $_date,
+				'selected' => $date,
+			),
+			"month" => array(
+				'type' => 'select',
+				'label' => "Bulan",
+				'options' => Util::MONTH,
+				'selected' => $month,
+			),
+			"year" => array(
+				'type' => 'select',
+				'label' => "Tahun",
+				'options' => $_year,
+				'selected' => $year,
+			),
+		);
+		$form_data = $this->load->view('templates/form/filter_login', $form_data, TRUE);
 
-
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -257,7 +296,7 @@ class Attendance extends User_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&group_by=status&month=" . $month)));
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
 		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
@@ -304,6 +343,20 @@ class Attendance extends User_Controller
 			$data['date'] = $this->input->post('date');
 			$data['time'] = $this->input->post('time');
 			$data['status'] = $this->input->post('status');
+			if ($employee = $this->attendance_model->attendance_by_pindate($data['employee_pin'], $data['date'])->row()) {
+				$data = [];
+				$data['status'] = $this->input->post('status');
+				$data['time'] = '09:00:00';
+
+				$data_param['id'] = $employee->id;
+				if ($this->attendance_model->update($data, $data_param)) {
+					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
+				} else {
+					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->attendance_model->errors()));
+				}
+				redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
+			}
+
 			if ($this->attendance_model->create($data)) {
 				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
 			} else {

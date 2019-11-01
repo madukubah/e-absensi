@@ -193,7 +193,7 @@ class Attendance extends User_Controller
 		$data[] = "edate={$tanggal_akhir}";
 		$data[] = 'period=1';
 
-		for ($i = 1; $i <= 24; $i++) {
+		for ($i = 1; $i <= $fingerprint->range_pin; $i++) {
 			$data[] = "uid=" . ($i) . ""; //."uid=16";
 		}
 
@@ -304,6 +304,7 @@ class Attendance extends User_Controller
 			$data['date'] = $this->input->post('date');
 			$data['time'] = $this->input->post('time');
 			$data['status'] = $this->input->post('status');
+			
 			if ($this->attendance_model->create($data)) {
 				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
 			} else {

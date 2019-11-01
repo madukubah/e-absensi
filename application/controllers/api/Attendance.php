@@ -143,7 +143,7 @@ class Attendance extends REST_Controller
 		$data[] = "edate={$tanggal_akhir}";
 		$data[] = 'period=1';
 
-		for ($i = 1; $i <= 24; $i++) {
+		for ($i = 1; $i <= $fingerprint->range_pin; $i++) {
 			$data[] = "uid=" . ($i) . ""; //."uid=16";
 		}
 

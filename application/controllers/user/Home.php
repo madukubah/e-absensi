@@ -22,6 +22,18 @@ class Home extends User_Controller
 
 	public function index()
 	{
+		 #######################################################################################
+		 $fingerprints = $this->fingerprint_model->fingerprints(  )->result();
+
+		 $ids = array();
+		 foreach( $fingerprints as $fingerprint )
+		 {
+				 $ids []= $fingerprint->id;
+		 }
+		 $this->data["fingerprint_ids"] = $ids;
+
+		 #######################################################################################
+
 		$this->data["badan"] = $this->fingerprint_model->record_count_opd_category_id(2);
 		$this->data["dinas"] = $this->fingerprint_model->record_count_opd_category_id(3);
 		$this->data["sekretariat"] = $this->fingerprint_model->record_count_opd_category_id(4);

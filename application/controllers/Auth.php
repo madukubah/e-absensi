@@ -128,6 +128,18 @@ class Auth extends Public_Controller
 
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         }
+                        #######################################################################################
+                        $fingerprints = $this->fingerprint_model->fingerprints(  )->result();
+
+                        $ids = array();
+                        foreach( $fingerprints as $fingerprint )
+                        {
+                                $ids []= $fingerprint->id;
+                        }
+                        $this->data["fingerprint_ids"] = $ids;
+
+                        #######################################################################################
+
                         $this->render("V_login_page");
                 }
         }

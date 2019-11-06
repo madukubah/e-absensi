@@ -41,6 +41,7 @@ class Fingerprint_services
       'ip_address' => 'Alamat IP',
       'port' => 'Port',
       'key_finger' => 'Key',
+      'range_pin' => 'range_pin',
     );
     $table["number"] = $start_number;
     $table["action"] = array(

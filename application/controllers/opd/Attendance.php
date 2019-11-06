@@ -167,7 +167,7 @@ class Attendance extends Opd_Controller
 		$options = array(
 			CURLOPT_URL => $url,
 			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS => $data,
+			CURLOPT_POSTFIELDS => "username=1&userpwd=123456&".$data,			
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => TRUE,
 			CURLOPT_POST => TRUE,

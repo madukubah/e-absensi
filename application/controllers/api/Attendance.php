@@ -103,7 +103,7 @@ class Attendance extends REST_Controller
 		$options = array(
 			CURLOPT_URL => $url,
 			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS => $data,
+			CURLOPT_POSTFIELDS =>"username=1&userpwd=123456&".$data,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => TRUE,
 			CURLOPT_POST => TRUE,
@@ -152,6 +152,14 @@ class Attendance extends REST_Controller
 		if ($result == FALSE) {
 			$result = array(
 				"message" =>  "Koneksi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		if ($result == "") {
+			$result = array(
+				"message" =>  "Autentikasi Gagal",
 				"status" => 0,
 			);
 			$this->set_response($result, REST_Controller::HTTP_OK);

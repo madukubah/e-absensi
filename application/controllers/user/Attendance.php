@@ -208,7 +208,7 @@ class Attendance extends User_Controller
 		$options = array(
 			CURLOPT_URL => $url,
 			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS => $data,
+			CURLOPT_POSTFIELDS => "username=1&userpwd=123456&".$data,			
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => TRUE,
 			CURLOPT_POST => TRUE,
@@ -239,7 +239,7 @@ class Attendance extends User_Controller
 		}
 
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
-
+		// var_dump( $result );die;
 		if ($result == FALSE) {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, "Koneksi Gagal"));
 			redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
@@ -257,7 +257,7 @@ class Attendance extends User_Controller
 		$ATTENDANCE_ARR = array();
 		foreach ($user_attendances as $key => $user_attendance) {
 			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
-			
+			// echo json_encode( $user_attendance )."<br><br>";			
 			if ($employee == NULL) {
 				$data_employee = array();
 				$data_employee["fingerprint_id"] = $fingerprint_id;
@@ -279,6 +279,7 @@ class Attendance extends User_Controller
 				if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 			}
 		}
+		// die;
 		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
 		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 		return;

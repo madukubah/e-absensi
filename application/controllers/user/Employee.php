@@ -74,11 +74,11 @@ class Employee extends User_Controller
 		$pagination['total_records'] = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
 		$pagination['limit_per_page'] = 10;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
-		$pagination['uri_segment'] = 4;
+		$pagination['uri_segment'] = 4 + 1;
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config($this->current_page);
+		$table = $this->services->get_table_config($this->current_page , $pagination['start_record'] + 1);
 		$table["rows"] = $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		$table['index'] = ['Non-PNS', 'PNS'];
 

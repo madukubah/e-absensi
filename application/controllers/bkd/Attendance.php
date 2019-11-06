@@ -214,7 +214,8 @@ class Attendance extends Bkd_Controller
 
 		$ATTENDANCE_ARR = array();
 		foreach ($user_attendances as $key => $user_attendance) {
-			$employee = $this->employee_model->employee_by_pin($key)->row();
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
+			
 			if ($employee == NULL) {
 				$data_employee = array();
 				$data_employee["fingerprint_id"] = $fingerprint_id;

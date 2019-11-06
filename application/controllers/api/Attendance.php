@@ -148,7 +148,7 @@ class Attendance extends REST_Controller
 		}
 
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
-
+		
 		if ($result == FALSE) {
 			$result = array(
 				"message" =>  "Koneksi Gagal",
@@ -161,6 +161,7 @@ class Attendance extends REST_Controller
 
 		$user_attendances = array();
 		foreach ($attendances as $i => $attendance) {
+			
 			$attendance = explode("\t", $attendance);
 			if ($i == count($attendances) - 1) break;
 
@@ -169,7 +170,8 @@ class Attendance extends REST_Controller
 
 		$ATTENDANCE_ARR = array();
 		foreach ($user_attendances as $key => $user_attendance) {
-			$employee = $this->employee_model->employee_by_pin($key)->row();
+			// echo json_encode( $user_attendance[0] )."<br><br>";
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
 			if ($employee == NULL) {
 				$data_employee = array();
 				$data_employee["fingerprint_id"] = $fingerprint_id;
@@ -180,6 +182,7 @@ class Attendance extends REST_Controller
 			}
 
 			foreach ($user_attendance as $item) {
+
 				$data_attendance = array();
 				$data_attendance["employee_pin"] = $key;
 				$data_attendance["timestamp"] = strtotime($item[2]);

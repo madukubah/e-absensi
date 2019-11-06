@@ -79,6 +79,7 @@ class Attendance_services
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',
+      'faction' => 'Jenis Pegawai',
       '_image' => 'Foto Pegawai',
       'status' => 'Keterangan',
     );

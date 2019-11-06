@@ -43,8 +43,8 @@
             </div> -->
             <!-- <div class="col-12 float-left"> -->
                 <div class="row">
-                    <div class="col-6 text-white"><?= $header_button ?></div>
-                    
+                    <div class="col-md-6 col-sm-12 text-white"><?= $header_button ?></div>
+                    <div class="col-md-6 col-sm-12 text-white p-5"> <h3 class="row float-right justify-content-center text-center text-white"><?= date("d M Y") ?></h3> </div>
                 </div>
                 <h3 class="row justify-content-center text-center text-white"><?= $header ?></h3>
                 <div class="row">

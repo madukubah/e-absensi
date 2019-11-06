@@ -345,7 +345,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image, employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image, employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
             ON employee.pin = attendance.employee_pin
           ) 
@@ -391,6 +391,7 @@ class Attendance_model extends MY_Model
     }
     // return (object) array("result" => []);
     $this->db->select('*');
+    $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");
     $this->db->from('employee');
     if ($fingerprint_id != null)

@@ -41,14 +41,17 @@ class Home extends Public_Controller
 			$table['header'] = array(
 				'name' => 'Nama Karyawan',
 				'pin' => 'Kode Pin',
+				'faction' => 'Jenis Pegawai',
 				'_image' => 'Foto Pegawai',
 			);
 			$table["number"] = 1;
 			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date)->result();
 		}
+		// var_dump( $table["rows"] ); die;
 		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
+		$table['faction'] = ['Non PNS', 'PNS'];
 
-		$table = $this->load->view('templates/tables/plain_table_image', $table, true);
+		$table = $this->load->view('templates/tables/plain_table_image_attendance', $table, true);
 		$this->data["contents"] = $table;
 		$form_login["form_data"] = array(
 			"identity" => array(

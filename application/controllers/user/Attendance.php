@@ -164,6 +164,8 @@ class Attendance extends User_Controller
 				),
 				'data' => NULL
 			);
+		$month 	|| $month = date("m");
+		$date 	|| $date = date("d");
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
 		$form_data["form_data"] = array(
 			"date" => array(
@@ -185,7 +187,7 @@ class Attendance extends User_Controller
 				'selected' => $year,
 			),
 		);
-		$form_data = $this->load->view('templates/form/filter_login', $form_data, TRUE);
+		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
 		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
 		// return;
@@ -254,7 +256,8 @@ class Attendance extends User_Controller
 
 		$ATTENDANCE_ARR = array();
 		foreach ($user_attendances as $key => $user_attendance) {
-			$employee = $this->employee_model->employee_by_pin($key)->row();
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
+			
 			if ($employee == NULL) {
 				$data_employee = array();
 				$data_employee["fingerprint_id"] = $fingerprint_id;

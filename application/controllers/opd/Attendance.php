@@ -26,9 +26,18 @@ class Attendance extends Opd_Controller
 
 	public function index()
 	{
+		$date = ($this->input->get('date', date("d"))) ? $this->input->get('date', date("d")) : NULL;
+		$date = (int) $date;
+		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : NULL;
+		$month = (int) $month;
+		$year = ($this->input->get('year', date("Y"))) ? $this->input->get('year', date("Y")) : NULL;
+		$year = (int) $year;
+		#############################################################
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
 		$fingerprint = $this->data["fingerprint"];
 		$fingerprint_id = $this->data["fingerprint"]->id;
+
+
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		$page = ($this->uri->segment(4)) ? ($this->uri->segment(4) -  1) : 0;
@@ -36,6 +45,9 @@ class Attendance extends Opd_Controller
 		//pagination parameter
 		$pagination['base_url'] = base_url($this->current_page) . "index/";
 		$pagination['total_records'] = $this->attendance_model->record_count_fingerprint_id($fingerprint_id);
+		if ($date && $month && $year) {
+			$pagination['total_records'] = $this->attendance_model->record_count_filter_fingerprint_id($fingerprint_id, $year . '-' . $month . '-' . $date);
+		}
 		// echo var_dump( $page );return;
 		$pagination['limit_per_page'] = 50;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
@@ -45,6 +57,9 @@ class Attendance extends Opd_Controller
 		#################################################################3
 		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id);
 		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
+		if ($date && $month && $year) {
+			$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id, $year . '-' . $month . '-' . $date)->result();
+		}
 		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
 		// echo var_dump( $this->attendance_model->db );return;
 
@@ -100,8 +115,40 @@ class Attendance extends Opd_Controller
 				'data' => NULL
 			);
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
+		
+		#################################################################
+		for ($i = 1; $i <= 31; $i++) {
+			$_date[$i] = $i;
+		}
+		for ($i = 0; $i <= 10; $i++) {
+			$_year[2019 + $i] = 2019 + $i;
+		}
+		$month 	|| $month = date("m");
+		$date 	|| $date = date("d");
+		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
+		$form_data["form_data"] = array(
+			"date" => array(
+				'type' => 'select',
+				'label' => "Tanggal",
+				'options' => $_date,
+				'selected' => $date,
+			),
+			"month" => array(
+				'type' => 'select',
+				'label' => "Bulan",
+				'options' => Util::MONTH,
+				'selected' => $month,
+			),
+			"year" => array(
+				'type' => 'select',
+				'label' => "Tahun",
+				'options' => $_year,
+				'selected' => $year,
+			),
+		);
+		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $add_menu;
+		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -168,7 +215,8 @@ class Attendance extends Opd_Controller
 
 		$ATTENDANCE_ARR = array();
 		foreach ($user_attendances as $key => $user_attendance) {
-			$employee = $this->employee_model->employee_by_pin($key)->row();
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
+			
 			if ($employee == NULL) {
 				$data_employee = array();
 				$data_employee["fingerprint_id"] = $fingerprint_id;

@@ -8,33 +8,18 @@ class Home extends Admin_Controller {
 	private $current_page = 'admin/group/';
 	public function __construct(){
 		parent::__construct();
-
+		$this->load->model(array(
+			'employee_model',
+			'fingerprint_model',
+			'opd_category_model',
+		));
 	}
 	public function index()
 	{
-		$add_menu = array(
-			"name" => "Tambah Group",
-			"modal_id" => "add_group_",
-			"button_color" => "primary",
-			"url" => site_url($this->current_page . "add/"),
-			"form_data" => array(
-				"name" => array(
-					'type' => 'text',
-					'label' => "Nama Group",
-					'value' => "",
-				),
-				"description" => array(
-					'type' => 'textarea',
-					'label' => "Deskripsi",
-					'value' => "-",
-				),
-				'data' => NULL
-			),
-		);
-
-		$add_menu = $this->load->view('templates/actions/modal_form', $add_menu, true);
-
-		$this->data["header_button"] =  $add_menu;
+		$this->data["badan"] = $this->fingerprint_model->record_count_opd_category_id(2);
+		$this->data["dinas"] = $this->fingerprint_model->record_count_opd_category_id(3);
+		$this->data["sekretariat"] = $this->fingerprint_model->record_count_opd_category_id(4);
+		$this->data["page_title"] = "Beranda";
 		
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

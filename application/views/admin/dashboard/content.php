@@ -83,22 +83,28 @@
 <script type="text/javascript">
   $(document).ready(function() {
     function sync_all( fingerprint_ids ) {
-      // var fingerprint_id = $("#fingerprint").val();
-      // fingerprint_ids = jQuery.parseJSON( fingerprint_ids );
       $.each( fingerprint_ids, function( id ) {
-        console.log( id )
+        console.log( fingerprint_ids[id] )
             $.ajax({
-                url: "<?= site_url() ?>api/attendance/sync/"+fingerprint_ids[0],
+                url: "<?= site_url() ?>api/attendance/sync/"+fingerprint_ids[id],
                 success: function(result) {
                 // result = jQuery.parseJSON( result );
-                console.log(result.message);
+                console.log( "<?= site_url() ?>api/attendance/sync/"+fingerprint_ids[id] + " " +result.message);
                 }
             });
         });
-    //   console.log(fingerprint_ids[0]);
+    }
+
+    function sync_all_( fingerprint_ids ) {
+        $.ajax({
+            url: "<?= site_url() ?>api/attendance/sync_all",
+            success: function(result) {
+            // result = jQuery.parseJSON( result );
+            console.log( result.message);
+            }
+        });
     }
     // setInterval(function(){  sync(); }, 1000 *  );
     sync_all( <?php echo json_encode( $fingerprint_ids ) ?> );
-    console.log( "asdfd" );
   });
 </script>

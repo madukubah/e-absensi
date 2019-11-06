@@ -75,6 +75,10 @@ class Employee_services
             'type' => 'hidden',
             'label' => "id",
           ),
+          "fingerprint_id" => array(
+            'type' => 'hidden',
+            'label' => "fingerprint_id",
+          ),
           "image_old" => array(
             'type' => 'hidden',
             'label' => "Foto Pegawai",

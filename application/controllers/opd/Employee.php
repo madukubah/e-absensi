@@ -33,23 +33,33 @@ class Employee extends Opd_Controller
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
 		$table = $this->services->get_table_config($this->current_page, $pagination['start_record'] +1 );
-		$table["rows"] = $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
+		$table["rows"] =  $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		$table['index'] = ['Non-PNS', 'PNS'];
-
 		$table = $this->load->view('templates/tables/plain_table_image', $table, true);
 		$this->data["contents"] = $table;
+
 		$add_menu = array(
-			"name" => "Tambah Pegawai",
+			"name" => "Sinkronisasi Pegawai",
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
-			"url" => site_url($this->current_page . "add/"),
-			"form_data" => $this->services->get_form_data()["form_data"],
+			"url" => site_url($this->current_page . "sync_employee/"),
+			"form_data" => array(
+				"id" => array(
+				  'type' => 'hidden',
+				  'label' => "ID",
+				),
+				"fingerprint_id" => array(
+				  'type' => 'hidden',
+				  'label' => "Nama OPD",
+				  'value' =>$fingerprint_id,
+				),
+			  ),
 			'data' => NULL
 		);
 
-		$add_menu = $this->load->view('templates/actions/modal_form', $add_menu, true);
+		$add_menu = $this->load->view('templates/actions/modal_form_confirm_sync', $add_menu, true);
 
-		// $this->data[ "header_button" ] =  $add_menu;
+		$this->data[ "header_button" ] =  $add_menu;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -62,6 +72,17 @@ class Employee extends Opd_Controller
 		$this->render("templates/contents/plain_content");
 	}
 
+	public function sync_employee( )
+	{
+		if (!($_POST)) redirect(site_url($this->current_page));
+
+		$fingerprint_id	= $this->input->post('fingerprint_id');
+
+
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync_employee/".$fingerprint_id )));
+		// echo json_encode( $result )."<br><br>";
+		redirect(site_url($this->current_page)  );
+	}
 	public function add()
 	{
 		if (!($_POST)) redirect(site_url($this->current_page));

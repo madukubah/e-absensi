@@ -144,9 +144,9 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function attendance_by_pindate($pin, $date)
+  public function attendance_by_iddate($id, $date)
   {
-    $this->where($this->table . '.employee_pin', $pin);
+    $this->where($this->table . '.employee_id', $id);
     $this->where($this->table . '.date', $date);
 
     $this->limit(1);
@@ -168,7 +168,7 @@ class Attendance_model extends MY_Model
   {
     $this->join(
       "employee",
-      "employee.pin = " . $this->table . '.employee_pin',
+      "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
 
@@ -183,7 +183,7 @@ class Attendance_model extends MY_Model
   {
     $this->db->join(
       "employee",
-      "employee.pin = " . $this->table . '.employee_pin',
+      "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
     if ($fingerprint_id) {
@@ -219,7 +219,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
             ON employee.pin = attendance.employee_pin
           ) 
@@ -278,7 +278,7 @@ class Attendance_model extends MY_Model
     $this->select("employee.name as employee_name");
     $this->join(
       "employee",
-      "employee.pin = " . $this->table . '.employee_pin',
+      "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
     $this->join(
@@ -297,7 +297,9 @@ class Attendance_model extends MY_Model
     $this->order_by($this->table . '.date desc, ' . $this->table . '.employee_pin asc, ' . $this->table . '.time asc ', '');
     return $this->fetch_data();
   }
-
+  
+  
+  #########################################
   public function employee_attendance($fingerprint_id = NULL, $month = NULL, $day = null, $_is_coming = TRUE)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
@@ -306,7 +308,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
             ON employee.pin = attendance.employee_pin
           ) 
@@ -345,7 +347,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image, employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
             ON employee.pin = attendance.employee_pin
           ) 

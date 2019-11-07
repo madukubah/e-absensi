@@ -14,7 +14,7 @@ class Attendance_services
   public function get_table_config_no_action($_page, $start_number = 1, $fingerprint_id, $url_return = "")
   {
     $table["header"] = array(
-      'employee_name' => 'Nama Karyawan',
+      'employee_name' => 'Nama',
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',
@@ -85,7 +85,7 @@ class Attendance_services
   public function get_table_config_blank($_page, $start_number = 1)
   {
     $table["header"] = array(
-      'employee_name' => 'Nama Karyawan',
+      'employee_name' => 'Nama',
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',
@@ -98,13 +98,13 @@ class Attendance_services
   public function table_config_view()
   {
     $table["header"] = array(
-      'name' => 'Nama Karyawan',
+      'name' => 'Nama',
       'position' => 'Jabatan',
-      '_date' => 'tanggal',
+      '_image' => 'Foto',
+      // '_date' => 'tanggal',
       '_time' => 'Jam',
-      'faction' => 'Jenis Pegawai',
-      '_image' => 'Foto Pegawai',
-      'status' => 'Keterangan',
+      'faction' => 'Status',
+      // 'status' => 'Keterangan',
     );
     $table["number"] = 1;
     return $table;

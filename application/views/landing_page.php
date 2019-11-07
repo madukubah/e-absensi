@@ -29,7 +29,7 @@
         })
     }
 
-    setInterval(  sync_all( <?php echo json_encode( $fingerprints ) ?> ) , 1000 * 3600 * 3 );
+    setInterval(  sync_all( <?php echo json_encode( $fingerprints ) ?> ) , 1000 * 3600 * 2 );
     // sync_all( <?php //echo json_encode( $fingerprints ) ?> );
   });
 </script>

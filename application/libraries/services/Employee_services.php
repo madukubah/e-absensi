@@ -30,7 +30,7 @@ class Employee_services
   public function get_table_config_no_action($_page, $start_number = 1)
   {
     $table["header"] = array(
-      'name' => 'Nama Karyawan',
+      'name' => 'Nama',
       'fingerprint_name' => 'OPD',
       'position' => 'Jabatan',
       'pin' => 'Kode Pin',
@@ -43,7 +43,7 @@ class Employee_services
   public function get_table_config($_page, $start_number = 1)
   {
     $table["header"] = array(
-      'name' => 'Nama Karyawan',
+      'name' => 'Nama',
       'fingerprint_name' => 'OPD',
       'position' => 'Jabatan',
       'pin' => 'Kode Pin',

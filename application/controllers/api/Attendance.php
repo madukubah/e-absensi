@@ -315,7 +315,7 @@ class Attendance extends REST_Controller
 				$data_attendance["date"] = $datetime[0];
 				$data_attendance["time"] = $datetime[1];
 
-				if( $range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"] )
+				if( $range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"] ) //absen masuk
 				{
 					if( isset( $CURR_USER_ATTENDANCE[ $datetime[0] ] ) ) continue;
 					$CURR_USER_ATTENDANCE[ $datetime[0] ] = $datetime[0]; 
@@ -323,7 +323,7 @@ class Attendance extends REST_Controller
 					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 				}
-				else if( $range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"] )
+				else if( $range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"] ) //absen keluar
 				{
 					if( isset( $CURR_USER_ATTENDANCE[ $datetime[0] ] ) ) continue;
 					$CURR_USER_ATTENDANCE[ $datetime[0] ] = $datetime[0];

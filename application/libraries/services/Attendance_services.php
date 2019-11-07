@@ -99,7 +99,7 @@ class Attendance_services
   {
     $table["header"] = array(
       'name' => 'Nama Karyawan',
-      'employee_pin' => 'Kode Pin',
+      'position' => 'Jabatan',
       '_date' => 'tanggal',
       '_time' => 'Jam',
       'faction' => 'Jenis Pegawai',

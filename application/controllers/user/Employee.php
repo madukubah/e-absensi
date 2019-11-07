@@ -184,12 +184,13 @@ class Employee extends User_Controller
 			if ($_FILES['image']['name'] != "")
 				if ($this->upload->do_upload("image")) {
 					$data['image'] = $this->upload->data()["file_name"];
-					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
+
+					if ($this->input->post('image_old') != "default.jpg")
+						if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
 					redirect(site_url($this->current_page)."fingerprint/".$data['fingerprint_id']  );					
 				}
-
 			$data_param['id'] = $this->input->post('id');
 
 			if ($this->employee_model->update($data, $data_param)) {
@@ -214,6 +215,7 @@ class Employee extends User_Controller
 
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
+			if ($this->input->post('image_old') != "default.jpg")
 			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) {};
 
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));

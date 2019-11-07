@@ -213,6 +213,7 @@ class Attendance extends REST_Controller
 		return;
 	}
 	#######################################################################
+	
 	public function sync_get($fingerprint_id = NULL)
 	{
 		if ($fingerprint_id === NULL) {
@@ -292,6 +293,7 @@ class Attendance extends REST_Controller
 				$id = $employee->id;
 			}
 
+			$CURR_USER_ATTENDANCE = array();
 			foreach ($user_attendance as $item) {
 
 				$data_attendance = array();
@@ -315,11 +317,17 @@ class Attendance extends REST_Controller
 
 				if( $range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"] )
 				{
+					if( isset( $CURR_USER_ATTENDANCE[ $datetime[0] ] ) ) continue;
+					$CURR_USER_ATTENDANCE[ $datetime[0] ] = $datetime[0]; 
+
 					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 				}
 				else if( $range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"] )
 				{
+					if( isset( $CURR_USER_ATTENDANCE[ $datetime[0] ] ) ) continue;
+					$CURR_USER_ATTENDANCE[ $datetime[0] ] = $datetime[0];
+
 					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 				}

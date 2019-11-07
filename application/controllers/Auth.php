@@ -109,6 +109,7 @@ class Auth extends Public_Controller
 
                         if ($opd == -1) {
                                 $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?group_by=date&month=" . $month)));
+                                $this->data['opd'] = $opd;
                                 $chart = $this->load->view('templates/chart/bar', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 
@@ -119,6 +120,7 @@ class Auth extends Public_Controller
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         } else {
                                 $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month)));
+                                $this->data['opd'] = $opd;
                                 $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 

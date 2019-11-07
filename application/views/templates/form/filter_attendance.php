@@ -1,6 +1,6 @@
     <form action="">
         <div class="row mb-2">
-            <div class="col-4">
+            <div class="col-md-4 col-sm-12 ">
                 <?php
                 $form = array(
                     'name' => 'date',
@@ -14,7 +14,7 @@
                 echo form_dropdown($form);
                 ?>
             </div>
-            <div class="col-4">
+            <div class="col-md-4 col-sm-12 ">
                 <?php
                 $form = array(
                     'name' => 'month',
@@ -29,7 +29,7 @@
                 ?>
             </div>
             <?php if (isset($form_data['year'])) : ?>
-                <div class="col-4">
+                <div class="col-md-4 col-sm-12 ">
                     <?php
                         $form = array(
                             'name' => 'year',
@@ -44,7 +44,7 @@
                         ?>
                 <?php endif; ?>
                 <?php if (isset($form_data['opd'])) : ?>
-                    <div class="col-4">
+                    <div class="col-md-4 col-sm-12 ">
                         <?php
                             $form = array(
                                 'name' => 'opd',
@@ -61,7 +61,7 @@
                     </div>
                 <?php endif; ?>
 
-                <div class="col-4" style="margin-top:32px">
+                <div class="col-md-4 col-sm-12 " style="margin-top:32px">
                     <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" style="margin-left: 5px;">
                         Filter
                     </button>

@@ -130,7 +130,8 @@ class Employee extends Opd_Controller
 			if ($_FILES['image']['name'] != "")
 				if ($this->upload->do_upload("image")) {
 					$data['image'] = $this->upload->data()["file_name"];
-					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
+					if ($this->input->post('image_old') != "default.jpg")
+						if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
 					redirect(site_url($this->current_page));
@@ -160,53 +161,13 @@ class Employee extends Opd_Controller
 
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
-			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
+			if ($this->input->post('image_old') != "default.jpg")
+				if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
 
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->employee_model->errors()));
 		}
-		redirect(site_url($this->current_page));
-	}
-
-	public function upload_photo()
-	{
-		$image_name = ["front", "back", "left", "right"];
-		$name = $image_name[$this->input->post('image_index')];
-
-		$house_id = $this->input->post('house_id');
-		$house = $this->housing_model->house($house_id)->row();
-		// upload photo		
-		$this->load->library('upload'); // Load librari upload
-		$config = $this->services->get_photo_upload_config($name);
-
-		$this->upload->initialize($config);
-		// echo var_dump( $_FILES['images'] ); return;
-		// if( $_FILES['image']['name'] != "" )
-		if ($this->upload->do_upload("image")) {
-			$image		 	= $this->upload->data()["file_name"];
-
-			if ($this->input->post('old_image') != "default.jpg")
-				if (!@unlink($config['upload_path'] . $this->input->post('old_image'))) { };
-
-			$images = explode(";", $house->images);
-
-			$images[$this->input->post('image_index')] = $image;
-			$data['images'] 	= implode(";", $images);
-		} else {
-			// $data['image'] = "default.png";
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
-			redirect(site_url($this->current_page) . "edit/" . $house->id);
-		}
-
-		$data_param["id"] = $this->input->post('id');
-		// echo var_dump( $data ); return ;
-		if ($this->housing_model->update($data, $data_param)) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->housing_model->messages()));
-		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->housing_model->errors()));
-		}
-
 		redirect(site_url($this->current_page));
 	}
 }

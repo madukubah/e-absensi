@@ -221,7 +221,7 @@ class Attendance_model extends MY_Model
           (
             SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
-            ON employee.pin = attendance.employee_pin
+            ON employee.id = attendance.employee_id
           ) 
           attendance
       ");
@@ -310,7 +310,7 @@ class Attendance_model extends MY_Model
           (
             SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
-            ON employee.pin = attendance.employee_pin
+            ON employee.id = attendance.employee_id
           ) 
           attendance
       ");
@@ -347,9 +347,9 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
-            ON employee.pin = attendance.employee_pin
+            ON employee.id = attendance.employee_id
           ) 
           attendance
     ");

@@ -79,32 +79,3 @@
   </section>
   <!-- /.content -->
 </div>
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    function sync_all( fingerprint_ids ) {
-      $.each( fingerprint_ids, function( id ) {
-        console.log( fingerprint_ids[id] )
-            $.ajax({
-                url: "<?= site_url() ?>api/attendance/sync/"+fingerprint_ids[id],
-                success: function(result) {
-                // result = jQuery.parseJSON( result );
-                console.log( "<?= site_url() ?>api/attendance/sync/"+fingerprint_ids[id] + " " +result.message);
-                }
-            });
-        });
-    }
-
-    function sync_all_( fingerprint_ids ) {
-        $.ajax({
-            url: "<?= site_url() ?>api/attendance/sync_all",
-            success: function(result) {
-            // result = jQuery.parseJSON( result );
-            console.log( result.message);
-            }
-        });
-    }
-    // setInterval(function(){  sync(); }, 1000 *  );
-    sync_all( <?php echo json_encode( $fingerprint_ids ) ?> );
-  });
-</script>

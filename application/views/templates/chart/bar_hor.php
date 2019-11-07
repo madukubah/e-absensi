@@ -94,7 +94,7 @@
                     ticks: {
                         beginAtZero: true,
                         stepSize: 10,
-                        max: 20
+                        max: 70
                     },
                 }]
             }

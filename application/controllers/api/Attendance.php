@@ -299,11 +299,30 @@ class Attendance extends REST_Controller
 				$data_attendance["employee_id"] 	= $id;
 				$data_attendance["timestamp"] = strtotime($item[2]);
 				$datetime = explode(" ", $item[2]);
+				
+				$curr_datetime = strtotime( $item[2] );
+
+				$range_comein = array(
+					"start" => strtotime( $datetime[0]." 07:00:00" ),
+					"end" => strtotime( $datetime[0]." 09:00:00" )
+				);
+				$range_comeout = array(
+					"start" => strtotime( $datetime[0]." 14:30:00" ),
+					"end" => strtotime( $datetime[0]." 20:00:00" )
+				);
 				$data_attendance["date"] = $datetime[0];
 				$data_attendance["time"] = $datetime[1];
-				$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
 
-				if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
+				if( $range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"] )
+				{
+					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
+					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
+				}
+				else if( $range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"] )
+				{
+					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
+					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
+				}
 			}
 		}
 		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);

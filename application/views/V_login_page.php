@@ -61,27 +61,3 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    function sync_all( fingerprint_ids ) {
-      // var fingerprint_id = $("#fingerprint").val();
-      // fingerprint_ids = jQuery.parseJSON( fingerprint_ids );
-      $.each( fingerprint_ids, function( id ) {
-        console.log( id )
-            $.ajax({
-                url: "<?= site_url() ?>api/attendance/sync/"+fingerprint_ids[0],
-                success: function(result) {
-                // result = jQuery.parseJSON( result );
-                console.log(result.message);
-                }
-            });
-        });
-    //   console.log(fingerprint_ids[0]);
-
-    }
-    // setInterval(function(){  sync(); }, 1000 *  );
-    // sync_all( );
-
-  });
-</script>

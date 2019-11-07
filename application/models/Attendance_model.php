@@ -352,7 +352,7 @@ class Attendance_model extends MY_Model
             ON employee.pin = attendance.employee_pin
           ) 
           attendance
-      ");
+    ");
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($month)) {

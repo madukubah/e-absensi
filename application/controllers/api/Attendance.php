@@ -103,7 +103,7 @@ class Attendance extends REST_Controller
 		$options = array(
 			CURLOPT_URL => $url,
 			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS => $data,
+			CURLOPT_POSTFIELDS => "username=78&userpwd=123456&".$data,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => TRUE,
 			CURLOPT_POST => TRUE,
@@ -191,6 +191,7 @@ class Attendance extends REST_Controller
 				if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 			}
 		}
+		return;
 		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
 		############################
 		$result = array(

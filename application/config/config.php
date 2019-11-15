@@ -25,7 +25,7 @@ date_default_timezone_set('Asia/singapore');
 |
 */
 // $config['base_url'] = 'http://localhost/e-absen/';
-$config['base_url'] = 'http://absensi.kolakatimurkab.go.id/';
+$config['base_url'] = 'http://localhost/e-absensi/';
 
 /*
 |--------------------------------------------------------------------------

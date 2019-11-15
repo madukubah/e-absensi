@@ -226,6 +226,7 @@ class Attendance_model extends MY_Model
           attendance
       ");
     // $this
+    if ($_is_coming == 'FALSE') $_is_coming = 0;
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($date)) {
       $this->db->where($this->table . ".day", $date);
@@ -297,8 +298,8 @@ class Attendance_model extends MY_Model
     $this->order_by($this->table . '.date desc, ' . $this->table . '.employee_pin asc, ' . $this->table . '.time asc ', '');
     return $this->fetch_data();
   }
-  
-  
+
+
   #########################################
   public function employee_attendance($fingerprint_id = NULL, $month = NULL, $day = null, $_is_coming = TRUE)
   {

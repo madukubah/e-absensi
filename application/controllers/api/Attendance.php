@@ -64,8 +64,10 @@ class Attendance extends REST_Controller
 
 		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
+
+		$is_coming = ($this->input->get('is_coming')) ? $this->input->get('is_coming') : TRUE;
 		// echo var_dump( $month );return;
-		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date)->result();
+		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date, $is_coming)->result();
 		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
 		// var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
 		$count_days = cal_days_in_month(CAL_GREGORIAN, $month, date("Y"));
@@ -103,7 +105,7 @@ class Attendance extends REST_Controller
 		$options = array(
 			CURLOPT_URL => $url,
 			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS =>"username=1&userpwd=123456&".$data,
+			CURLOPT_POSTFIELDS => "username=1&userpwd=123456&" . $data,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => TRUE,
 			CURLOPT_POST => TRUE,
@@ -148,7 +150,7 @@ class Attendance extends REST_Controller
 		}
 
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
-		
+
 		if ($result == FALSE) {
 			$result = array(
 				"message" =>  "Koneksi Gagal",
@@ -169,7 +171,7 @@ class Attendance extends REST_Controller
 
 		$user_attendances = array();
 		foreach ($attendances as $i => $attendance) {
-			
+
 			$attendance = explode("\t", $attendance);
 			if ($i == count($attendances) - 1) break;
 
@@ -189,7 +191,7 @@ class Attendance extends REST_Controller
 				$this->employee_model->create($data_employee);
 			}
 		}
-		$this->sync_get( $fingerprint_id );
+		$this->sync_get($fingerprint_id);
 		############################
 		$result = array(
 			"message" =>  "Sinkronisasi Selesai",
@@ -198,12 +200,11 @@ class Attendance extends REST_Controller
 		$this->set_response($result, REST_Controller::HTTP_OK);
 		return;
 	}
-	public function sync_all_get( )
+	public function sync_all_get()
 	{
-		$fingerprints = $this->fingerprint_model->fingerprints(  )->result();
-		foreach ($fingerprints as $fingerprint ) 
-		{
-			$this->sync_get( $fingerprint->id );			
+		$fingerprints = $this->fingerprint_model->fingerprints()->result();
+		foreach ($fingerprints as $fingerprint) {
+			$this->sync_get($fingerprint->id);
 		}
 		$result = array(
 			"message" =>  "Sinkronisasi Selesai",
@@ -213,7 +214,7 @@ class Attendance extends REST_Controller
 		return;
 	}
 	#######################################################################
-	
+
 	public function sync_get($fingerprint_id = NULL)
 	{
 		if ($fingerprint_id === NULL) {
@@ -242,9 +243,8 @@ class Attendance extends REST_Controller
 		$data[] = "edate={$tanggal_akhir}";
 		$data[] = 'period=1';
 
-		$employees = $this->employee_model->employee_by_fingerprint_id( 0, NULL, $fingerprint_id)->result();
-		foreach( $employees as $employee )
-		{
+		$employees = $this->employee_model->employee_by_fingerprint_id(0, NULL, $fingerprint_id)->result();
+		foreach ($employees as $employee) {
 			$data[] = "uid=" . ($employee->pin) . ""; //."uid=16";
 		}
 
@@ -271,7 +271,7 @@ class Attendance extends REST_Controller
 
 		$user_attendances = array();
 		foreach ($attendances as $i => $attendance) {
-			
+
 			$attendance = explode("\t", $attendance);
 			if ($i == count($attendances) - 1) break;
 
@@ -289,7 +289,7 @@ class Attendance extends REST_Controller
 				$data_employee["pin"] = $key;
 				$data_employee["position"] = "position";
 				$id = $this->employee_model->create($data_employee);
-			}else{
+			} else {
 				$id = $employee->id;
 			}
 
@@ -301,32 +301,31 @@ class Attendance extends REST_Controller
 				$data_attendance["employee_id"] 	= $id;
 				$data_attendance["timestamp"] = strtotime($item[2]);
 				$datetime = explode(" ", $item[2]);
-				
-				$curr_datetime = strtotime( $item[2] );
+
+				$curr_datetime = strtotime($item[2]);
 
 				$range_comein = array(
-					"start" => strtotime( $datetime[0]." 07:00:00" ),
-					"end" => strtotime( $datetime[0]." 09:00:00" )
+					"start" => strtotime($datetime[0] . " 07:00:00"),
+					"end" => strtotime($datetime[0] . " 09:00:00")
 				);
 				$range_comeout = array(
-					"start" => strtotime( $datetime[0]." 14:30:00" ),
-					"end" => strtotime( $datetime[0]." 20:00:00" )
+					"start" => strtotime($datetime[0] . " 14:30:00"),
+					"end" => strtotime($datetime[0] . " 20:00:00")
 				);
 				$data_attendance["date"] = $datetime[0];
 				$data_attendance["time"] = $datetime[1];
 
-				if( $range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"] ) //absen masuk
+				if ($range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"]) //absen masuk
 				{
-					if( isset( $CURR_USER_ATTENDANCE[ $datetime[0] ] ) ) continue;
-					$CURR_USER_ATTENDANCE[ $datetime[0] ] = $datetime[0]; 
+					if (isset($CURR_USER_ATTENDANCE[$datetime[0]])) continue;
+					$CURR_USER_ATTENDANCE[$datetime[0]] = $datetime[0];
 
 					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
-				}
-				else if( $range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"] ) //absen keluar
+				} else if ($range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"]) //absen keluar
 				{
-					if( isset( $CURR_USER_ATTENDANCE[ $datetime[0] ] ) ) continue;
-					$CURR_USER_ATTENDANCE[ $datetime[0] ] = $datetime[0];
+					if (isset($CURR_USER_ATTENDANCE[$datetime[0]])) continue;
+					$CURR_USER_ATTENDANCE[$datetime[0]] = $datetime[0];
 
 					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;

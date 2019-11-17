@@ -131,23 +131,25 @@ class Auth extends Public_Controller
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];
                         } else {
                                 //attendance coming in
-                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month)));
+                                $this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month . '&is_coming=1')));
+                                // var_dump( $this->data['chart']  ); die;
                                 $this->data['opd'] = $opd;
                                 $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 
-                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month)));
+                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month. '&is_coming=1')));
                                 $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
                                 $this->data['pie'] = $pie;
 
                                 //attendance coming out
                                 $this->data['chart_out'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month . '&is_coming=0')));
+                                // var_dump( $this->data['chart_out']  ); die;
                                 $this->data['opd'] = $opd;
-                                $chart_out = $this->load->view('templates/chart/bar_hor_out', $this->data['chart'], true);
+                                $chart_out = $this->load->view('templates/chart/bar_hor_out', $this->data['chart_out'], true);
                                 $this->data['chart_out'] = $chart_out;
 
                                 $this->data['pie_out'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month . '&is_coming=0')));
-                                $pie_out = $this->load->view('templates/chart/pie_out', $this->data['pie'], true);
+                                $pie_out = $this->load->view('templates/chart/pie_out', $this->data['chart_out'], true);
                                 $this->data['pie_out'] = $pie_out;
 
                                 $this->data['header'] = "Grafik Kehadiran Pegawai Bulan " . Util::MONTH[$month];

@@ -219,7 +219,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month,year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -309,7 +309,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month ,year( attendance.date ) as year from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -348,7 +348,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 

@@ -65,7 +65,7 @@ class Attendance extends REST_Controller
 		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
 
-		$is_coming = ($this->input->get('is_coming')) ? $this->input->get('is_coming') : TRUE;
+		$is_coming = ($this->input->get('is_coming') != NULL ) ? $this->input->get('is_coming') : TRUE;
 		// echo var_dump( $month );return;
 		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date, $is_coming)->result();
 		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);

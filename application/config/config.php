@@ -24,6 +24,7 @@ date_default_timezone_set('Asia/singapore');
 | a PHP script and you can easily do that on your own.
 |
 */
+// $config['base_url'] = 'http://localhost/e-absen/';
 $config['base_url'] = 'http://localhost/e-absensi/';
 
 /*

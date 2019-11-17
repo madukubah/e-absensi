@@ -1,6 +1,6 @@
     <div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
         <div class="mt-5 ml-5 mr-5 chart">
-            <canvas id="bar_absensi" style="height:230px; min-height:230px"></canvas>
+            <canvas id="bar_absensi_out" style="height:230px; min-height:230px"></canvas>
         </div>
         <div class="container ml-5">
             <div class="row">
@@ -74,7 +74,7 @@
         //-------------
         //- BAR CHART -
         //-------------
-        var barChartCanvas = $('#bar_absensi').get(0).getContext('2d')
+        var barChartCanvas = $('#bar_absensi_out').get(0).getContext('2d')
         var barChartData = jQuery.extend(true, {}, areaChartData)
         var temp0 = areaChartData.datasets[0]
         var temp1 = areaChartData.datasets[1]

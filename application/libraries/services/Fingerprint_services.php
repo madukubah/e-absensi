@@ -11,7 +11,7 @@ class Fingerprint_services
   {
     return get_instance()->$var;
   }
-  public function get_table_config_no_action($_page, $start_number = 1)
+  public function get_table_config_no_action( $_page, $start_number = 1)
   {
     $table["header"] = array(
       'name' => 'Nama OPD',
@@ -41,6 +41,7 @@ class Fingerprint_services
       'ip_address' => 'Alamat IP',
       'port' => 'Port',
       'key_finger' => 'Key',
+      'range_pin' => 'range_pin',
     );
     $table["number"] = $start_number;
     $table["action"] = array(
@@ -101,6 +102,11 @@ class Fingerprint_services
         'label' => 'key_finger',
         'rules' =>  'trim|required',
       ),
+      array(
+        'field' => 'range_pin',
+        'label' => 'range_pin',
+        'rules' =>  'trim|required',
+      ),
     );
 
     return $config;
@@ -153,6 +159,10 @@ class Fingerprint_services
         'type' => 'text',
         'label' => "Key",
       ),
+      "range_pin" => array(
+        'type' => 'number',
+        'label' => "pin finger tertinggi",
+      ), 
     );
     return $_data;
   }

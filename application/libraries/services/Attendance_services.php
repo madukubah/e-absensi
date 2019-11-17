@@ -11,10 +11,10 @@ class Attendance_services
   {
     return get_instance()->$var;
   }
-  public function get_table_config_no_action($_page, $start_number = 1, $fingerprint_id)
+  public function get_table_config_no_action($_page, $start_number = 1, $fingerprint_id, $url_return = "")
   {
     $table["header"] = array(
-      'employee_name' => 'Nama Karyawan',
+      'employee_name' => 'Nama',
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',
@@ -26,7 +26,7 @@ class Attendance_services
         "name" => 'Edit',
         "type" => "modal_form",
         "modal_id" => "edit_",
-        "url" => site_url($_page . "edit/"),
+        "url" => site_url("attendance/edit/"),
         "button_color" => "primary",
         "param" => "id",
         "form_data" => array(
@@ -38,6 +38,11 @@ class Attendance_services
           "id" => array(
             'type' => 'hidden',
             'label' => "ID",
+          ),
+          "url_return" => array(
+            'type' => 'hidden',
+            'label' => "url_return",
+            'value' => $url_return,
           ),
           "status" => array(
             'type' => 'select',
@@ -56,13 +61,18 @@ class Attendance_services
         "name" => 'X',
         "type" => "modal_delete",
         "modal_id" => "delete_",
-        "url" => site_url($_page . "delete/" . $fingerprint_id),
+        "url" => site_url("attendance/delete/" . $fingerprint_id),
         "button_color" => "danger",
         "param" => "id",
         "form_data" => array(
           "id" => array(
             'type' => 'hidden',
             'label' => "id",
+          ),
+          "url_return" => array(
+            'type' => 'hidden',
+            'label' => "url_return",
+            'value' => $url_return,
           ),
         ),
         "title" => "Group",
@@ -72,15 +82,29 @@ class Attendance_services
     return $table;
   }
 
-  public function table_config_view()
+  public function get_table_config_blank($_page, $start_number = 1)
   {
     $table["header"] = array(
-      'name' => 'Nama Karyawan',
+      'employee_name' => 'Nama',
       'employee_pin' => 'Kode Pin',
       '_date' => 'tanggal',
       '_time' => 'Jam',
-      '_image' => 'Foto Pegawai',
       'status' => 'Keterangan',
+    );
+    $table["number"] = $start_number;
+    return $table;
+  }
+
+  public function table_config_view()
+  {
+    $table["header"] = array(
+      'name' => 'Nama',
+      'position' => 'Jabatan',
+      '_image' => 'Foto',
+      // '_date' => 'tanggal',
+      '_time' => 'Jam',
+      'faction' => 'Status',
+      // 'status' => 'Keterangan',
     );
     $table["number"] = 1;
     return $table;
@@ -185,12 +209,17 @@ class Attendance_services
    * @return array
    * @author madukubah
    **/
-  public function get_form_data($fingerprint_id)
+  public function get_form_data($fingerprint_id, $url_return = "")
   {
     $_data["form_data"] = array(
       "id" => array(
         'type' => 'hidden',
         'label' => "ID",
+      ),
+      "url_return" => array(
+        'type' => 'hidden',
+        'label' => "url_return",
+        'value' => $url_return,
       ),
       "fingerprint_id" => array(
         'type' => 'hidden',
@@ -207,9 +236,9 @@ class Attendance_services
         "value" => time(),
       ),
       "date" => array(
-        'type' => 'text',
+        'type' => 'date',
         'label' => "Tanggal",
-        "value" => date("Y-m-d"),
+        "value" => date("m/d/Y"),
       ),
       "time" => array(
         'type' => 'text',

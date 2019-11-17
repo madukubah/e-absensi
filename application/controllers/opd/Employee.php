@@ -32,24 +32,34 @@ class Employee extends Opd_Controller
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config($this->current_page);
-		$table["rows"] = $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
+		$table = $this->services->get_table_config($this->current_page, $pagination['start_record'] +1 );
+		$table["rows"] =  $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		$table['index'] = ['Non-PNS', 'PNS'];
-
 		$table = $this->load->view('templates/tables/plain_table_image', $table, true);
 		$this->data["contents"] = $table;
+
 		$add_menu = array(
-			"name" => "Tambah Pegawai",
+			"name" => "Sinkronisasi Pegawai",
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
-			"url" => site_url($this->current_page . "add/"),
-			"form_data" => $this->services->get_form_data()["form_data"],
+			"url" => site_url($this->current_page . "sync_employee/"),
+			"form_data" => array(
+				"id" => array(
+				  'type' => 'hidden',
+				  'label' => "ID",
+				),
+				"fingerprint_id" => array(
+				  'type' => 'hidden',
+				  'label' => "Nama OPD",
+				  'value' =>$fingerprint_id,
+				),
+			  ),
 			'data' => NULL
 		);
 
-		$add_menu = $this->load->view('templates/actions/modal_form', $add_menu, true);
+		$add_menu = $this->load->view('templates/actions/modal_form_confirm_sync', $add_menu, true);
 
-		// $this->data[ "header_button" ] =  $add_menu;
+		$this->data[ "header_button" ] =  $add_menu;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -62,6 +72,17 @@ class Employee extends Opd_Controller
 		$this->render("templates/contents/plain_content");
 	}
 
+	public function sync_employee( )
+	{
+		if (!($_POST)) redirect(site_url($this->current_page));
+
+		$fingerprint_id	= $this->input->post('fingerprint_id');
+
+
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync_employee/".$fingerprint_id )));
+		// echo json_encode( $result )."<br><br>";
+		redirect(site_url($this->current_page)  );
+	}
 	public function add()
 	{
 		if (!($_POST)) redirect(site_url($this->current_page));
@@ -109,7 +130,8 @@ class Employee extends Opd_Controller
 			if ($_FILES['image']['name'] != "")
 				if ($this->upload->do_upload("image")) {
 					$data['image'] = $this->upload->data()["file_name"];
-					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
+					if ($this->input->post('image_old') != "default.jpg")
+						if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
 					redirect(site_url($this->current_page));
@@ -139,53 +161,13 @@ class Employee extends Opd_Controller
 
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
-			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
+			if ($this->input->post('image_old') != "default.jpg")
+				if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
 
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->employee_model->errors()));
 		}
-		redirect(site_url($this->current_page));
-	}
-
-	public function upload_photo()
-	{
-		$image_name = ["front", "back", "left", "right"];
-		$name = $image_name[$this->input->post('image_index')];
-
-		$house_id = $this->input->post('house_id');
-		$house = $this->housing_model->house($house_id)->row();
-		// upload photo		
-		$this->load->library('upload'); // Load librari upload
-		$config = $this->services->get_photo_upload_config($name);
-
-		$this->upload->initialize($config);
-		// echo var_dump( $_FILES['images'] ); return;
-		// if( $_FILES['image']['name'] != "" )
-		if ($this->upload->do_upload("image")) {
-			$image		 	= $this->upload->data()["file_name"];
-
-			if ($this->input->post('old_image') != "default.jpg")
-				if (!@unlink($config['upload_path'] . $this->input->post('old_image'))) { };
-
-			$images = explode(";", $house->images);
-
-			$images[$this->input->post('image_index')] = $image;
-			$data['images'] 	= implode(";", $images);
-		} else {
-			// $data['image'] = "default.png";
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
-			redirect(site_url($this->current_page) . "edit/" . $house->id);
-		}
-
-		$data_param["id"] = $this->input->post('id');
-		// echo var_dump( $data ); return ;
-		if ($this->housing_model->update($data, $data_param)) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->housing_model->messages()));
-		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->housing_model->errors()));
-		}
-
 		redirect(site_url($this->current_page));
 	}
 }

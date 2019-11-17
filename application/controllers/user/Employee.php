@@ -64,7 +64,7 @@ class Employee extends User_Controller
 		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
 		$this->render("templates/contents/plain_content");
 	}
-	public function fingerprint($fingerprint_id)
+	public function fingerprint( $fingerprint_id)
 	{
 		$this->data["menu_list_id"] = "employee_index"; //overwrite menu_list_id
 		$page = ($this->uri->segment(4 + 1)) ? ($this->uri->segment(4 + 1) -  1) : 0;
@@ -74,28 +74,46 @@ class Employee extends User_Controller
 		$pagination['total_records'] = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
 		$pagination['limit_per_page'] = 10;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
-		$pagination['uri_segment'] = 4;
+		$pagination['uri_segment'] = 4 + 1;
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config($this->current_page);
+		$table = $this->services->get_table_config($this->current_page , $pagination['start_record'] + 1);
 		$table["rows"] = $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		$table['index'] = ['Non-PNS', 'PNS'];
 
 		$table = $this->load->view('templates/tables/plain_table_image', $table, true);
 		$this->data["contents"] = $table;
+		// $add_menu = array(
+		// 	"name" => "Tambah Pegawai",
+		// 	"modal_id" => "add_group_",
+		// 	"button_color" => "primary",
+		// 	"url" => site_url($this->current_page . "add/"),
+		// 	"form_data" => $this->services->get_form_data()["form_data"],
+		// 	'data' => NULL
+		// );
 		$add_menu = array(
-			"name" => "Tambah Pegawai",
+			"name" => "Sinkronisasi Pegawai",
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
-			"url" => site_url($this->current_page . "add/"),
-			"form_data" => $this->services->get_form_data()["form_data"],
+			"url" => site_url($this->current_page . "sync_employee/"),
+			"form_data" => array(
+				"id" => array(
+				  'type' => 'hidden',
+				  'label' => "ID",
+				),
+				"fingerprint_id" => array(
+				  'type' => 'hidden',
+				  'label' => "Nama OPD",
+				  'value' =>$fingerprint_id,
+				),
+			  ),
 			'data' => NULL
 		);
 
-		$add_menu = $this->load->view('templates/actions/modal_form', $add_menu, true);
+		$add_menu = $this->load->view('templates/actions/modal_form_confirm_sync', $add_menu, true);
 
-		// $this->data[ "header_button" ] =  $add_menu;
+		$this->data[ "header_button" ] =  $add_menu;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -133,6 +151,18 @@ class Employee extends User_Controller
 		redirect(site_url($this->current_page));
 	}
 
+	public function sync_employee( )
+	{
+		if (!($_POST)) redirect(site_url($this->current_page));
+
+		$fingerprint_id	= $this->input->post('fingerprint_id');
+
+
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync_employee/".$fingerprint_id )));
+		// echo json_encode( $result )."<br><br>";
+		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
+
+	}
 	public function edit()
 	{
 		if (!($_POST)) redirect(site_url($this->current_page));
@@ -154,12 +184,13 @@ class Employee extends User_Controller
 			if ($_FILES['image']['name'] != "")
 				if ($this->upload->do_upload("image")) {
 					$data['image'] = $this->upload->data()["file_name"];
-					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
+
+					if ($this->input->post('image_old') != "default.jpg")
+						if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
-					redirect(site_url($this->current_page));
+					redirect(site_url($this->current_page)."fingerprint/".$data['fingerprint_id']  );					
 				}
-
 			$data_param['id'] = $this->input->post('id');
 
 			if ($this->employee_model->update($data, $data_param)) {
@@ -172,7 +203,7 @@ class Employee extends User_Controller
 			if (validation_errors() || $this->employee_model->errors()) $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->data['message']));
 		}
 
-		redirect(site_url($this->current_page));
+		redirect(site_url($this->current_page)."fingerprint/".$data['fingerprint_id']  );
 	}
 
 	public function delete()
@@ -184,12 +215,13 @@ class Employee extends User_Controller
 
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
-			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
+			if ($this->input->post('image_old') != "default.jpg")
+			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) {};
 
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->employee_model->errors()));
 		}
-		redirect(site_url($this->current_page));
+		redirect(site_url($this->current_page)."fingerprint/".$this->input->post('fingerprint_id')  );
 	}
 }

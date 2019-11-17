@@ -119,10 +119,13 @@ class Employee_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function employee_by_pin($pin = NULL)
+  public function employee_by_pin($pin = NULL, $fingerprint_id = NULL)
   {
     if (isset($pin)) {
       $this->where($this->table . '.pin', $pin);
+    }
+    if (isset($fingerprint_id)) {
+      $this->where($this->table . '.fingerprint_id', $fingerprint_id);
     }
 
     $this->limit(1);
@@ -191,7 +194,7 @@ class Employee_model extends MY_Model
     );
 
     $this->offset($start);
-    $this->order_by($this->table . '.id', 'asc');
+    $this->order_by($this->table . '.pin', 'asc');
     return $this->fetch_data();
   }
 }

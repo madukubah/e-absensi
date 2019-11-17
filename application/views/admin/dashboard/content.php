@@ -79,22 +79,3 @@
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript">
-  $(document).ready(function() {
-    function sync_all() {
-      var fingerprint_id = $("#fingerprint").val();
-      console.log(fingerprint_id);
-      $.ajax({
-        url: "<?= site_url() ?>/api/attendance/sync_all",
-        success: function(result) {
-          // result = jQuery.parseJSON( result );
-          console.log(result.message);
-        }
-      });
-
-    }
-    // setInterval(function(){  sync(); }, 1000 *  );
-    // sync_all();
-
-  });
-</script>

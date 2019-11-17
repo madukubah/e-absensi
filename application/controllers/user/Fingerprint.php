@@ -86,6 +86,7 @@ class Fingerprint extends User_Controller
 			$data['port'] = $this->input->post('port');
 			$data['key_finger'] = $this->input->post('key_finger');
 			$data['opd_category_id'] = $this->input->post('opd_category_id');
+			$data['range_pin'] = $this->input->post('range_pin');
 
 			if ($this->fingerprint_model->create($data)) {
 				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->fingerprint_model->messages()));
@@ -113,6 +114,7 @@ class Fingerprint extends User_Controller
 			$data['key_finger'] = $this->input->post('key_finger');
 			$data['opd_category_id'] = $this->input->post('opd_category_id');
 			$data['acronym'] = $this->input->post('acronym');
+			$data['range_pin'] = $this->input->post('range_pin');
 
 
 			$data_param['id'] = $this->input->post('id');

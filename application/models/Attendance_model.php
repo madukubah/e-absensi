@@ -144,9 +144,9 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function attendance_by_pindate($pin, $date)
+  public function attendance_by_iddate($id, $date)
   {
-    $this->where($this->table . '.employee_pin', $pin);
+    $this->where($this->table . '.employee_id', $id);
     $this->where($this->table . '.date', $date);
 
     $this->limit(1);
@@ -168,7 +168,7 @@ class Attendance_model extends MY_Model
   {
     $this->join(
       "employee",
-      "employee.pin = " . $this->table . '.employee_pin',
+      "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
 
@@ -183,7 +183,7 @@ class Attendance_model extends MY_Model
   {
     $this->db->join(
       "employee",
-      "employee.pin = " . $this->table . '.employee_pin',
+      "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
     if ($fingerprint_id) {
@@ -219,13 +219,14 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
-            ON employee.pin = attendance.employee_pin
+            ON employee.id = attendance.employee_id
           ) 
           attendance
       ");
     // $this
+    if ($_is_coming == 'FALSE') $_is_coming = 0;
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($date)) {
       $this->db->where($this->table . ".day", $date);
@@ -278,7 +279,7 @@ class Attendance_model extends MY_Model
     $this->select("employee.name as employee_name");
     $this->join(
       "employee",
-      "employee.pin = " . $this->table . '.employee_pin',
+      "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
     $this->join(
@@ -298,6 +299,8 @@ class Attendance_model extends MY_Model
     return $this->fetch_data();
   }
 
+
+  #########################################
   public function employee_attendance($fingerprint_id = NULL, $month = NULL, $day = null, $_is_coming = TRUE)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
@@ -306,9 +309,9 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
-            ON employee.pin = attendance.employee_pin
+            ON employee.id = attendance.employee_id
           ) 
           attendance
       ");
@@ -345,12 +348,12 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image, employee.id as employee_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
               INNER JOIN employee 
-            ON employee.pin = attendance.employee_pin
+            ON employee.id = attendance.employee_id
           ) 
           attendance
-      ");
+    ");
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($month)) {
@@ -391,6 +394,7 @@ class Attendance_model extends MY_Model
     }
     // return (object) array("result" => []);
     $this->db->select('*');
+    $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");
     $this->db->from('employee');
     if ($fingerprint_id != null)

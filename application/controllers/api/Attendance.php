@@ -64,8 +64,10 @@ class Attendance extends REST_Controller
 
 		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
+
+		$is_coming = ($this->input->get('is_coming')) ? $this->input->get('is_coming') : TRUE;
 		// echo var_dump( $month );return;
-		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date)->result();
+		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date, $is_coming)->result();
 		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
 		// var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
 		$count_days = cal_days_in_month(CAL_GREGORIAN, $month, date("Y"));
@@ -103,7 +105,7 @@ class Attendance extends REST_Controller
 		$options = array(
 			CURLOPT_URL => $url,
 			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS => "username=78&userpwd=123456&".$data,
+			CURLOPT_POSTFIELDS => "username=1&userpwd=123456&" . $data,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => TRUE,
 			CURLOPT_POST => TRUE,
@@ -114,6 +116,104 @@ class Attendance extends REST_Controller
 		curl_close($process);
 		return $return;
 	}
+
+	public function sync_employee_get($fingerprint_id = NULL)
+	{
+		if ($fingerprint_id === NULL) {
+			$result = array(
+				"message" =>  "url tidak valid",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_NOT_FOUND);
+			return;
+		}
+		#######################################################################
+		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
+		if ($fingerprint === NULL) {
+			$result = array(
+				"message" =>  "fingerprint tidak Ada",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		$tanggal_awal = date("Y") . '-1-01 00:00:00';
+		$tanggal_akhir = date("Y") . '-12-30 23:00:00';
+		$jumlah_karyawan = 200;
+
+		$data[] = "sdate={$tanggal_awal}";
+		$data[] = "edate={$tanggal_akhir}";
+		$data[] = 'period=1';
+
+		for ($i = 1; $i <= $fingerprint->range_pin; $i++) {
+			$data[] = "uid=" . ($i) . ""; //."uid=16";
+		}
+
+		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
+
+		if ($result == FALSE) {
+			$result = array(
+				"message" =>  "Koneksi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		if ($result == "") {
+			$result = array(
+				"message" =>  "Autentikasi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		$attendances = explode("\n", $result);
+
+		$user_attendances = array();
+		foreach ($attendances as $i => $attendance) {
+
+			$attendance = explode("\t", $attendance);
+			if ($i == count($attendances) - 1) break;
+
+			$user_attendances[$attendance[0]][] = $attendance;
+		}
+
+		$ATTENDANCE_ARR = array();
+		foreach ($user_attendances as $key => $user_attendance) {
+			// echo json_encode( $user_attendance[0] )."<br><br>";
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
+			if ($employee == NULL) {
+				$data_employee = array();
+				$data_employee["fingerprint_id"] = $fingerprint_id;
+				$data_employee["name"] = $user_attendance[0][1];
+				$data_employee["pin"] = $key;
+				$data_employee["position"] = "position";
+				$this->employee_model->create($data_employee);
+			}
+		}
+		$this->sync_get($fingerprint_id);
+		############################
+		$result = array(
+			"message" =>  "Sinkronisasi Selesai",
+			"status" => 1,
+		);
+		$this->set_response($result, REST_Controller::HTTP_OK);
+		return;
+	}
+	public function sync_all_get()
+	{
+		$fingerprints = $this->fingerprint_model->fingerprints()->result();
+		foreach ($fingerprints as $fingerprint) {
+			$this->sync_get($fingerprint->id);
+		}
+		$result = array(
+			"message" =>  "Sinkronisasi Selesai",
+			"status" => 1,
+		);
+		$this->set_response($result, REST_Controller::HTTP_OK);
+		return;
+	}
+	#######################################################################
 
 	public function sync_get($fingerprint_id = NULL)
 	{
@@ -143,15 +243,25 @@ class Attendance extends REST_Controller
 		$data[] = "edate={$tanggal_akhir}";
 		$data[] = 'period=1';
 
-		for ($i = 1; $i <= 24; $i++) {
-			$data[] = "uid=" . ($i) . ""; //."uid=16";
+		$employees = $this->employee_model->employee_by_fingerprint_id(0, NULL, $fingerprint_id)->result();
+		foreach ($employees as $employee) {
+			$data[] = "uid=" . ($employee->pin) . ""; //."uid=16";
 		}
 
 		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
-
+		// $this->set_response($result, REST_Controller::HTTP_OK);
+		// 	return;
 		if ($result == FALSE) {
 			$result = array(
 				"message" =>  "Koneksi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		if ($result == "") {
+			$result = array(
+				"message" =>  "Autentikasi Gagal",
 				"status" => 0,
 			);
 			$this->set_response($result, REST_Controller::HTTP_OK);
@@ -161,6 +271,7 @@ class Attendance extends REST_Controller
 
 		$user_attendances = array();
 		foreach ($attendances as $i => $attendance) {
+
 			$attendance = explode("\t", $attendance);
 			if ($i == count($attendances) - 1) break;
 
@@ -169,26 +280,56 @@ class Attendance extends REST_Controller
 
 		$ATTENDANCE_ARR = array();
 		foreach ($user_attendances as $key => $user_attendance) {
-			$employee = $this->employee_model->employee_by_pin($key)->row();
+			// echo json_encode( $user_attendance[0] )."<br><br>";
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
 			if ($employee == NULL) {
 				$data_employee = array();
 				$data_employee["fingerprint_id"] = $fingerprint_id;
 				$data_employee["name"] = $user_attendance[0][1];
 				$data_employee["pin"] = $key;
 				$data_employee["position"] = "position";
-				$this->employee_model->create($data_employee);
+				$id = $this->employee_model->create($data_employee);
+			} else {
+				$id = $employee->id;
 			}
 
+			$CURR_USER_ATTENDANCE = array();
 			foreach ($user_attendance as $item) {
+
 				$data_attendance = array();
-				$data_attendance["employee_pin"] = $key;
+				$data_attendance["employee_pin"] 	= $key;
+				$data_attendance["employee_id"] 	= $id;
 				$data_attendance["timestamp"] = strtotime($item[2]);
 				$datetime = explode(" ", $item[2]);
+
+				$curr_datetime = strtotime($item[2]);
+
+				$range_comein = array(
+					"start" => strtotime($datetime[0] . " 07:00:00"),
+					"end" => strtotime($datetime[0] . " 09:00:00")
+				);
+				$range_comeout = array(
+					"start" => strtotime($datetime[0] . " 14:30:00"),
+					"end" => strtotime($datetime[0] . " 20:00:00")
+				);
 				$data_attendance["date"] = $datetime[0];
 				$data_attendance["time"] = $datetime[1];
-				$attendance = $this->attendance_model->attendance_by_pindate($key, $data_attendance["date"])->row();
 
-				if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
+				if ($range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"]) //absen masuk
+				{
+					if (isset($CURR_USER_ATTENDANCE[$datetime[0]])) continue;
+					$CURR_USER_ATTENDANCE[$datetime[0]] = $datetime[0];
+
+					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
+					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
+				} else if ($range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"]) //absen keluar
+				{
+					if (isset($CURR_USER_ATTENDANCE[$datetime[0]])) continue;
+					$CURR_USER_ATTENDANCE[$datetime[0]] = $datetime[0];
+
+					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
+					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
+				}
 			}
 		}
 		return;
@@ -201,6 +342,7 @@ class Attendance extends REST_Controller
 		$this->set_response($result, REST_Controller::HTTP_OK);
 		return;
 	}
+	###############################################################################
 
 	public function export_get($fingerprint_id = null)
 	{

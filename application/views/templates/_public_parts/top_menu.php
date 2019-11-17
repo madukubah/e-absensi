@@ -2,20 +2,6 @@
             <li class="nav-item pull-right">
                 <?= $form_login ?>
             </li>
-            <?php if ($this->session->identity == null) : ?>
-                <!-- <li class="nav-item d-none d-sm-inline-block">
-                    <a href="<?= base_url('auth/') ?>register" class="nav-link">Register</a>
-                </li> -->
-                <?php if ($this->uri->segment(2) != 'login') : ?>
-                    <li class="nav-item d-none d-sm-inline-block">
-                        <a href="<?= base_url('auth/') ?>login" class="btn btn-outline-primary nav-link">Login</a>
-                    <?php endif; ?>
-                    </li>
-            <?php else : ?>
-                    <!-- <li class="nav-item d-none d-sm-inline-block">
-                        <a href="<?= site_url() . $this->ion_auth->group($this->ion_auth->user()->row()->group_id)->row()->name ?>" class="btn btn-default nav-link">Dashboard</a>
-                    </li> -->
-            <?php endif; ?>
         </ul>
     </div>
 </nav>

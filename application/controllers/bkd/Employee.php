@@ -32,7 +32,7 @@ class Employee extends Bkd_Controller
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page);
+		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] +1 );
 		$table["rows"] = $this->fingerprint_model->fingerprints($pagination['start_record'], $pagination['limit_per_page'])->result();
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
 		$this->data["contents"] = $table;
@@ -66,6 +66,9 @@ class Employee extends Bkd_Controller
 
 	public function fingerprint($fingerprint_id)
 	{
+		$curr_fingerprint = $this->data["fingerprint"];
+		$curr_fingerprint_id = $this->data["fingerprint"]->id;
+
 		$this->data["menu_list_id"] = "employee_index"; //overwrite menu_list_id
 
 
@@ -80,24 +83,41 @@ class Employee extends Bkd_Controller
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1);
+		if( $curr_fingerprint_id != $fingerprint_id )
+			$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1);
+		else
+			$table = $this->services->get_table_config($this->current_page, $pagination['start_record'] +1 );
+
 		$table["rows"] = $this->employee_model->employee_by_fingerprint_id($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		$table['index'] = ['Non-PNS', 'PNS'];
 
 		$table = $this->load->view('templates/tables/plain_table_image', $table, true);
 		$this->data["contents"] = $table;
+
 		$add_menu = array(
-			"name" => "Tambah Pegawai",
+			"name" => "Sinkronisasi Pegawai",
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
-			"url" => site_url($this->current_page . "add/"),
-			"form_data" => $this->services->get_form_data()["form_data"],
+			"url" => site_url($this->current_page . "sync_employee/"),
+			"form_data" => array(
+				"id" => array(
+				  'type' => 'hidden',
+				  'label' => "ID",
+				),
+				"fingerprint_id" => array(
+				  'type' => 'hidden',
+				  'label' => "Nama OPD",
+				  'value' =>$fingerprint_id,
+				),
+			  ),
 			'data' => NULL
 		);
 
-		$add_menu = $this->load->view('templates/actions/modal_form', $add_menu, true);
+		$add_menu = $this->load->view('templates/actions/modal_form_confirm_sync', $add_menu, true);
 
-		// $this->data[ "header_button" ] =  $add_menu;
+		if( $curr_fingerprint_id != $fingerprint_id )$add_menu = ""; 
+
+		$this->data[ "header_button" ] =  $add_menu;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -155,7 +175,8 @@ class Employee extends Bkd_Controller
 			if ($_FILES['image']['name'] != "")
 				if ($this->upload->do_upload("image")) {
 					$data['image'] = $this->upload->data()["file_name"];
-					if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
+					if ($this->input->post('image_old') != "default.jpg")
+						if (!@unlink($config['upload_path'] . $this->input->post('image_old')));
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->upload->display_errors()));
 					redirect(site_url($this->current_page));
@@ -185,7 +206,8 @@ class Employee extends Bkd_Controller
 
 		$data_param['id'] 	= $this->input->post('id');
 		if ($this->employee_model->delete($data_param)) {
-			if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
+			if ($this->input->post('image_old') != "default.jpg")
+				if (!@unlink($config['upload_path'] . $this->input->post('image_old'))) return;
 
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->employee_model->messages()));
 		} else {

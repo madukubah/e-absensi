@@ -1,14 +1,14 @@
     <div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
         <div class="mt-5 ml-5 mr-5 chart">
-            <canvas id="bar_absensi" style="height:230px; min-height:230px"></canvas>
+            <canvas id="bar_absensi_out" style="height:230px; min-height:230px"></canvas>
         </div>
         <div class="container ml-5">
             <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <a href="<?= base_url('home/view/0') . '?fingerprint_id=' . $fingerprint_id . '&date=' . $date . '&month=' . $month ?>">Jumlah Hadir : <?= ($sum_attendances) ?></a><br>
-                    <a href="<?= base_url('home/view/1') . '?fingerprint_id=' . $fingerprint_id . '&date=' . $date . '&month=' . $month ?>">Jumlah Sakit : <?= ($sum_sick) ?></a><br>
-                    <a href="<?= base_url('home/view/2') . '?fingerprint_id=' . $fingerprint_id . '&date=' . $date . '&month=' . $month ?>">Jumlah izin : <?= ($sum_permission) ?></a><br>
-                    <a href="<?= base_url('home/view/3') . '?fingerprint_id=' . $fingerprint_id . '&date=' . $date . '&month=' . $month ?>">Jumlah Tidak Hadir : <?= $sum_absences ?> </a>
+                <div class="col-md-6 col-sm-12  ">
+                    <a href="#">Jumlah Hadir : <?= ($sum_attendances) ?></a><br>
+                    <a href="#">Jumlah Sakit : <?= ($sum_sick) ?></a><br>
+                    <a href="#">Jumlah izin : <?= ($sum_permission) ?></a><br>
+                    <a href="#">Jumlah Tidak Hadir : <?= $sum_absences ?> </a>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <span>Jumlah Pegawai : <?= ($employee_count) ?></span><br>
@@ -74,7 +74,7 @@
         //-------------
         //- BAR CHART -
         //-------------
-        var barChartCanvas = $('#bar_absensi').get(0).getContext('2d')
+        var barChartCanvas = $('#bar_absensi_out').get(0).getContext('2d')
         var barChartData = jQuery.extend(true, {}, areaChartData)
         var temp0 = areaChartData.datasets[0]
         var temp1 = areaChartData.datasets[1]
@@ -88,20 +88,11 @@
         var barChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
-            datasetFill: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 10,
-                        max: 70
-                    },
-                }]
-            }
+            datasetFill: false
         }
 
         var barChart = new Chart(barChartCanvas, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: barChartData,
             options: barChartOptions
         })

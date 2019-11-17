@@ -99,7 +99,9 @@ class Attendance extends User_Controller
 		//set pagination
 		if ($pagination['total_records'] > 0) $this->data['pagination_links'] = $this->setPagination($pagination);
 		#################################################################3
-		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id);
+		$url_return = site_url($this->current_page) . "fingerprint/" . $fingerprint_id;
+
+		$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id, $url_return);
 		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
 		if ($date && $month && $year) {
 			$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id, $year . '-' . $month . '-' . $date)->result();
@@ -119,8 +121,8 @@ class Attendance extends User_Controller
 			"name" => "Tambah Absensi",
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
-			"url" => site_url($this->current_page . "add/"),
-			"form_data" => $this->services->get_form_data($fingerprint_id)["form_data"],
+			"url" => site_url("attendance/add/"),
+			"form_data" => $this->services->get_form_data($fingerprint_id, $url_return )["form_data"],
 			'data' => NULL
 		);
 
@@ -164,6 +166,8 @@ class Attendance extends User_Controller
 				),
 				'data' => NULL
 			);
+		$month 	|| $month = date("m");
+		$date 	|| $date = date("d");
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
 		$form_data["form_data"] = array(
 			"date" => array(
@@ -185,7 +189,7 @@ class Attendance extends User_Controller
 				'selected' => $year,
 			),
 		);
-		$form_data = $this->load->view('templates/form/filter_login', $form_data, TRUE);
+		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
 		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
 		// return;
@@ -200,85 +204,16 @@ class Attendance extends User_Controller
 		$this->render("templates/contents/plain_content");
 	}
 
-	protected function post_download($url, $data)
-	{
-		$process = curl_init();
-		$options = array(
-			CURLOPT_URL => $url,
-			CURLOPT_HEADER => false,
-			CURLOPT_POSTFIELDS => $data,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_FOLLOWLOCATION => TRUE,
-			CURLOPT_POST => TRUE,
-			CURLOPT_BINARYTRANSFER => TRUE
-		);
-		curl_setopt_array($process, $options);
-		$return = curl_exec($process);
-		curl_close($process);
-		return $return;
-	}
-
 	public function sync($fingerprint_id)
 	{
-		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
-		#######################################################################
-		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
-
-		$tanggal_awal = date("Y") . '-1-01 00:00:00';
-		$tanggal_akhir = date("Y") . '-12-30 23:00:00';
-		$jumlah_karyawan = 200;
-
-		$data[] = "sdate={$tanggal_awal}";
-		$data[] = "edate={$tanggal_akhir}";
-		$data[] = 'period=1';
-
-		for ($i = 1; $i <= 24; $i++) {
-			$data[] = "uid=" . ($i) . ""; //."uid=16";
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync/".$fingerprint_id )));
+		// echo json_encode( $result )."<br><br>";die;
+		if ( $result->status ) {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message ));
+		} else {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message ));
 		}
-
-		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
-
-		if ($result == FALSE) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, "Koneksi Gagal"));
-			redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
-		}
-		$attendances = explode("\n", $result);
-
-		$user_attendances = array();
-		foreach ($attendances as $i => $attendance) {
-			$attendance = explode("\t", $attendance);
-			if ($i == count($attendances) - 1) break;
-
-			$user_attendances[$attendance[0]][] = $attendance;
-		}
-
-		$ATTENDANCE_ARR = array();
-		foreach ($user_attendances as $key => $user_attendance) {
-			$employee = $this->employee_model->employee_by_pin($key)->row();
-			if ($employee == NULL) {
-				$data_employee = array();
-				$data_employee["fingerprint_id"] = $fingerprint_id;
-				$data_employee["name"] = $user_attendance[0][1];
-				$data_employee["pin"] = $key;
-				$data_employee["position"] = "position";
-				$this->employee_model->create($data_employee);
-			}
-
-			foreach ($user_attendance as $item) {
-				$data_attendance = array();
-				$data_attendance["employee_pin"] = $key;
-				$data_attendance["timestamp"] = strtotime($item[2]);
-				$datetime = explode(" ", $item[2]);
-				$data_attendance["date"] = $datetime[0];
-				$data_attendance["time"] = $datetime[1];
-				$attendance = $this->attendance_model->attendance_by_pindate($key, $data_attendance["date"])->row();
-
-				if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
-			}
-		}
-		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
-		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
-		return;
+		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
 	}
 
 	public function chart($fingerprint_id)
@@ -329,85 +264,6 @@ class Attendance extends User_Controller
 		$this->data["header"] = "Data Absensi " . $fingerprint->name . " Bulan " . Util::MONTH[$month];
 		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
 		$this->render("templates/contents/plain_content");
-	}
-
-	public function add()
-	{
-		if (!($_POST)) redirect(site_url($this->current_page));
-
-		// echo var_dump( $data );return;
-		$this->form_validation->set_rules($this->services->validation_config());
-		if ($this->form_validation->run() === TRUE) {
-			$data['employee_pin'] = $this->input->post('employee_pin');
-			$data['timestamp'] = $this->input->post('timestamp');
-			$data['date'] = $this->input->post('date');
-			$data['time'] = $this->input->post('time');
-			$data['status'] = $this->input->post('status');
-			if ($employee = $this->attendance_model->attendance_by_pindate($data['employee_pin'], $data['date'])->row()) {
-				$data = [];
-				$data['status'] = $this->input->post('status');
-				$data['time'] = '09:00:00';
-
-				$data_param['id'] = $employee->id;
-				if ($this->attendance_model->update($data, $data_param)) {
-					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
-				} else {
-					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->attendance_model->errors()));
-				}
-				redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
-			}
-
-			if ($this->attendance_model->create($data)) {
-				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
-			} else {
-				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->attendance_model->errors()));
-			}
-		} else {
-			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->attendance_model->errors() ? $this->attendance_model->errors() : $this->session->flashdata('message')));
-			if (validation_errors() || $this->attendance_model->errors()) $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->data['message']));
-		}
-
-		redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
-	}
-
-	public function edit()
-	{
-		if (!($_POST)) redirect(site_url($this->current_page));
-
-		// echo var_dump( $data );return;
-		$this->form_validation->set_rules('status', 'status', 'required');
-		if ($this->form_validation->run() === TRUE) {
-			// $data['timestamp'] = $this->input->post('timestamp');
-			// $data['date'] = $this->input->post('date');
-			// $data['time'] = $this->input->post('time');
-			$data['status'] = $this->input->post('status');
-
-			$data_param['id'] = $this->input->post('id');
-
-			if ($this->attendance_model->update($data, $data_param)) {
-				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
-			} else {
-				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->attendance_model->errors()));
-			}
-		} else {
-			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->attendance_model->errors() ? $this->attendance_model->errors() : $this->session->flashdata('message')));
-			if (validation_errors() || $this->attendance_model->errors()) $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->data['message']));
-		}
-
-		redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
-	}
-
-	public function delete($fingerprint_id)
-	{
-		if (!($_POST)) redirect(site_url($this->current_page));
-
-		$data_param['id'] 	= $this->input->post('id');
-		if ($this->attendance_model->delete($data_param)) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $this->attendance_model->messages()));
-		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->attendance_model->errors()));
-		}
-		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
 	public function export()

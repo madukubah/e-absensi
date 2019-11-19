@@ -1,5 +1,6 @@
     <div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
         <div class="mt-5 ml-5 mr-5 chart">
+            <h5 class="justify-content-center text-center" >Absen Keluar</h5>
             <canvas id="bar_absensi_out" style="height:230px; min-height:230px"></canvas>
         </div>
         <div class="container ml-5">

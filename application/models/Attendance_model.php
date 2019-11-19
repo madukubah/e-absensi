@@ -97,6 +97,35 @@ class Attendance_model extends MY_Model
     $this->set_message("berhasil"); //('group_delete_successful');
     return TRUE;
   }
+
+  public function delete_by_fingerprint_id( $fingerprint_id )
+  {
+    $employee_ids = $this->db->select("id as employee_id")
+                    ->where( "fingerprint_id", $fingerprint_id )
+                    ->get( "employee" )->result();
+
+    $ids = array();
+    foreach( $employee_ids as $id )
+    {
+      $ids []=$id->employee_id;
+    }
+    // var_dump( $employee_ids );
+    // die;
+    //foreign
+    $this->db->trans_begin();
+    $this->db->where_in('employee_id', $ids);
+    $this->db->delete($this->table );
+
+
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      $this->set_error("gagal"); //('group_delete_unsuccessful');
+      return FALSE;
+    }
+    $this->db->trans_commit();
+    $this->set_message("berhasil"); //('group_delete_successful');
+    return TRUE;
+  }
   /**
    * group
    *
@@ -343,7 +372,7 @@ class Attendance_model extends MY_Model
   public function get_absences($fingerprint_id = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
   {
     $status = [0, 1, 2];
-    $employees = $this->get_attendances($fingerprint_id, $status, $month, $date, $_is_coming = TRUE)->result();
+    $employees = $this->get_attendances($fingerprint_id, $status, $month, $date, $_is_coming)->result();
     $id = [];
     foreach ($employees as $key => $employee) {
       $id[] = $employee->employee_id;

@@ -114,10 +114,24 @@ class Employee extends Bkd_Controller
 		);
 
 		$add_menu = $this->load->view('templates/actions/modal_form_confirm_sync', $add_menu, true);
+			
+		$link_clear =
+			array(
+				"name" => "Bersihkan",
+				"type" => "link",
+				"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
+				"button_color" => "danger",
+				"data" => NULL,
+			);
+		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
 
-		if( $curr_fingerprint_id != $fingerprint_id )$add_menu = ""; 
+		if( $curr_fingerprint_id != $fingerprint_id )
+		{
+			$add_menu = ""; 
+			$link_clear = ""; 
+		}
 
-		$this->data[ "header_button" ] =  $add_menu;
+		$this->data[ "header_button" ] =  $add_menu ." ".$link_clear;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -154,7 +168,24 @@ class Employee extends Bkd_Controller
 
 		redirect(site_url($this->current_page));
 	}
+	public function sync_employee( )
+	{
+		if (!($_POST)) redirect(site_url($this->current_page));
 
+		$fingerprint_id	= $this->input->post('fingerprint_id');
+
+
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync_employee/".$fingerprint_id )));
+		// echo json_encode( $result )."<br><br>";
+		redirect(site_url($this->current_page)."fingerprint/".$this->input->post('fingerprint_id')  );
+	}
+
+	public function clear( $fingerprint_id)
+	{
+		$data_param['fingerprint_id'] 	= $fingerprint_id;
+		$this->employee_model->delete( $data_param );
+		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id );
+	}
 	public function edit()
 	{
 		if (!($_POST)) redirect(site_url($this->current_page));
@@ -194,7 +225,7 @@ class Employee extends Bkd_Controller
 			if (validation_errors() || $this->employee_model->errors()) $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->data['message']));
 		}
 
-		redirect(site_url($this->current_page));
+		redirect(site_url($this->current_page)."fingerprint/".$this->input->post('fingerprint_id')  );
 	}
 
 	public function delete()
@@ -213,6 +244,6 @@ class Employee extends Bkd_Controller
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->employee_model->errors()));
 		}
-		redirect(site_url($this->current_page));
+		redirect(site_url($this->current_page)."fingerprint/".$this->input->post('fingerprint_id')  );
 	}
 }

@@ -332,7 +332,7 @@ class Attendance extends REST_Controller
 				}
 			}
 		}
-		return;
+		// return;
 		if (!empty($ATTENDANCE_ARR)) $this->attendance_model->create_batch($ATTENDANCE_ARR);
 		############################
 		$result = array(

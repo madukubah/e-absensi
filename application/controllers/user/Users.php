@@ -21,7 +21,7 @@ class Users extends User_Controller
 		);
 		
 	} 
-	public function index( $user_groups = NULL )
+	public function index(  )
 	{
 		$this->data[ "menu_list_id" ] = "users_index";
 		// echo $this->data[ "menu_list_id" ] ; return;
@@ -36,8 +36,8 @@ class Users extends User_Controller
 		 //set pagination
 		 if ($pagination['total_records']>0) $this->data['pagination_links'] = $this->setPagination($pagination);
 
-		$table = $this->services->get_table_config_no_delete( $this->current_page );
-		$table[ "rows" ] = $this->ion_auth->users_limit( $pagination['limit_per_page'], $pagination['start_record'] , $user_groups )->result();
+		$table = $this->services->get_table_config_no_delete( $this->current_page, $pagination['start_record'] +1 );
+		$table[ "rows" ] = $this->ion_auth->users_limit( $pagination['limit_per_page'], $pagination['start_record']  )->result();
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
 		$this->data[ "contents" ] = $table;
 

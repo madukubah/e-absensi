@@ -5,10 +5,10 @@
         <div class="container ml-5">
             <div class="row">
                 <div class="col-md-6 col-sm-12  ">
-                    <a href="#">Jumlah Hadir : <?= ($sum_attendances) ?></a><br>
-                    <a href="#">Jumlah Sakit : <?= ($sum_sick) ?></a><br>
-                    <a href="#">Jumlah izin : <?= ($sum_permission) ?></a><br>
-                    <a href="#">Jumlah Tidak Hadir : <?= $sum_absences ?> </a>
+                    <a href="#">Jumlah Hadir ( Bulan ) : <?= ($sum_attendances) ?></a><br>
+                    <a href="#">Jumlah Sakit ( Bulan ) : <?= ($sum_sick) ?></a><br>
+                    <a href="#">Jumlah izin ( Bulan ) : <?= ($sum_permission) ?></a><br>
+                    <a href="#">Jumlah Tidak Hadir ( Bulan ) : <?= $sum_absences ?> </a>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <span>Jumlah Pegawai : <?= ($employee_count) ?></span><br>

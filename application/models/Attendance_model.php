@@ -1,16 +1,13 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
 class Attendance_model extends MY_Model
 {
   protected $table = "attendance";
-
   function __construct()
   {
     parent::__construct($this->table);
     parent::set_join_key('attendance_id');
   }
-
   /**
    * create
    *
@@ -22,10 +19,8 @@ class Attendance_model extends MY_Model
   {
     // Filter the data passed
     $data = $this->_filter_data($this->table, $data);
-
     $this->db->insert($this->table, $data);
     $id = $this->db->insert_id($this->table . '_id_seq');
-
     if (isset($id)) {
       $this->set_message("berhasil");
       return $id;
@@ -33,7 +28,6 @@ class Attendance_model extends MY_Model
     $this->set_error("gagal");
     return FALSE;
   }
-
   /**
    * create
    *
@@ -44,17 +38,13 @@ class Attendance_model extends MY_Model
   public function create_batch($data_batch)
   {
     $this->db->trans_begin();
-
     $this->db->insert_batch($this->table, $data_batch);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
-
       $this->set_error("gagal");
       return FALSE;
     }
-
     $this->db->trans_commit();
-
     $this->set_message("berhasil");
     return TRUE;
   }
@@ -70,17 +60,13 @@ class Attendance_model extends MY_Model
   {
     $this->db->trans_begin();
     $data = $this->_filter_data($this->table, $data);
-
     $this->db->update($this->table, $data, $data_param);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
-
       $this->set_error("gagal");
       return FALSE;
     }
-
     $this->db->trans_commit();
-
     $this->set_message("berhasil");
     return TRUE;
   }
@@ -101,21 +87,16 @@ class Attendance_model extends MY_Model
     }
     //foreign
     $this->db->trans_begin();
-
     $this->db->delete($this->table, $data_param);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
-
       $this->set_error("gagal"); //('group_delete_unsuccessful');
       return FALSE;
     }
-
     $this->db->trans_commit();
-
     $this->set_message("berhasil"); //('group_delete_successful');
     return TRUE;
   }
-
   /**
    * group
    *
@@ -128,15 +109,11 @@ class Attendance_model extends MY_Model
     if (isset($id)) {
       $this->where($this->table . '.id', $id);
     }
-
     $this->limit(1);
     $this->order_by($this->table . '.id', 'desc');
-
     $this->attendances();
-
     return $this;
   }
-
   /**
    * group
    *
@@ -148,15 +125,11 @@ class Attendance_model extends MY_Model
   {
     $this->where($this->table . '.employee_id', $id);
     $this->where($this->table . '.date', $date);
-
     $this->limit(1);
     $this->order_by($this->table . '.id', 'desc');
-
     $this->attendances();
-
     return $this;
   }
-
   /**
    * group
    *
@@ -171,14 +144,11 @@ class Attendance_model extends MY_Model
       "employee.id = " . $this->table . '.employee_id',
       "inner"
     );
-
     if (isset($fingerprint_id)) {
       $this->where('employee.fingerprint_id', $fingerprint_id);
     }
-
     return $this->record_count();
   }
-
   public function record_count_filter_fingerprint_id($fingerprint_id, $date = NULL)
   {
     $this->db->join(
@@ -209,7 +179,6 @@ class Attendance_model extends MY_Model
       'status' => $this->table . ".status",
       'month' => "month",
     );
-
     $this->db->select([
       "*",
       "count(*) as count_attendance",
@@ -235,29 +204,24 @@ class Attendance_model extends MY_Model
     } else {
       $this->db->where_in($this->table . ".month",  date("m"));
     }
-
     if (isset($group_by)) {
       foreach ($group_by as $group) {
         $this->db->group_by($_group[$group]);
       }
     }
-
     if (isset($employee_ids)) {
       foreach ($employee_ids as $employee_id) {
         $this->db->where("employee_id", $employee_id);
       }
     }
-
     if (isset($fingerprint_id)) {
       $this->db->where("fingerprint_id", $fingerprint_id);
     }
     $this->db->order_by("date", "asc");
     return $this->db->get();
-
     $query = $this->db->query($sql);
     return $query;
   }
-
   /**
    * attendance
    *
@@ -270,7 +234,6 @@ class Attendance_model extends MY_Model
     if (isset($limit)) {
       $this->limit($limit);
     }
-
     $this->select($this->table . '.*');
     $this->select($this->table . '.date as _date');
     $this->select($this->table . '.time as _time');
@@ -286,7 +249,6 @@ class Attendance_model extends MY_Model
       "fingerprint.id = employee.fingerprint_id",
       "inner"
     );
-
     if ($fingerprint_id != NULL) {
       $this->where("fingerprint.id", $fingerprint_id);
     }
@@ -321,7 +283,6 @@ class Attendance_model extends MY_Model
     } else {
       $this->db->where_in($this->table . ".month",  date("m"));
     }
-
     if (isset($fingerprint_id)) {
       $this->db->where("fingerprint_id", $fingerprint_id);
     }
@@ -332,11 +293,9 @@ class Attendance_model extends MY_Model
     $this->db->order_by("date", "asc");
     $this->db->order_by("employee_id", "asc");
     return $this->db->get();
-
     $query = $this->db->query($sql);
     return $query;
   }
-
   public function get_attendances($fingerprint_id = NULL, $status = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
@@ -360,7 +319,6 @@ class Attendance_model extends MY_Model
     } else {
       $this->db->where_in($this->table . ".month",  date("m"));
     }
-
     if ($fingerprint_id != null) {
       $this->db->where("fingerprint_id", $fingerprint_id);
     }
@@ -378,11 +336,9 @@ class Attendance_model extends MY_Model
     $this->db->order_by("date", "asc");
     $this->db->order_by("employee_id", "asc");
     return $this->db->get();
-
     $query = $this->db->query($sql);
     return $query;
   }
-
   public function get_absences($fingerprint_id = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
   {
     $status = [0, 1, 2];

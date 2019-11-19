@@ -23,6 +23,8 @@ class Home extends Public_Controller
 
 	public function view($status = NULL)
 	{
+		$is_coming = ($this->input->get('is_coming') != NULL ) ? $this->input->get('is_coming') : TRUE;
+		// var_dump( $is_coming ); die;
 		$fingerprint_id = ($this->input->get('fingerprint_id') == -1) ? NULL : $this->input->get('fingerprint_id');
 		$fingerprint = (object) array();
 		if ($fingerprint_id)
@@ -36,7 +38,7 @@ class Home extends Public_Controller
 
 		if ($status != 3) {
 			$table = $this->services->table_config_view();
-			$table["rows"] = $this->attendance_model->get_attendances($fingerprint_id, $status, $month, $date)->result();
+			$table["rows"] = $this->attendance_model->get_attendances($fingerprint_id, $status, $month, $date, $is_coming)->result();
 		} else {
 			$table['header'] = array(
 				'name' => 'Nama',
@@ -46,7 +48,7 @@ class Home extends Public_Controller
 				// 'status' => 'Keterangan',
 			);
 			$table["number"] = 1;
-			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date)->result();
+			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date, $is_coming )->result();
 		}
 		// var_dump( $table["rows"] ); die;
 		$table['index'] = ['Hadir', 'Sakit', 'Izin'];

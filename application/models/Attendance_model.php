@@ -188,13 +188,14 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month,year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
           attendance
       ");
     // $this
+    if ($_is_coming == 'FALSE') $_is_coming = 0;
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($date)) {
       $this->db->where($this->table . ".day", $date);
@@ -259,8 +260,8 @@ class Attendance_model extends MY_Model
     $this->order_by($this->table . '.date desc, ' . $this->table . '.employee_pin asc, ' . $this->table . '.time asc ', '');
     return $this->fetch_data();
   }
-  
-  
+
+
   #########################################
   public function employee_attendance($fingerprint_id = NULL, $month = NULL, $day = null, $_is_coming = TRUE)
   {
@@ -270,7 +271,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month ,year( attendance.date ) as year from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -306,7 +307,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 

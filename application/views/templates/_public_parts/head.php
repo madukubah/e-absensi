@@ -3,7 +3,11 @@
 
 <head>
     <meta charset="utf-8">
+<<<<<<< HEAD
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+=======
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+>>>>>>> 67b4a6611263f6391a25c68efbbd89a2e94b1745
     <meta name="description" content="<?php echo APP_DESC ?>" />
     <meta name="author" content="<?php echo APP_AUTHOR ?>">
 

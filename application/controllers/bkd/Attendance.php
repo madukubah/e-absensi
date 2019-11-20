@@ -71,7 +71,7 @@ class Attendance extends Bkd_Controller
 	}
 
 
-	public function fingerprint($fingerprint_id)
+	public function fingerprint($fingerprint_id = null)
 	{
 		$curr_fingerprint = $this->data["fingerprint"];
 		$curr_fingerprint_id = $this->data["fingerprint"]->id;

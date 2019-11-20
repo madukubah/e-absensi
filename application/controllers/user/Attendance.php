@@ -273,7 +273,7 @@ class Attendance extends User_Controller
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 		//absen pagi
-		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
+		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&is_coming=1")));
 
 		$data->month = Util::MONTH[$month];
 		$data->name = $fingerprint->name;

@@ -155,17 +155,50 @@ class Excel_services
 
         //info
         $PHPExcel->getActiveSheet()->setCellValue('AJ4', 'Keterangan');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ5', 0);
-        $PHPExcel->getActiveSheet()->setCellValue('AJ6', 1);
-        $PHPExcel->getActiveSheet()->setCellValue('AJ7', 2);
-        $PHPExcel->getActiveSheet()->setCellValue('AJ8', 3);
-        $PHPExcel->getActiveSheet()->setCellValue('AK5', 'tidak hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AK6', 'hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AK7', 'sakit');
-        $PHPExcel->getActiveSheet()->setCellValue('AK8', 'izin');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ5', 'tidak hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ6', 'hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ7', 'sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ8', 'izin');
+        $PHPExcel->getActiveSheet()->setCellValue('AK5', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK6', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK7', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK8', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AL5', 0);
+        $PHPExcel->getActiveSheet()->setCellValue('AL6', 1);
+        $PHPExcel->getActiveSheet()->setCellValue('AL7', 2);
+        $PHPExcel->getActiveSheet()->setCellValue('AL8', 3);
+        // var_dump(count($employees));
+        // die;
+        //count(employess == 21)
+        //jumlah ABSEN PAGI
+        $PHPExcel->getActiveSheet()->setCellValue('AJ11', 'Absen Pagi');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ12', 'Jumlah Tidak Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ13', 'Jumlah Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ14', 'Jumlah Sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ15', 'Jumlah Izin');
+        $PHPExcel->getActiveSheet()->setCellValue('AK12', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK13', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK14', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK15', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AL12', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";0))');
+        $PHPExcel->getActiveSheet()->setCellValue('AL13', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";1))');
+        $PHPExcel->getActiveSheet()->setCellValue('AL14', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";2))');
+        $PHPExcel->getActiveSheet()->setCellValue('AL15', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";3))');
 
-
-
+        //JUMLAH ABSEN SORE
+        $PHPExcel->getActiveSheet()->setCellValue('AJ18', 'Absen Sore');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ19', 'Jumlah Tidak Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ20', 'Jumlah Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ21', 'Jumlah Sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ22', 'Jumlah Izin');
+        $PHPExcel->getActiveSheet()->setCellValue('AK19', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK20', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK21', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AK22', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('AL19', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";0))');
+        $PHPExcel->getActiveSheet()->setCellValue('AL20', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";1))');
+        $PHPExcel->getActiveSheet()->setCellValue('AL21', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";2))');
+        $PHPExcel->getActiveSheet()->setCellValue('AL22', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";3))');
 
         ############    style aligment   ####################
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -187,6 +220,9 @@ class Excel_services
         $PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(1.45);
         $PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(3.3);
         $PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(40);
+        $PHPExcel->getActiveSheet()->getColumnDimension('AJ')->setWidth(17.43);
+        $PHPExcel->getActiveSheet()->getColumnDimension('AK')->setWidth(2);
+        $PHPExcel->getActiveSheet()->getColumnDimension('AL')->setWidth(8.43);
 
         #########################     style font  ############################
         $PHPExcel->getActiveSheet()->getStyle('B2')->getFont()->setBold(true);

@@ -122,7 +122,7 @@ class Attendance extends User_Controller
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
 			"url" => site_url("attendance/add/"),
-			"form_data" => $this->services->get_form_data($fingerprint_id, $url_return )["form_data"],
+			"form_data" => $this->services->get_form_data($fingerprint_id, $url_return)["form_data"],
 			'data' => NULL
 		);
 
@@ -206,14 +206,14 @@ class Attendance extends User_Controller
 
 	public function sync($fingerprint_id)
 	{
-		$result = json_decode(file_get_contents(site_url("api/attendance/sync/".$fingerprint_id )));
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync/" . $fingerprint_id)));
 		// echo json_encode( $result )."<br><br>";die;
-		if ( $result->status ) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message ));
+		if ($result->status) {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message));
 		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message ));
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message));
 		}
-		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
+		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
 	public function chart($fingerprint_id)
@@ -272,10 +272,14 @@ class Attendance extends User_Controller
 		$fingerprint_id = $this->input->post('fingerprint_id');
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
+		//absen pagi
 		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
 
 		$data->month = Util::MONTH[$month];
 		$data->name = $fingerprint->name;
+
+		//absen pulang
+		$data->get_out = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&is_coming=0")));
 		$this->excel->excel_config($data);
 	}
 }

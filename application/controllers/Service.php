@@ -44,7 +44,7 @@ class Service extends Public_Controller
 
 		$form_login = $this->load->view('templates/form/login_horizontal', $form_login, TRUE);
 		$this->data["form_login"] =  $form_login;
-		
+		// echo "asdffd";
 		$this->render("landing_page");
 		// redirect(base_url('auth/login'));
 	}

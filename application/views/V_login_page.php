@@ -42,21 +42,35 @@
                 </div>
             </div> -->
             <!-- <div class="col-12 float-left"> -->
-                <div class="row">
-                    <div class="col-md-6 col-sm-12 text-white"><?= $header_button ?></div>
-                    <div class="col-md-6 col-sm-12 text-white p-5"> <h3 class="row float-right justify-content-center text-center text-white"><?= date("d M Y") ?></h3> </div>
+            
+            <div class="row">
+                <div class="col-md-6 col-sm-12 text-white"><?= $header_button ?></div>
+                <div class="col-md-6 col-sm-12 text-white p-5">
+                    <h3 class="row float-right justify-content-center text-center text-white"><?= date("d M Y") ?></h3>
                 </div>
-                <h3 class="row justify-content-center text-center text-white"><?= $header ?></h3>
-                <div class="row">
-                    <div class="col-lg-3 mt-5">
-                        <?= $pie ?>
-                    </div>
-                    <div class="col-md-9 col-lg-9 col-xl-9 mt-5 float-right">
-                        <div>
-                            <?= $chart ?>
-                        </div>
+            </div>
+            <h3 class="row justify-content-center text-center text-white"><?= $header ?></h3>
+
+            <div class="row">
+                <div class="col-lg-3 mt-5">
+                    <?= $pie ?>
+                </div>
+                <div class="col-md-9 col-lg-9 col-xl-9 mt-5 float-right">
+                    <div>
+                        <?= $chart ?>
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 mt-5">
+                    <?= $pie_out ?>
+                </div>
+                <div class="col-md-9 col-lg-9 col-xl-9 mt-5 float-right">
+                    <div>
+                        <?= $chart_out ?>
+                    </div>
+                </div>
+            </div>
             <!-- </div> -->
         </div>
     </div>

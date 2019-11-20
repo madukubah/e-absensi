@@ -1500,7 +1500,7 @@ class Ion_auth_model extends MY_Model
 			// join and then run a where_in against the group ids
 			if (isset($groups) && !empty($groups))
 			{
-				$this->db->distinct();
+				$this->db->distinct();	
 				$this->db->join(
 				    $this->tables['users_groups'],
 				    $this->tables['users_groups'].'.'.$this->join['users'].'='.$this->tables['users'].'.id',
@@ -1612,7 +1612,6 @@ class Ion_auth_model extends MY_Model
 	 */
 	public function users_limit( $limit ,  $start = 0, $groups = NULL )
     {
-
 		$this->limit( $limit );
 		$this->offset( $start );
 		$this->where( "users_groups.group_id != 1", NULL );

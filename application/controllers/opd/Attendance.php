@@ -96,6 +96,17 @@ class Attendance extends Opd_Controller
 				"data" => NULL,
 			);
 		$link_refresh =  $this->load->view('templates/actions/link', $link_refresh, TRUE);;
+
+		$link_clear =
+			array(
+				"name" => "Bersihkan",
+				"type" => "link",
+				"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
+				"button_color" => "danger",
+				"data" => NULL,
+			);
+		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
+
 		$export =
 			array(
 				"name" => "Export",
@@ -150,7 +161,7 @@ class Attendance extends Opd_Controller
 		);
 		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
+		$this->data["header_button"] =  $link_refresh ." ".$link_clear. " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -171,6 +182,12 @@ class Attendance extends Opd_Controller
 		} else {
 			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message ));
 		}
+		redirect(site_url($this->current_page)  );
+	}
+
+	public function clear($fingerprint_id)
+	{
+		$this->attendance_model->delete_by_fingerprint_id( $fingerprint_id );
 		redirect(site_url($this->current_page)  );
 	}
 

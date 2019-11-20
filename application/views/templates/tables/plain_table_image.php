@@ -23,7 +23,8 @@
                             <?php
                                     if ($key == "images" || $key == "image" || $key == "_image") :
                                         ?>
-                                <img class=" img-fluid mb-2 " src="<?= $row->$key ?>" width="200" height="auto">
+                                        
+                                    <img class=" img-fluid mb-2 " src="<?= $row->$key ?>" width="200" height="auto">
                             <?php
                                     else :
                                         ?>

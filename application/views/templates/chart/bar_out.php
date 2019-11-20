@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div class="card p-2" style="background-color : rgba(255, 255, 255, 0.6) !important">
     <h5 class="justify-content-center text-center" >Absen Keluar</h5>
 
@@ -101,8 +102,12 @@
         })
 =======
     <div class="card" style="background-color : rgba(255, 255, 255, 0.6) !important">
+=======
+    <div class="card p-2" style="background-color : rgba(255, 255, 255, 0.6) !important">
+        <h5 class="justify-content-center text-center" >Absen Keluar</h5>
+        
+>>>>>>> c30bec7372413085b98c57a3338e9263c4df27ef
         <div class="mt-5 ml-5 mr-5 chart">
-            <h5 class="justify-content-center text-center" >Absen Keluar</h5>
             <canvas id="bar_absensi_out" style="height:230px; min-height:230px"></canvas>
         </div>
         <div class="container ml-5">

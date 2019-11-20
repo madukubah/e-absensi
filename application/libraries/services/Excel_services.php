@@ -15,7 +15,6 @@ class Excel_services
         $month = $data->month;
         $name = $data->name;
         $attendances_out = $data->get_out;
-
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel.php');
         require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
 
@@ -77,7 +76,17 @@ class Excel_services
 
                 if (isset($attendance[$id])) {
                     if ($employee->name == $attendance[$id]->name) {
-                        $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
+                        switch ($attendance[$id]->status) {
+                            case 0:
+                                $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
+                                break;
+                            case 1:
+                                $PHPExcel->getActiveSheet()->setCellValue($column . $row, 2);
+                                break;
+                            case 2:
+                                $PHPExcel->getActiveSheet()->setCellValue($column . $row, 3);
+                                break;
+                        }
                         $id++;
                     } else {
                         $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
@@ -143,6 +152,21 @@ class Excel_services
                 }
             }
         }
+
+        //info
+        $PHPExcel->getActiveSheet()->setCellValue('AJ4', 'Keterangan');
+        $PHPExcel->getActiveSheet()->setCellValue('AJ5', 0);
+        $PHPExcel->getActiveSheet()->setCellValue('AJ6', 1);
+        $PHPExcel->getActiveSheet()->setCellValue('AJ7', 2);
+        $PHPExcel->getActiveSheet()->setCellValue('AJ8', 3);
+        $PHPExcel->getActiveSheet()->setCellValue('AK5', 'tidak hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AK6', 'hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('AK7', 'sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('AK8', 'izin');
+
+
+
+
         ############    style aligment   ####################
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);

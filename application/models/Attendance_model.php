@@ -98,23 +98,22 @@ class Attendance_model extends MY_Model
     return TRUE;
   }
 
-  public function delete_by_fingerprint_id( $fingerprint_id )
+  public function delete_by_fingerprint_id($fingerprint_id)
   {
     $employee_ids = $this->db->select("id as employee_id")
-                    ->where( "fingerprint_id", $fingerprint_id )
-                    ->get( "employee" )->result();
+      ->where("fingerprint_id", $fingerprint_id)
+      ->get("employee")->result();
 
     $ids = array();
-    foreach( $employee_ids as $id )
-    {
-      $ids []=$id->employee_id;
+    foreach ($employee_ids as $id) {
+      $ids[] = $id->employee_id;
     }
     // var_dump( $employee_ids );
     // die;
     //foreign
     $this->db->trans_begin();
     $this->db->where_in('employee_id', $ids);
-    $this->db->delete($this->table );
+    $this->db->delete($this->table);
 
 
     if ($this->db->trans_status() === FALSE) {
@@ -297,6 +296,7 @@ class Attendance_model extends MY_Model
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
     $this->db->select([
       "*",
+      $this->table . '.status'
     ]);
     $this->db->from("
           (

@@ -45,6 +45,7 @@ class Employee_services
     $table["header"] = array(
       'name' => 'Nama',
       'fingerprint_name' => 'OPD',
+      'main_position' => 'Golongan',
       'position' => 'Jabatan',
       'pin' => 'Kode Pin',
       'faction' => 'Golongan',
@@ -104,6 +105,11 @@ class Employee_services
         'rules' =>  'trim|required',
       ),
       array(
+        'field' => 'position_id',
+        'label' => 'position',
+        'rules' =>  'trim|required',
+      ),
+      array(
         'field' => 'pin',
         'label' => 'pin',
         'rules' =>  'trim|required',
@@ -144,6 +150,15 @@ class Employee_services
       "name" => array(
         'type' => 'text',
         'label' => "Nama Lengkap",
+      ),
+      "position_id" => array(
+        'type' => 'select',
+        'label' => "Golongan",
+        'options' => array(
+          1 => 'KADIS',
+          2 => 'KABID',
+          3 => 'STAFF',
+        )
       ),
       "position" => array(
         'type' => 'text',

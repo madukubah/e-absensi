@@ -65,7 +65,7 @@ class Attendance extends REST_Controller
 		$employee_id = ($this->input->get('employee_id', 1)) ? $this->input->get('employee_id', 1) : [];
 		$employee_id = (empty($employee_id)) ? [] : explode("|", $employee_id);
 
-		$is_coming = ($this->input->get('is_coming') != NULL ) ? $this->input->get('is_coming') : TRUE;
+		$is_coming = ($this->input->get('is_coming') != NULL) ? $this->input->get('is_coming') : TRUE;
 		// echo var_dump( $month );return;
 		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date, $is_coming)->result();
 		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
@@ -361,8 +361,10 @@ class Attendance extends REST_Controller
 		$employee_name = $this->employee_model->employee_by_fingerprint_id(0, null, $fingerprint_id)->result();
 		$count_days = cal_days_in_month(CAL_GREGORIAN, $month, date("Y"));
 
+		$is_coming = ($this->input->get('is_coming') != NULL) ? $this->input->get('is_coming') : TRUE;
+
 		for ($i = 1; $i <= $count_days; $i++) {
-			$attendances[$i] = $this->attendance_model->employee_attendance($fingerprint_id, $month, $i)->result();
+			$attendances[$i] = $this->attendance_model->employee_attendance($fingerprint_id, $month, $i, $is_coming)->result();
 		}
 
 		$data['attendances'] = $attendances;

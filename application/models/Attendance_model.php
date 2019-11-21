@@ -98,23 +98,22 @@ class Attendance_model extends MY_Model
     return TRUE;
   }
 
-  public function delete_by_fingerprint_id( $fingerprint_id )
+  public function delete_by_fingerprint_id($fingerprint_id)
   {
     $employee_ids = $this->db->select("id as employee_id")
-                    ->where( "fingerprint_id", $fingerprint_id )
-                    ->get( "employee" )->result();
+      ->where("fingerprint_id", $fingerprint_id)
+      ->get("employee")->result();
 
     $ids = array();
-    foreach( $employee_ids as $id )
-    {
-      $ids []=$id->employee_id;
+    foreach ($employee_ids as $id) {
+      $ids[] = $id->employee_id;
     }
     // var_dump( $employee_ids );
     // die;
     //foreign
     $this->db->trans_begin();
     $this->db->where_in('employee_id', $ids);
-    $this->db->delete($this->table );
+    $this->db->delete($this->table);
 
 
     if ($this->db->trans_status() === FALSE) {
@@ -178,6 +177,7 @@ class Attendance_model extends MY_Model
     }
     return $this->record_count();
   }
+  
   public function record_count_filter_fingerprint_id($fingerprint_id, $date = NULL)
   {
     $this->db->join(
@@ -297,6 +297,7 @@ class Attendance_model extends MY_Model
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
     $this->db->select([
       "*",
+      $this->table . '.status'
     ]);
     $this->db->from("
           (
@@ -336,7 +337,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.pin, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -364,7 +365,7 @@ class Attendance_model extends MY_Model
       $this->db->where("status", $status);
     $this->db->group_by('name');
     $this->db->order_by("date", "asc");
-    $this->db->order_by("employee_id", "asc");
+    $this->db->order_by("attendance.pin", "asc");
     return $this->db->get();
     $query = $this->db->query($sql);
     return $query;
@@ -386,6 +387,9 @@ class Attendance_model extends MY_Model
       $this->db->where("fingerprint_id", $fingerprint_id);
     if (!empty($id))
       $this->db->where_not_in('id', $id);
+
+    $this->db->order_by("pin", "asc");
+    
     return $this->db->get();
   }
 }

@@ -122,7 +122,7 @@ class Attendance extends User_Controller
 			"modal_id" => "add_group_",
 			"button_color" => "primary",
 			"url" => site_url("attendance/add/"),
-			"form_data" => $this->services->get_form_data($fingerprint_id, $url_return )["form_data"],
+			"form_data" => $this->services->get_form_data($fingerprint_id, $url_return)["form_data"],
 			'data' => NULL
 		);
 
@@ -146,6 +146,17 @@ class Attendance extends User_Controller
 				"data" => NULL,
 			);
 		$link_refresh =  $this->load->view('templates/actions/link', $link_refresh, TRUE);;
+		
+		$link_clear =
+		array(
+			"name" => "Bersihkan",
+			"type" => "link",
+			"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
+			"button_color" => "danger",
+			"data" => NULL,
+		);
+		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
+
 		$export =
 			array(
 				"name" => "Export",
@@ -191,7 +202,8 @@ class Attendance extends User_Controller
 		);
 		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
+		$this->data["header_button"] =  $link_refresh ." ".$link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+		
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -206,13 +218,19 @@ class Attendance extends User_Controller
 
 	public function sync($fingerprint_id)
 	{
-		$result = json_decode(file_get_contents(site_url("api/attendance/sync/".$fingerprint_id )));
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync/" . $fingerprint_id)));
 		// echo json_encode( $result )."<br><br>";die;
-		if ( $result->status ) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message ));
+		if ($result->status) {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message));
 		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message ));
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message));
 		}
+		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
+	}
+
+	public function clear($fingerprint_id)
+	{
+		$this->attendance_model->delete_by_fingerprint_id( $fingerprint_id );
 		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
 	}
 
@@ -231,10 +249,10 @@ class Attendance extends User_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
-		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
+		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
 		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
 		######################################################
 		$this->data["contents"] = $bar . " " . $pie;
@@ -272,10 +290,14 @@ class Attendance extends User_Controller
 		$fingerprint_id = $this->input->post('fingerprint_id');
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
+		//absen pagi
 		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
 
 		$data->month = Util::MONTH[$month];
 		$data->name = $fingerprint->name;
+
+		//absen pulang
+		$data->get_out = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&is_coming=0")));
 		$this->excel->excel_config($data);
 	}
 }

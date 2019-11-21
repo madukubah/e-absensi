@@ -385,8 +385,9 @@ class Attendance_model extends MY_Model
       $id[] = $employee->employee_id;
     }
     // return (object) array("result" => []);
-    $this->db->select('*');
+    $this->db->select('employee.*');
     $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
+    $this->db->select('position.name AS position_name');
     $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");
     $this->db->join(

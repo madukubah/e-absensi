@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-class Position extends User_Controller
+class Position extends Admin_Controller
 {
 	private $services = null;
 	private $name = null;
-	private $parent_page = 'user';
-	private $current_page = 'user/position/';
+	private $parent_page = 'admin';
+	private $current_page = 'admin/position/';
 
 	public function __construct()
 	{

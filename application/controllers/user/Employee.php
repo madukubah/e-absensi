@@ -27,7 +27,7 @@ class Employee extends User_Controller
 		//pagination parameter
 		$pagination['base_url'] = base_url($this->current_page) . '/index';
 		$pagination['total_records'] = $this->fingerprint_model->record_count();
-		$pagination['limit_per_page'] = 10;
+		$pagination['limit_per_page'] = 100;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
 		$pagination['uri_segment'] = 4;
 		//set pagination

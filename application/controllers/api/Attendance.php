@@ -351,6 +351,8 @@ class Attendance extends REST_Controller
 		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
 		$month = (int) $month;
 		// $month = NULL;
+		$year = ($this->input->get('year', date("Y"))) ? $this->input->get('year', date("Y")) : null;
+		$year = (int) $year;
 
 		$group_by = ($this->input->get('group_by', 1)) ? $this->input->get('group_by', 1) : [];
 		$group_by = (empty($group_by)) ? [] : explode("|", $group_by);
@@ -364,12 +366,13 @@ class Attendance extends REST_Controller
 		$is_coming = ($this->input->get('is_coming') != NULL) ? $this->input->get('is_coming') : TRUE;
 
 		for ($i = 1; $i <= $count_days; $i++) {
-			$attendances[$i] = $this->attendance_model->employee_attendance($fingerprint_id, $month, $i, $is_coming)->result();
+			$attendances[$i] = $this->attendance_model->employee_attendance($fingerprint_id, $month, $i, $year, $is_coming)->result();
 		}
 
 		$data['attendances'] = $attendances;
 		$data['days'] = $count_days;
 		$data['employee'] = $employee_name;
+		$data['year'] = $year;
 		$this->set_response($data, REST_Controller::HTTP_OK); // CREATED (201) being the HTTP response code
 	}
 }

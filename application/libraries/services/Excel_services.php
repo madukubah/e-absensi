@@ -10,6 +10,7 @@ class Excel_services
     public function excel_config($data)
     {
         $employees = $data->employee;
+        $year = $data->year;
         $days = $data->days;
         $attendances = $data->attendances;
         $month = $data->month;
@@ -35,7 +36,7 @@ class Excel_services
         $styleArray = array('borders' => array('allborders' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '0000'))));
 
         //Header
-        $PHPExcel->getActiveSheet()->setCellValue('B2', 'Data Absensi Pegawai ' . $name . ' bulan ' . $month);
+        $PHPExcel->getActiveSheet()->setCellValue('B2', 'Data Absensi Pegawai ' . $name . ' bulan ' . $month . ' Tahun ' . $year);
 
         $PHPExcel->getActiveSheet()->setCellValue('B4', 'No');
         $PHPExcel->getActiveSheet()->setCellValue('C4', 'Nama Pegawai');
@@ -246,7 +247,7 @@ class Excel_services
         $PHPExcel->getActiveSheet()->getStyle('B' . (count($employees) + 7) . ':' . $column . ($row - 1))->applyFromArray($styleArray);
 
         ###################################################################################
-        $filename = 'Data Absensi ' . $name . ' Bulan ' . $month . '.xlsx';
+        $filename = 'Data Absensi ' . $name . ' Bulan ' . $month . ' Tahun ' . $year . '.xlsx';
 
         header('Content-Type: appliaction/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

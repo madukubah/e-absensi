@@ -23,7 +23,7 @@ class Home extends Public_Controller
 
 	public function view($status = NULL)
 	{
-		$is_coming = ($this->input->get('is_coming') != NULL ) ? $this->input->get('is_coming') : TRUE;
+		$is_coming = ($this->input->get('is_coming') != NULL) ? $this->input->get('is_coming') : TRUE;
 		// var_dump( $is_coming ); die;
 		$fingerprint_id = ($this->input->get('fingerprint_id') == -1) ? NULL : $this->input->get('fingerprint_id');
 		$fingerprint = (object) array();
@@ -42,13 +42,13 @@ class Home extends Public_Controller
 		} else {
 			$table['header'] = array(
 				'name' => 'Nama',
-				'position' => 'Jabatan',
+				'main_position' => 'Jabatan',
 				'_image' => 'Foto',
 				'faction' => 'Status',
 				// 'status' => 'Keterangan',
 			);
 			$table["number"] = 1;
-			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date, $is_coming )->result();
+			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date, $is_coming)->result();
 		}
 		// var_dump( $table["rows"] ); die;
 		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
@@ -69,7 +69,7 @@ class Home extends Public_Controller
 			),
 		);
 		$form_login["form"] = $this->load->view('templates/form/plain_form_horizontal', $form_login, TRUE);
-
+		$desc = ['Hadir ', 'Sakit ', 'Izin ', 'Tidak Hadir '];
 		$form_login = $this->load->view('templates/form/login_horizontal', $form_login, TRUE);
 		$this->data["form_login"] =  $form_login;
 		$alert = $this->session->flashdata('alert');
@@ -77,7 +77,7 @@ class Home extends Public_Controller
 		$this->data["alert"] = (isset($alert)) ? $alert : NULL;
 		// $this->data["current_page"] = $this->current_page;
 		$this->data["block_header"] = "Data Absensi " . $fingerprint->name;
-		$this->data["header"] = "Data Absensi " . $fingerprint->name;
+		$this->data["header"] = "Data Absensi " . $desc[$status] . $fingerprint->name;
 		$this->data["sub_header"] = 'Klik Tombol Action Untuk Aksi Lebih Lanjut';
 		$this->render("templates/contents/plain_content");
 	}

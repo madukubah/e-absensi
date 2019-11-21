@@ -46,7 +46,7 @@ class Employee_services
       'name' => 'Nama',
       'fingerprint_name' => 'OPD',
       'main_position' => 'Posisi',
-      'position' => 'Jabatan',
+      // 'position' => 'Jabatan',
       'pin' => 'Kode Pin',
       'faction' => 'Golongan',
       '_image' => 'Foto Pegawai',

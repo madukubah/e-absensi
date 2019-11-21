@@ -185,7 +185,8 @@ class Employee_model extends MY_Model
     }
     $this->select($this->table . '.*');
     $this->select($this->table . '.image as image_old');
-    $this->select('position.name as main_position');
+    $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
+    // $this->select('position.name as main_position');
     $this->select("fingerprint.name as fingerprint_name");
     $this->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . $this->table . ".image )  as _image");
     $this->join(

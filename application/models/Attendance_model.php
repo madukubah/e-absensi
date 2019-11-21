@@ -336,7 +336,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.pin, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -364,7 +364,7 @@ class Attendance_model extends MY_Model
       $this->db->where("status", $status);
     $this->db->group_by('name');
     $this->db->order_by("date", "asc");
-    $this->db->order_by("employee_id", "asc");
+    $this->db->order_by("attendance.pin", "asc");
     return $this->db->get();
     $query = $this->db->query($sql);
     return $query;
@@ -386,6 +386,9 @@ class Attendance_model extends MY_Model
       $this->db->where("fingerprint_id", $fingerprint_id);
     if (!empty($id))
       $this->db->where_not_in('id', $id);
+
+    $this->db->order_by("pin", "asc");
+    
     return $this->db->get();
   }
 }

@@ -177,6 +177,7 @@ class Attendance_model extends MY_Model
     }
     return $this->record_count();
   }
+  
   public function record_count_filter_fingerprint_id($fingerprint_id, $date = NULL)
   {
     $this->db->join(

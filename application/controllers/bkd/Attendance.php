@@ -42,7 +42,9 @@ class Attendance extends Bkd_Controller
 		$table["rows"] = $this->fingerprint_model->fingerprints($pagination['start_record'], $pagination['limit_per_page'])->result();
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
 		$this->data["contents"] = $table;
-
+		for ($i = 0; $i <= 10; $i++) {
+			$_year[2019 + $i] = 2019 + $i;
+		}
 		$export =
 			array(
 				"name" => "Export",
@@ -54,6 +56,11 @@ class Attendance extends Bkd_Controller
 						'type' => 'select',
 						'label' => "Bulan Awal",
 						'options' => Util::MONTH,
+					),
+					'year' => array(
+						'type' => 'select',
+						'label' => "Bulan",
+						'options' => $_year,
 					)
 				),
 				'data' => NULL
@@ -95,8 +102,8 @@ class Attendance extends Bkd_Controller
 		#################################################################3
 		$url_return = site_url($this->current_page) . "fingerprint/" . $fingerprint_id;
 
-		if( $curr_fingerprint_id != $fingerprint_id )
-			$table = $this->services->get_table_config_blank($this->current_page, $pagination['start_record'] +1 );
+		if ($curr_fingerprint_id != $fingerprint_id)
+			$table = $this->services->get_table_config_blank($this->current_page, $pagination['start_record'] + 1);
 		else
 			$table = $this->services->get_table_config_no_action($this->current_page, $pagination['start_record'] + 1, $fingerprint_id, $url_return);
 		$table["rows"] = $this->attendance_model->attendances($pagination['start_record'], $pagination['limit_per_page'], $fingerprint_id)->result();
@@ -136,13 +143,13 @@ class Attendance extends Bkd_Controller
 		$link_refresh =  $this->load->view('templates/actions/link', $link_refresh, TRUE);;
 
 		$link_clear =
-		array(
-			"name" => "Bersihkan",
-			"type" => "link",
-			"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
-			"button_color" => "danger",
-			"data" => NULL,
-		);
+			array(
+				"name" => "Bersihkan",
+				"type" => "link",
+				"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
+				"button_color" => "danger",
+				"data" => NULL,
+			);
 		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
 
 		$export =
@@ -167,6 +174,7 @@ class Attendance extends Bkd_Controller
 			);
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);
 
+<<<<<<< HEAD
 		if( $curr_fingerprint_id != $fingerprint_id )
 		{
 			$add_menu = ""; 
@@ -174,6 +182,11 @@ class Attendance extends Bkd_Controller
 		}
 
 		$this->data["header_button"] =  $link_refresh ." ".$link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+=======
+		if ($curr_fingerprint_id != $fingerprint_id) $add_menu = "";
+
+		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+>>>>>>> 2399a54bb152ba928dc2cdab60275bc9b75ba964
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -188,20 +201,20 @@ class Attendance extends Bkd_Controller
 
 	public function sync($fingerprint_id)
 	{
-		$result = json_decode(file_get_contents(site_url("api/attendance/sync/".$fingerprint_id )));
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync/" . $fingerprint_id)));
 		// echo json_encode( $result )."<br><br>";die;
-		if ( $result->status ) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message ));
+		if ($result->status) {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message));
 		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message ));
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message));
 		}
-		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
+		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
 	public function clear($fingerprint_id)
 	{
-		$this->attendance_model->delete_by_fingerprint_id( $fingerprint_id );
-		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
+		$this->attendance_model->delete_by_fingerprint_id($fingerprint_id);
+		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
 	public function chart($fingerprint_id)
@@ -257,13 +270,17 @@ class Attendance extends Bkd_Controller
 	public function export()
 	{
 		$month = $this->input->post('month');
+		$year = $this->input->post('year');
 		$fingerprint_id = $this->input->post('fingerprint_id');
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
-		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
+		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&year=" . $year  . "&is_coming=1")));
 
 		$data->month = Util::MONTH[$month];
 		$data->name = $fingerprint->name;
+
+		//absen pulang
+		$data->get_out = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&year=" . $year . "&is_coming=0")));
 		$this->excel->excel_config($data);
 	}
 }

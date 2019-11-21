@@ -185,6 +185,8 @@ class Employee_model extends MY_Model
     }
     $this->select($this->table . '.*');
     $this->select($this->table . '.image as image_old');
+    $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
+    // $this->select('position.name as main_position');
     $this->select("fingerprint.name as fingerprint_name");
     $this->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . $this->table . ".image )  as _image");
     $this->join(
@@ -192,8 +194,15 @@ class Employee_model extends MY_Model
       "fingerprint.id = employee.fingerprint_id",
       "inner"
     );
+    $this->join(
+      "position",
+      "position.id = employee.position_id",
+      "inner"
+    );
 
     $this->offset($start);
+    // $this->order_by($this->table . '.pin', 'asc');
+    $this->order_by($this->table . '.position_id', 'asc');
     $this->order_by($this->table . '.pin', 'asc');
     return $this->fetch_data();
   }

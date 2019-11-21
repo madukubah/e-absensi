@@ -67,6 +67,9 @@ class Attendance extends Opd_Controller
 
 		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
 		$this->data["contents"] = $table;
+		for ($i = 0; $i <= 10; $i++) {
+			$_year[2019 + $i] = 2019 + $i;
+		}
 		$add_menu = array(
 			"name" => "Tambah Absensi",
 			"modal_id" => "add_group_",
@@ -123,12 +126,17 @@ class Attendance extends Opd_Controller
 						'type' => 'select',
 						'label' => "Bulan",
 						'options' => Util::MONTH,
+					),
+					'year' => array(
+						'type' => 'select',
+						'label' => "Bulan",
+						'options' => $_year,
 					)
 				),
 				'data' => NULL
 			);
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);;
-		
+
 		#################################################################
 		for ($i = 1; $i <= 31; $i++) {
 			$_date[$i] = $i;
@@ -161,7 +169,7 @@ class Attendance extends Opd_Controller
 		);
 		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
-		$this->data["header_button"] =  $link_refresh ." ".$link_clear. " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
+		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -176,22 +184,22 @@ class Attendance extends Opd_Controller
 
 	public function sync($fingerprint_id)
 	{
-		$result = json_decode(file_get_contents(site_url("api/attendance/sync/".$fingerprint_id )));
-		if ( $result->status ) {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message ));
+		$result = json_decode(file_get_contents(site_url("api/attendance/sync/" . $fingerprint_id)));
+		if ($result->status) {
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::SUCCESS, $result->message));
 		} else {
-			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message ));
+			$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $result->message));
 		}
-		redirect(site_url($this->current_page)  );
+		redirect(site_url($this->current_page));
 	}
 
 	public function clear($fingerprint_id)
 	{
-		$this->attendance_model->delete_by_fingerprint_id( $fingerprint_id );
-		redirect(site_url($this->current_page)  );
+		$this->attendance_model->delete_by_fingerprint_id($fingerprint_id);
+		redirect(site_url($this->current_page));
 	}
 
-	public function chart( $fingerprint_id)
+	public function chart($fingerprint_id)
 	{
 		// var_dump( $fingerprint_id );die;
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
@@ -245,13 +253,17 @@ class Attendance extends Opd_Controller
 	public function export()
 	{
 		$month = $this->input->post('month');
+		$year = $this->input->post('year');
 		$fingerprint_id = $this->data["fingerprint"]->id;
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
-		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month)));
+		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&year=" . $year . "&is_coming=1")));
 
 		$data->month = Util::MONTH[$month];
 		$data->name = $fingerprint->name;
+
+		//absen pulang
+		$data->get_out = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&year=" . $year . "&is_coming=0")));
 		$this->excel->excel_config($data);
 	}
 }

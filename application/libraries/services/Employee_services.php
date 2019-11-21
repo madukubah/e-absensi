@@ -45,7 +45,8 @@ class Employee_services
     $table["header"] = array(
       'name' => 'Nama',
       'fingerprint_name' => 'OPD',
-      'position' => 'Jabatan',
+      'main_position' => 'Jabatan',
+      // 'position' => 'Jabatan',
       'pin' => 'Kode Pin',
       'faction' => 'Golongan',
       '_image' => 'Foto Pegawai',
@@ -104,6 +105,11 @@ class Employee_services
         'rules' =>  'trim|required',
       ),
       array(
+        'field' => 'position_id',
+        'label' => 'position',
+        'rules' =>  'trim|required',
+      ),
+      array(
         'field' => 'pin',
         'label' => 'pin',
         'rules' =>  'trim|required',
@@ -123,6 +129,7 @@ class Employee_services
   {
     $this->load->model(array(
       'fingerprint_model',
+      'position_model',
     ));
 
     $opds = $this->fingerprint_model->fingerprints()->result();
@@ -130,7 +137,11 @@ class Employee_services
     foreach ($opds as $opd) {
       $opd_select[$opd->id] = $opd->name;
     }
-
+    $positions = $this->position_model->positions()->result();
+    $position_select = array();
+    foreach ($positions as $position) {
+      $position_select[$position->id] = $position->name;
+    }
     $_data["form_data"] = array(
       "id" => array(
         'type' => 'hidden',
@@ -144,6 +155,11 @@ class Employee_services
       "name" => array(
         'type' => 'text',
         'label' => "Nama Lengkap",
+      ),
+      "position_id" => array(
+        'type' => 'select',
+        'label' => "Golongan",
+        'options' => $position_select
       ),
       "position" => array(
         'type' => 'text',

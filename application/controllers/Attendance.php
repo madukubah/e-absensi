@@ -58,23 +58,14 @@ class Attendance extends Public_Controller
 				return;
 			}
 
-			// $attendances = $this->attendance_model->attendance_by_iddate($employee->id, $data['date'])->result();
-			// foreach( $attendances as $_attendance )
-			// {
-			// 	$data = [];
-			// 	$data['status'] = $this->input->post('status');
-			// 	$data['time'] = $this->input->post('time');
+			$curr_datetime = $data['timestamp'];
+			$_is_coming = FALSE;
+			if ($range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"]) //absen masuk
+			{
+				$_is_coming = TRUE;
+			} 
 
-			// 	$curr_datetime = $_attendance->timestamp;
-			// 	if ($range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"]) //absen masuk
-			// 	{
-					
-			// 	} else if ($range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"]) //absen keluar
-			// 	{
-					
-			// 	}
-			// }
-			if ( $attendance = $this->attendance_model->attendance_by_iddate($employee->id, $data['date'])->row()) {
+			if ( $attendance = $this->attendance_model->attendance_by_iddate($employee->id, $data['date'], $_is_coming)->row()) {
 			// echo var_dump( $attendance );return;
 				$data = [];
 				$data['status'] = $this->input->post('status');

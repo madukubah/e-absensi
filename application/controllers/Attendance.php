@@ -44,7 +44,7 @@ class Attendance extends Public_Controller
 			// echo var_dump( $attendance );return;
 				$data = [];
 				$data['status'] = $this->input->post('status');
-				$data['time'] = '08:00:00';
+				// $data['time'] = '08:00:00';
 
 				$data_param['id'] = $attendance->id;
 				if ($this->attendance_model->update($data, $data_param)) {

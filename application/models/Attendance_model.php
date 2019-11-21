@@ -291,7 +291,7 @@ class Attendance_model extends MY_Model
 
 
   #########################################
-  public function employee_attendance($fingerprint_id = NULL, $month = NULL, $day = null, $_is_coming = TRUE)
+  public function employee_attendance($fingerprint_id = NULL, $month = NULL, $day = null, $year = null, $_is_coming = TRUE)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
     $this->db->select([
@@ -319,6 +319,8 @@ class Attendance_model extends MY_Model
     if (isset($day)) {
       $this->db->where("day", $day);
     }
+    if ($year)
+      $this->db->where("year", $year);
     $this->db->group_by('name');
     $this->db->order_by("date", "asc");
     $this->db->order_by("employee_id", "asc");
@@ -379,8 +381,14 @@ class Attendance_model extends MY_Model
     }
     // return (object) array("result" => []);
     $this->db->select('*');
+    $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
     $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");
+    $this->db->join(
+      'position',
+      'position.id = employee.position_id',
+      'join'
+    );
     $this->db->from('employee');
     if ($fingerprint_id != null)
       $this->db->where("fingerprint_id", $fingerprint_id);

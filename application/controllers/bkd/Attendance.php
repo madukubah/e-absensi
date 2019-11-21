@@ -42,7 +42,9 @@ class Attendance extends Bkd_Controller
 		$table["rows"] = $this->fingerprint_model->fingerprints($pagination['start_record'], $pagination['limit_per_page'])->result();
 		$table = $this->load->view('templates/tables/plain_table', $table, true);
 		$this->data["contents"] = $table;
-
+		for ($i = 0; $i <= 10; $i++) {
+			$_year[2019 + $i] = 2019 + $i;
+		}
 		$export =
 			array(
 				"name" => "Export",
@@ -54,6 +56,11 @@ class Attendance extends Bkd_Controller
 						'type' => 'select',
 						'label' => "Bulan Awal",
 						'options' => Util::MONTH,
+					),
+					'year' => array(
+						'type' => 'select',
+						'label' => "Bulan",
+						'options' => $_year,
 					)
 				),
 				'data' => NULL
@@ -252,16 +259,17 @@ class Attendance extends Bkd_Controller
 	public function export()
 	{
 		$month = $this->input->post('month');
+		$year = $this->input->post('year');
 		$fingerprint_id = $this->input->post('fingerprint_id');
 
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
-		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&is_coming=1")));
+		$data = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&year=" . $year  . "&is_coming=1")));
 
 		$data->month = Util::MONTH[$month];
 		$data->name = $fingerprint->name;
 
 		//absen pulang
-		$data->get_out = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&is_coming=0")));
+		$data->get_out = json_decode(file_get_contents(site_url("api/attendance/export/" . $fingerprint_id . "?month=" . $month . "&year=" . $year . "&is_coming=0")));
 		$this->excel->excel_config($data);
 	}
 }

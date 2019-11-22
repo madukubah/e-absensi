@@ -340,15 +340,32 @@ class Attendance_model extends MY_Model
       "*",
       "attendance.date as _date",
       "attendance.time as _time",
+      'CONCAT(position.name, " " ,attendance.position) AS main_position'
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.pin, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
+            SELECT faction as faction ,
+            CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,
+            employee.position_id as position_id,  
+            employee.position, 
+            employee.pin, 
+            employee.name as employee_name,
+            employee.fingerprint_id , 
+            attendance.*, day( attendance.date ) as day , 
+            month( attendance.date ) as month, 
+            year( attendance.date ) as year  
+            from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
           attendance
     ");
+
+    $this->db->join(
+      'position',
+      'position.id = attendance.position_id',
+      'join'
+    );
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($month)) {
@@ -386,7 +403,7 @@ class Attendance_model extends MY_Model
     }
     // return (object) array("result" => []);
     $this->db->select('employee.*');
-    $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
+    $this->db->select( 'CONCAT(position.name, " " ,employee.position) AS main_position');
     $this->db->select('position.name AS position_name');
     $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");

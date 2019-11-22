@@ -294,7 +294,8 @@ class Attendance extends REST_Controller
 				$id = $employee->id;
 			}
 
-			$CURR_USER_ATTENDANCE = array();
+			$CURR_USER_ATTENDANCE_IN = array();
+			$CURR_USER_ATTENDANCE_OUT = array();
 			foreach ($user_attendance as $item) {
 
 				$data_attendance = array();
@@ -318,19 +319,26 @@ class Attendance extends REST_Controller
 
 				if ($range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"]) //absen masuk
 				{
-					if (isset($CURR_USER_ATTENDANCE[$datetime[0]])) continue;
-					$CURR_USER_ATTENDANCE[$datetime[0]] = $datetime[0];
+					if (isset($CURR_USER_ATTENDANCE_IN[$datetime[0]]))
+					{
+							continue;
+					} 
+					$CURR_USER_ATTENDANCE_IN[$datetime[0]] = $datetime[0];
 
-					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
+					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"], TRUE)->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 				} else if ($range_comeout["start"] <= $curr_datetime && $curr_datetime <= $range_comeout["end"]) //absen keluar
 				{
-					if (isset($CURR_USER_ATTENDANCE[$datetime[0]])) continue;
-					$CURR_USER_ATTENDANCE[$datetime[0]] = $datetime[0];
+					if (isset($CURR_USER_ATTENDANCE_OUT[$datetime[0]]))
+					{
+							continue;
+					} 
+					$CURR_USER_ATTENDANCE_OUT[$datetime[0]] = $datetime[0];
 
-					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"])->row();
+					$attendance = $this->attendance_model->attendance_by_iddate($id, $data_attendance["date"], FALSE )->row();
 					if ($attendance == NULL) $ATTENDANCE_ARR[] = $data_attendance;
 				}
+				// $ATTENDANCE_ARR[] = $data_attendance;
 			}
 		}
 		// return;

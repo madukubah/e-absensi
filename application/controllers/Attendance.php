@@ -25,6 +25,8 @@ class Attendance extends Public_Controller
 
 	public function add()
 	{
+		
+
 		if (!($_POST)) redirect(site_url($this->current_page));
 
 		$this->form_validation->set_rules($this->services->validation_config());
@@ -37,14 +39,38 @@ class Attendance extends Public_Controller
 			$data['time'] = $this->input->post('time');
 			$data['status'] = $this->input->post('status');
 
+			$range_comein = array(
+				"start" => strtotime( $data['date'] . " 07:00:00"),
+				"end" => strtotime($data['date'] . " 09:00:00")
+			);
+			$range_comeout = array(
+				"start" => strtotime($data['date'] . " 14:30:00"),
+				"end" => strtotime($data['date'] . " 20:00:00")
+			);
+
 			
 			$fingerprint_id = $this->input->post('fingerprint_id');
 			$employee = $this->employee_model->employee_by_pin($data['employee_pin'], $fingerprint_id)->row();
-			if ( $attendance = $this->attendance_model->attendance_by_iddate($employee->id, $data['date'])->row()) {
+			if( $employee == NULL )
+			{
+				$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, "gagal" ));
+				redirect($url_return);
+				return;
+			}
+
+			$curr_datetime = $data['timestamp'];
+			$_is_coming = FALSE;
+			if ($range_comein["start"] <= $curr_datetime && $curr_datetime <= $range_comein["end"]) //absen masuk
+			{
+				$_is_coming = TRUE;
+			} 
+
+			if ( $attendance = $this->attendance_model->attendance_by_iddate($employee->id, $data['date'], $_is_coming)->row()) {
 			// echo var_dump( $attendance );return;
 				$data = [];
 				$data['status'] = $this->input->post('status');
-				$data['time'] = '08:00:00';
+				$data['time'] = $this->input->post('time');
+				// $data['time'] = '08:00:00';
 
 				$data_param['id'] = $attendance->id;
 				if ($this->attendance_model->update($data, $data_param)) {
@@ -52,7 +78,9 @@ class Attendance extends Public_Controller
 				} else {
 					$this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->attendance_model->errors()));
 				}
-				redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
+				// redirect(site_url($this->current_page) . "fingerprint/" . $this->input->post('fingerprint_id'));
+				redirect($url_return);
+
 			}
 			$data['employee_id'] = $employee->id;
 

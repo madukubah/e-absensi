@@ -146,6 +146,17 @@ class Attendance extends User_Controller
 				"data" => NULL,
 			);
 		$link_refresh =  $this->load->view('templates/actions/link', $link_refresh, TRUE);;
+		
+		$link_clear =
+		array(
+			"name" => "Bersihkan",
+			"type" => "link",
+			"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
+			"button_color" => "danger",
+			"data" => NULL,
+		);
+		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
+
 		$export =
 			array(
 				"name" => "Export",
@@ -196,7 +207,8 @@ class Attendance extends User_Controller
 		);
 		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
-		$this->data["header_button"] =  $link_refresh . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
+		$this->data["header_button"] =  $link_refresh ." ".$link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+		
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -221,6 +233,12 @@ class Attendance extends User_Controller
 		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
 	}
 
+	public function clear($fingerprint_id)
+	{
+		$this->attendance_model->delete_by_fingerprint_id( $fingerprint_id );
+		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id  );
+	}
+
 	public function chart($fingerprint_id)
 	{
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
@@ -236,10 +254,17 @@ class Attendance extends User_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
+<<<<<<< HEAD
 		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month . "&is_coming=1")));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
 		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month  . "&is_coming=1")));
+=======
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
+		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
+
+		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
+>>>>>>> 61e7934e36c490d5a4d8f7cbde33c90439882307
 		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
 		#######################################################
 		$this->data['chart_out'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month  . "&is_coming=0")));

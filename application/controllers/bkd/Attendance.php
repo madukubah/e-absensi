@@ -80,6 +80,7 @@ class Attendance extends Bkd_Controller
 
 	public function fingerprint($fingerprint_id = null)
 	{
+		
 		$curr_fingerprint = $this->data["fingerprint"];
 		$curr_fingerprint_id = $this->data["fingerprint"]->id;
 
@@ -181,9 +182,19 @@ class Attendance extends Bkd_Controller
 			);
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);
 
+<<<<<<< HEAD
+		if( $curr_fingerprint_id != $fingerprint_id )
+		{
+			$add_menu = ""; 
+			$link_clear = ""; 
+		}
+
+		$this->data["header_button"] =  $link_refresh ." ".$link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+=======
 		if ($curr_fingerprint_id != $fingerprint_id) $add_menu = "";
 
 		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+>>>>>>> 2399a54bb152ba928dc2cdab60275bc9b75ba964
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -229,10 +240,10 @@ class Attendance extends Bkd_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
-		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month)));
+		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
 		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
 		######################################################
 		$this->data["contents"] = $bar . " " . $pie;

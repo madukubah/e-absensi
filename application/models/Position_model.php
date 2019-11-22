@@ -70,7 +70,7 @@ class Position_model extends MY_Model
   {
     //foreign
     //delete_foreign( $data_param. $models[]  )
-    if (!$this->delete_foreign($data_param, ['employee_model'])) {
+    if (!$this->delete_foreign($data_param, ['employee_model'] )) {
       $this->set_error("gagal"); //('group_delete_unsuccessful');
       return FALSE;
     }

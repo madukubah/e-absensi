@@ -72,7 +72,7 @@ class Employee extends User_Controller
 		//pagination parameter
 		$pagination['base_url'] = base_url($this->current_page) . '/fingerprint/' . $fingerprint_id;
 		$pagination['total_records'] = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
-		$pagination['limit_per_page'] = 10;
+		$pagination['limit_per_page'] = 100;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
 		$pagination['uri_segment'] = 4 + 1;
 		//set pagination
@@ -112,8 +112,18 @@ class Employee extends User_Controller
 		);
 
 		$add_menu = $this->load->view('templates/actions/modal_form_confirm_sync', $add_menu, true);
+		$link_clear =
+			array(
+					"name" => "Bersihkan",
+					"type" => "link",
+					"url" => site_url($this->current_page . "clear/" . $fingerprint_id),
+					"button_color" => "danger",
+					"data" => NULL,
+				);
+		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
 
-		$this->data["header_button"] =  $add_menu;
+		$this->data[ "header_button" ] =  $add_menu ." ".$link_clear;
+		
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');
@@ -161,6 +171,12 @@ class Employee extends User_Controller
 		$result = json_decode(file_get_contents(site_url("api/attendance/sync_employee/" . $fingerprint_id)));
 		// echo json_encode( $result )."<br><br>";
 		redirect(site_url($this->current_page) . "fingerprint/" . $fingerprint_id);
+	}
+	public function clear( $fingerprint_id)
+	{
+		$data_param['fingerprint_id'] 	= $fingerprint_id;
+		$this->employee_model->delete( $data_param );
+		redirect(site_url($this->current_page)."fingerprint/".$fingerprint_id );
 	}
 	public function edit()
 	{

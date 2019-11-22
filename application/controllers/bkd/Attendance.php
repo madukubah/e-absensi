@@ -183,6 +183,13 @@ class Attendance extends Bkd_Controller
 		$btn_export =  $this->load->view('templates/actions/modal_form', $export, TRUE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		if ($curr_fingerprint_id != $fingerprint_id) $add_menu = "";
+
+		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+=======
+>>>>>>> 61f3b5cdba29bccf84bde90b53a57344ed727900
 		if( $curr_fingerprint_id != $fingerprint_id )
 		{
 			$add_menu = ""; 
@@ -190,11 +197,15 @@ class Attendance extends Bkd_Controller
 		}
 
 		$this->data["header_button"] =  $link_refresh ." ".$link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+<<<<<<< HEAD
 =======
 		if ($curr_fingerprint_id != $fingerprint_id) $add_menu = "";
 
 		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
 >>>>>>> 2399a54bb152ba928dc2cdab60275bc9b75ba964
+=======
+>>>>>>> master
+>>>>>>> 61f3b5cdba29bccf84bde90b53a57344ed727900
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

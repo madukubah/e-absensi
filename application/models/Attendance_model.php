@@ -343,20 +343,43 @@ class Attendance_model extends MY_Model
     $this->db->select([
       "*",
       "attendance.date as _date",
-      "attendance.time as _time",
+      "attendance.time as _time"
     ]);
     $this->db->from("
           (
+<<<<<<< HEAD
 <<<<<<< HEAD
             SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.position_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
 =======
             SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.pin, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
 >>>>>>> 61e7934e36c490d5a4d8f7cbde33c90439882307
+=======
+            SELECT faction as faction ,
+            CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,
+            employee.position_id as position_id,  
+            CONCAT(position.name, ' ' ,employee.position) AS main_position,
+            employee.position, 
+            employee.pin, 
+            employee.name, 
+            employee.fingerprint_id , 
+            attendance.*, day( attendance.date ) as day , 
+            month( attendance.date ) as month, 
+            year( attendance.date ) as year  
+            from attendance
+>>>>>>> 61f3b5cdba29bccf84bde90b53a57344ed727900
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
+              INNER JOIN position 
+            ON position.id = employee.position_id
           ) 
-          attendance
-    ");
+          attendance"
+        );
+
+    // $this->db->join(
+    //   'position',
+    //   'position.id = attendance.position_id',
+    //   'join'
+    // );
     // $this
     $this->db->where($come_out[$_is_coming],  NULL);
     if (isset($month)) {
@@ -379,7 +402,7 @@ class Attendance_model extends MY_Model
       $this->db->where_in("status", $status);
     } else
       $this->db->where("status", $status);
-    $this->db->group_by('name');
+    $this->db->group_by('attendance.pin');
     $this->db->order_by("date", "asc");
     $this->db->order_by("attendance.pin", "asc");
     return $this->db->get();
@@ -396,14 +419,14 @@ class Attendance_model extends MY_Model
     }
     // return (object) array("result" => []);
     $this->db->select('employee.*');
-    $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
+    $this->db->select( 'CONCAT(position.name, " " ,employee.position) AS main_position');
     $this->db->select('position.name AS position_name');
     $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");
     $this->db->join(
       'position',
       'position.id = employee.position_id',
-      'join'
+      'inner'
     );
     $this->db->from('employee');
     if ($fingerprint_id != null)
@@ -411,7 +434,10 @@ class Attendance_model extends MY_Model
     if (!empty($id))
       $this->db->where_not_in('employee.id', $id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 61f3b5cdba29bccf84bde90b53a57344ed727900
 
     // $this->db->order_by("pin", "asc");
     $this->db->order_by("employee.position_id", "asc");

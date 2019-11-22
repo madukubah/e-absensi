@@ -111,6 +111,9 @@ class Attendance extends Bkd_Controller
 
 		$table = $this->load->view('templates/tables/plain_table_status', $table, true);
 		$this->data["contents"] = $table;
+		for ($i = 0; $i <= 10; $i++) {
+			$_year[2019 + $i] = 2019 + $i;
+		}
 		$add_menu = array(
 			"name" => "Tambah Absensi",
 			"modal_id" => "add_group_",
@@ -167,6 +170,11 @@ class Attendance extends Bkd_Controller
 						'type' => 'select',
 						'label' => "Bulan",
 						'options' => Util::MONTH,
+					),
+					'year' => array(
+						'type' => 'select',
+						'label' => "Bulan",
+						'options' => $_year,
 					)
 				),
 				'data' => NULL

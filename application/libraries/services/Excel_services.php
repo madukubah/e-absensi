@@ -128,7 +128,6 @@ class Excel_services
 
             $row++;
         }
-
         //data absensi
         for ($i = 1; $i <= $days; $i++) {
             $id = 0;
@@ -155,53 +154,61 @@ class Excel_services
         }
 
         //info
-        $PHPExcel->getActiveSheet()->setCellValue('AJ4', 'Keterangan');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ5', 'tidak hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ6', 'hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ7', 'sakit');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ8', 'izin');
-        $PHPExcel->getActiveSheet()->setCellValue('AK5', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK6', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK7', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK8', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AL5', 0);
-        $PHPExcel->getActiveSheet()->setCellValue('AL6', 1);
-        $PHPExcel->getActiveSheet()->setCellValue('AL7', 2);
-        $PHPExcel->getActiveSheet()->setCellValue('AL8', 3);
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 6) . '4', 'Keterangan'); //11,14
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 6) . '5', 'tidak hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 6) . '6', 'hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 6) . '7', 'sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 6) . '8', 'izin');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 7) . '5', ':'); //1,71
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 7) . '6', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 7) . '7', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 7) . '8', ':');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 8) . '5', 0); //4
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 8) . '6', 1);
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 8) . '7', 2);
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 8) . '8', 3);
+
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . '4', 'Jumlah');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . '5', 'Tidak Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . '5', 'Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . '5', 'Sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . '5', 'Izin');
+
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . (count($employees) + 7), 'Jumlah');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . (count($employees) + 8), 'Tidak Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . (count($employees) + 8), 'Hadir');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . (count($employees) + 8), 'Sakit');
+        $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . (count($employees) + 8), 'Izin');
+
         // var_dump(count($employees));
         // die;
         //count(employess == 21)
         //jumlah ABSEN PAGI
-        $PHPExcel->getActiveSheet()->setCellValue('AJ11', 'Absen Pagi');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ12', 'Jumlah Tidak Hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ13', 'Jumlah Hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ14', 'Jumlah Sakit');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ15', 'Jumlah Izin');
-        $PHPExcel->getActiveSheet()->setCellValue('AK12', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK13', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK14', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK15', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AL12', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";0))');
-        $PHPExcel->getActiveSheet()->setCellValue('AL13', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";1))');
-        $PHPExcel->getActiveSheet()->setCellValue('AL14', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";2))');
-        $PHPExcel->getActiveSheet()->setCellValue('AL15', 'COUNTIF(D6:AG' . (count($employees) + 5) . '; CONCATENATE("=";3))');
+        for ($i = 6; $i < (count($employees) + 6); $i++) {
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";0))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";1))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";2))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";3))');
+        }
 
         //JUMLAH ABSEN SORE
-        $PHPExcel->getActiveSheet()->setCellValue('AJ18', 'Absen Sore');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ19', 'Jumlah Tidak Hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ20', 'Jumlah Hadir');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ21', 'Jumlah Sakit');
-        $PHPExcel->getActiveSheet()->setCellValue('AJ22', 'Jumlah Izin');
-        $PHPExcel->getActiveSheet()->setCellValue('AK19', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK20', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK21', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AK22', ':');
-        $PHPExcel->getActiveSheet()->setCellValue('AL19', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";0))');
-        $PHPExcel->getActiveSheet()->setCellValue('AL20', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";1))');
-        $PHPExcel->getActiveSheet()->setCellValue('AL21', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";2))');
-        $PHPExcel->getActiveSheet()->setCellValue('AL22', 'COUNTIF(D' . (count($employees) + 9) . ':AG' . (count($employees) + 29) . '; CONCATENATE("=";3))');
-
+        for ($i = (count($employees) + 9); $i < (count($employees) + count($employees) + 9); $i++) {
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";0))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";1))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";2))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";3))');
+        }
         ############    style aligment   ####################
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . '4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . '5')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 2) . '5')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 3) . '5')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 4) . '5')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . (count($employees) + 7))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . (count($employees) + 8))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 2) . (count($employees) + 8))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 3) . (count($employees) + 8))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 4) . (count($employees) + 8))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('B')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
         $PHPExcel->getActiveSheet()->getStyle('B2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -221,9 +228,13 @@ class Excel_services
         $PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(1.45);
         $PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(3.3);
         $PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(40);
-        $PHPExcel->getActiveSheet()->getColumnDimension('AJ')->setWidth(17.43);
-        $PHPExcel->getActiveSheet()->getColumnDimension('AK')->setWidth(2);
-        $PHPExcel->getActiveSheet()->getColumnDimension('AL')->setWidth(8.43);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 6))->setWidth(11.14);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 7))->setWidth(1.71);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 8))->setWidth(4);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 1))->setWidth(10.86);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 2))->setWidth(10.86);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 3))->setWidth(10.86);
+        $PHPExcel->getActiveSheet()->getColumnDimension('A' . chr(65 + $days - 24 + 4))->setWidth(10.86);
 
         #########################     style font  ############################
         $PHPExcel->getActiveSheet()->getStyle('B2')->getFont()->setBold(true);
@@ -231,6 +242,7 @@ class Excel_services
         $PHPExcel->getActiveSheet()->getStyle('B2')->getFont()->setName('Times New Roman');
 
         #################  style merge column   ##########################
+        $PHPExcel->getActiveSheet()->mergeCells('A' . chr(65 + $days - 24 + 1) . '4:' . 'A' . chr(65 + $days - 24 + 4) . '4');
         $PHPExcel->getActiveSheet()->mergeCells('B2:' . $column . '2');
         $PHPExcel->getActiveSheet()->mergeCells('B4:B5');
         $PHPExcel->getActiveSheet()->mergeCells('B' . (count($employees) + 7) . ':B' . (count($employees) + 8));
@@ -241,6 +253,8 @@ class Excel_services
 
 
         #################  style border column   ##########################
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . '4:' . 'A' . chr(65 + $days - 24 + 4) . (count($employees) + 5))->applyFromArray($styleArray);
+        $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . (count($employees) + 7) . ':' . 'A' . chr(65 + $days - 24 + 4) . (count($employees) + count($employees) + 8))->applyFromArray($styleArray);
         $PHPExcel->getActiveSheet()->getStyle('B2:' . $column . '2')->applyFromArray($styleArray);
         $PHPExcel->getActiveSheet()->getStyle('B4:' . $column . '5')->applyFromArray($styleArray);
         $PHPExcel->getActiveSheet()->getStyle('B6:' . $column . (count($employees) + 5))->applyFromArray($styleArray);

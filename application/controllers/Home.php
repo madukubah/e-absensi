@@ -12,6 +12,7 @@ class Home extends Public_Controller
 		$this->load->model(array(
 			'fingerprint_model',
 			'attendance_model',
+			'position_model',
 		));
 	}
 	public function index()
@@ -34,11 +35,11 @@ class Home extends Public_Controller
 
 		$date = $this->input->get('date');
 		$month = $this->input->get('month');
+		$year = date('Y');
 		#################################################################3
-
 		if ($status != 3) {
 			$table = $this->services->table_config_view();
-			$table["rows"] = $this->attendance_model->get_attendances($fingerprint_id, $status, $month, $date, $is_coming)->result();
+			$table["rows"] = $this->attendance_model->get_attendances($fingerprint_id, $status, $month, $date, $is_coming, $year)->result();
 		} else {
 			$table['header'] = array(
 				'name' => 'Nama',
@@ -48,9 +49,10 @@ class Home extends Public_Controller
 				// 'status' => 'Keterangan',
 			);
 			$table["number"] = 1;
-			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date, $is_coming)->result();
+			$table["rows"] = $this->attendance_model->get_absences($fingerprint_id, $month, $date, $is_coming, $year)->result();
 		}
 		// var_dump( $table["rows"] ); die;
+		$table['position'] = $this->position_model->positions()->result();
 		$table['index'] = ['Hadir', 'Sakit', 'Izin'];
 		$table['faction'] = ['Non PNS', 'PNS'];
 

@@ -199,7 +199,7 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function accumulation($fingerprint_id = NULL, $group_by = NULL, $month = NULL, $employee_ids = NULL, $date = NULL, $_is_coming = TRUE)
+  public function accumulation($fingerprint_id = NULL, $group_by = NULL, $month = NULL, $employee_ids = NULL, $date = NULL, $_is_coming = TRUE, $year = null)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
     $_group = array(
@@ -243,6 +243,8 @@ class Attendance_model extends MY_Model
         $this->db->where("employee_id", $employee_id);
       }
     }
+    if ($year)
+      $this->db->where('year', $year);
     if (isset($fingerprint_id)) {
       $this->db->where("fingerprint_id", $fingerprint_id);
     }
@@ -300,7 +302,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT  employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month ,year( attendance.date ) as year from attendance
+            SELECT  employee.name, employee.fingerprint_id, employee.position_id, employee.pin , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month ,year( attendance.date ) as year from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -324,11 +326,13 @@ class Attendance_model extends MY_Model
     $this->db->group_by('name');
     $this->db->order_by("date", "asc");
     $this->db->order_by("employee_id", "asc");
+    $this->db->order_by("position_id", "asc");
+    $this->db->order_by("pin", "asc");
     return $this->db->get();
     $query = $this->db->query($sql);
     return $query;
   }
-  public function get_attendances($fingerprint_id = NULL, $status = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
+  public function get_attendances($fingerprint_id = NULL, $status = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE, $year = null)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
     $this->db->select([
@@ -338,7 +342,7 @@ class Attendance_model extends MY_Model
     ]);
     $this->db->from("
           (
-            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
+            SELECT faction as faction ,CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,  employee.position, employee.position_id, employee.name,employee.fingerprint_id , attendance.*, day( attendance.date ) as day , month( attendance.date ) as month, year( attendance.date ) as year  from attendance
               INNER JOIN employee 
             ON employee.id = attendance.employee_id
           ) 
@@ -360,6 +364,8 @@ class Attendance_model extends MY_Model
     if ($month != null) {
       $this->db->where("month", $month);
     }
+    if ($year)
+      $this->db->where('year', $year);
     if (is_array($status)) {
       $this->db->where_in("status", $status);
     } else
@@ -371,10 +377,10 @@ class Attendance_model extends MY_Model
     $query = $this->db->query($sql);
     return $query;
   }
-  public function get_absences($fingerprint_id = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE)
+  public function get_absences($fingerprint_id = NULL, $month = NULL, $date = NULL, $_is_coming = TRUE, $year = null)
   {
     $status = [0, 1, 2];
-    $employees = $this->get_attendances($fingerprint_id, $status, $month, $date, $_is_coming)->result();
+    $employees = $this->get_attendances($fingerprint_id, $status, $month, $date, $_is_coming, $year)->result();
     $id = [];
     foreach ($employees as $key => $employee) {
       $id[] = $employee->employee_id;
@@ -394,7 +400,7 @@ class Attendance_model extends MY_Model
     if ($fingerprint_id != null)
       $this->db->where("fingerprint_id", $fingerprint_id);
     if (!empty($id))
-      $this->db->where_not_in('id', $id);
+      $this->db->where_not_in('employee.id', $id);
     return $this->db->get();
   }
 }

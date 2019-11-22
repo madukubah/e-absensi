@@ -165,6 +165,8 @@ class Employee_model extends MY_Model
     }
 
     $this->order_by($this->table . '.id', 'asc');
+    $this->db->order_by("position_id", "asc");
+    $this->db->order_by("pin", "asc");
 
     $this->employees($start, $limit);
 

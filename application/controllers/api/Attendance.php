@@ -46,6 +46,7 @@ class Attendance extends REST_Controller
 		$fingerprint_id = ($fingerprint_id == -1) ? NULL : $fingerprint_id;
 
 		$this->data["menu_list_id"] = "attendance_index"; //overwrite menu_list_id
+		$year = date('Y');
 		if ($this->input->get('date') === null) {
 			$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
 			$month = (int) $month;
@@ -67,7 +68,7 @@ class Attendance extends REST_Controller
 
 		$is_coming = ($this->input->get('is_coming') != NULL) ? $this->input->get('is_coming') : TRUE;
 		// echo var_dump( $month );return;
-		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date, $is_coming)->result();
+		$attendances = $this->attendance_model->accumulation($fingerprint_id, $group_by, $month, $employee_id, $date, $is_coming, $year)->result();
 		$employee_count = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
 		// var_dump( cal_days_in_month ( CAL_GREGORIAN , date("m") , date("Y") )  );return;
 		$count_days = cal_days_in_month(CAL_GREGORIAN, $month, date("Y"));

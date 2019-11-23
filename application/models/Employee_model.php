@@ -164,9 +164,9 @@ class Employee_model extends MY_Model
       $this->where($this->table . '.fingerprint_id', $fingerprint_id);
     }
 
-    $this->order_by($this->table . '.id', 'asc');
     $this->db->order_by("position_id", "asc");
-    $this->db->order_by("pin", "asc");
+    $this->db->order_by($this->table . '.id', 'asc');
+    // $this->db->order_by("pin", "asc");
 
     $this->employees($start, $limit);
 

@@ -149,7 +149,7 @@ class Attendance_model extends MY_Model
    * @return static
    * @author madukubah
    */
-  public function attendance_by_iddate($id, $date , $_is_coming = TRUE)
+  public function attendance_by_iddate($id, $date, $_is_coming = TRUE)
   {
     $come_out = ['time BETWEEN "12:01:00" AND "18:00:00" ', ' time BETWEEN "06:00:00" AND "12:00:00"'];
 
@@ -181,7 +181,7 @@ class Attendance_model extends MY_Model
     }
     return $this->record_count();
   }
-  
+
   public function record_count_filter_fingerprint_id($fingerprint_id, $date = NULL)
   {
     $this->db->join(
@@ -330,9 +330,9 @@ class Attendance_model extends MY_Model
       $this->db->where("year", $year);
     $this->db->group_by('name');
     $this->db->order_by("date", "asc");
-    $this->db->order_by("employee_id", "asc");
     $this->db->order_by("position_id", "asc");
-    $this->db->order_by("pin", "asc");
+    $this->db->order_by("employee_id", "asc");
+    // $this->db->order_by("pin", "asc");
     return $this->db->get();
     $query = $this->db->query($sql);
     return $query;
@@ -345,7 +345,8 @@ class Attendance_model extends MY_Model
       "attendance.date as _date",
       "attendance.time as _time"
     ]);
-    $this->db->from("
+    $this->db->from(
+      "
           (
             SELECT faction as faction ,
             CONCAT('" . base_url() . "uploads/employee/" . "' , " . "employee.image) as _image,
@@ -365,7 +366,7 @@ class Attendance_model extends MY_Model
             ON position.id = employee.position_id
           ) 
           attendance"
-        );
+    );
 
     // $this->db->join(
     //   'position',
@@ -411,7 +412,7 @@ class Attendance_model extends MY_Model
     }
     // return (object) array("result" => []);
     $this->db->select('employee.*');
-    $this->db->select( 'CONCAT(position.name, " " ,employee.position) AS main_position');
+    $this->db->select('CONCAT(position.name, " " ,employee.position) AS main_position');
     $this->db->select('position.name AS position_name');
     $this->db->select('faction as faction');
     $this->db->select(" CONCAT( '" . base_url() . 'uploads/employee/' . "' , " . "employee.image )  as _image");

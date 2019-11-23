@@ -169,7 +169,7 @@ class Attendance extends Opd_Controller
 		);
 		$form_data = $this->load->view('templates/form/filter_attendance', $form_data, TRUE);
 
-		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu . " " . $form_data;
+		$this->data["header_button"] =  $link_refresh . " " . $link_clear . " " . $btn_export . $add_menu . " " . $form_data;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

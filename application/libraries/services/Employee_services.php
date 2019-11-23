@@ -158,7 +158,7 @@ class Employee_services
       ),
       "position_id" => array(
         'type' => 'select',
-        'label' => "Golongan",
+        'label' => "Jabatan",
         'options' => $position_select
       ),
       "position" => array(
@@ -171,7 +171,7 @@ class Employee_services
       ),
       "faction" => array(
         'type' => 'select',
-        'label' => "Golongan",
+        'label' => "Status",
         'options' => array(
           0 => 'Non-PNS',
           1 => 'PNS',

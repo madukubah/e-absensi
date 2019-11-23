@@ -127,7 +127,6 @@ class Attendance extends Public_Controller
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->attendance_model->errors() ? $this->attendance_model->errors() : $this->session->flashdata('message')));
 			if (validation_errors() || $this->attendance_model->errors()) $this->session->set_flashdata('alert', $this->alert->set_alert(Alert::DANGER, $this->data['message']));
 		}
-
 		redirect($url_return);
 	}
 

@@ -26,7 +26,7 @@ class Employee extends Opd_Controller
 		//pagination parameter
 		$pagination['base_url'] = base_url($this->current_page) . '/index';
 		$pagination['total_records'] = $this->employee_model->count_by_fingerprint_id($fingerprint_id);
-		$pagination['limit_per_page'] = 10;
+		$pagination['limit_per_page'] = 100;
 		$pagination['start_record'] = $page * $pagination['limit_per_page'];
 		$pagination['uri_segment'] = 4;
 		//set pagination
@@ -71,7 +71,7 @@ class Employee extends Opd_Controller
 		$link_clear =  $this->load->view('templates/actions/link', $link_clear, TRUE);;
 
 
-		$this->data["header_button"] =  $add_menu . " " . $link_clear;
+		$this->data["header_button"] =  $add_menu ;
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

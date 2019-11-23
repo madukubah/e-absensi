@@ -181,6 +181,7 @@ class Attendance extends Bkd_Controller
 		}
 
 		$this->data["header_button"] =  $link_refresh ." ".$link_clear . " " . $btn_export . " " . $btn_chart . " " . $add_menu;
+
 		// return;
 		#################################################################3
 		$alert = $this->session->flashdata('alert');

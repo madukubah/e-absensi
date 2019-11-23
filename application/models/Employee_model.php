@@ -201,8 +201,9 @@ class Employee_model extends MY_Model
     );
 
     $this->offset($start);
-    $this->order_by($this->table . '.pin', 'asc');
+    // $this->order_by($this->table . '.pin', 'asc');
     $this->order_by($this->table . '.position_id', 'asc');
+    $this->order_by($this->table . '.pin', 'asc');
     return $this->fetch_data();
   }
 }

@@ -99,7 +99,11 @@ class Attendance_services
   {
     $table["header"] = array(
       'name' => 'Nama',
+<<<<<<< HEAD
+      'position_id' => 'Jabatan',
+=======
       'main_position' => 'Jabatan',
+>>>>>>> 61f3b5cdba29bccf84bde90b53a57344ed727900
       '_image' => 'Foto',
       // '_date' => 'tanggal',
       '_time' => 'Jam',

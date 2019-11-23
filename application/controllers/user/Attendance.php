@@ -254,13 +254,26 @@ class Attendance extends User_Controller
 		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
 
 		#######################################################
+<<<<<<< HEAD
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month . "&is_coming=1")));
+		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
+
+		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month  . "&is_coming=1")));
+=======
 		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 
 		$this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
+>>>>>>> 61e7934e36c490d5a4d8f7cbde33c90439882307
 		$pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
+		#######################################################
+		$this->data['chart_out'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month  . "&is_coming=0")));
+		$bar_out = $this->load->view('templates/chart/bar_out', $this->data['chart_out'], true);
+
+		$this->data['pie_out'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month  . "&is_coming=0")));
+		$pie_out = $this->load->view('templates/chart/pie_out', $this->data['pie_out'], true);
 		######################################################
-		$this->data["contents"] = $bar . " " . $pie;
+		$this->data["contents"] = $bar . " " . $pie . $bar_out . " " . $pie_out;
 		$form_data["form_data"] = array(
 			"month" => array(
 				'type' => 'select',

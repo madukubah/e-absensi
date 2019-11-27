@@ -21,12 +21,9 @@ class Auth extends Public_Controller
 
         public function login()
         {
-
                 $this->form_validation->set_rules('identity', 'identity', 'required');
                 $this->form_validation->set_rules('user_password', 'user_password', 'trim|required');
                 if ($this->form_validation->run() == true) {
-                        // echo $this->input->post('identity');
-                        // echo $this->input->post('user_password');
                         // return;
                         if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('user_password'))) {
                                 //if the login is successful

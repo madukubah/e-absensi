@@ -100,7 +100,6 @@ class Excel_services
             }
         }
 
-
         $PHPExcel->getActiveSheet()->setCellValue('B' . ++$row, 'No');
         $PHPExcel->getActiveSheet()->setCellValue('C' . $row, 'Nama Pegawai');
         $PHPExcel->getActiveSheet()->setCellValue('D' . $row++, 'Kehadiran (Absen Pulang)');
@@ -123,7 +122,6 @@ class Excel_services
         foreach ($employees as $key => $employee) {
             $PHPExcel->getActiveSheet()->setCellValue('B' . $row, ($i++));
             // $PHPExcel->getActiveSheet()->getStyle('B' . $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-
             $PHPExcel->getActiveSheet()->setCellValue('C' . $row, $employee->name);
 
             $row++;

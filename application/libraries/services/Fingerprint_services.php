@@ -56,26 +56,26 @@ class Fingerprint_services
         "title" => "Group",
         "data_name" => "name",
       ),
-      array(
-        "name" => 'X',
-        "type" => "modal_delete",
-        "modal_id" => "delete_",
-        "url" => site_url($_page . "delete/"),
-        "button_color" => "danger",
-        "param" => "id",
-        "form_data" => array(
-          "id" => array(
-            'type' => 'hidden',
-            'label' => "id",
-          ),
-          "user_id" => array(
-            'type' => 'hidden',
-            'label' => "user_id",
-          ),
-        ),
-        "title" => "Group",
-        "data_name" => "name",
-      ),
+      // array(
+      //   "name" => 'X',
+      //   "type" => "modal_delete",
+      //   "modal_id" => "delete_",
+      //   "url" => site_url($_page . "delete/"),
+      //   "button_color" => "danger",
+      //   "param" => "id",
+      //   "form_data" => array(
+      //     "id" => array(
+      //       'type' => 'hidden',
+      //       'label' => "id",
+      //     ),
+      //     "user_id" => array(
+      //       'type' => 'hidden',
+      //       'label' => "user_id",
+      //     ),
+      //   ),
+      //   "title" => "Group",
+      //   "data_name" => "name",
+      // ),
     );
     return $table;
   }

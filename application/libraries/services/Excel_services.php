@@ -66,10 +66,17 @@ class Excel_services
             $row++;
         }
         //data absensi
+        $count = [];
         for ($i = 1; $i <= $days; $i++) {
             $id = 0;
             $row = 6;
             foreach ($employees as $key => $employee) {
+                if (!isset($count[$employee->id][0])) {
+                    $count[$employee->id][0] = 0;
+                    $count[$employee->id][1] = 0;
+                    $count[$employee->id][2] = 0;
+                    $count[$employee->id][3] = 0;
+                }
                 $attendance = $attendances->$i;
                 $column = chr(67 + $i);
                 if ((67 + $i) > 90)
@@ -80,21 +87,26 @@ class Excel_services
                         switch ($attendance[$id]->status) {
                             case 0:
                                 $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
+                                $count[$employee->id][1]++;
                                 break;
                             case 1:
                                 $PHPExcel->getActiveSheet()->setCellValue($column . $row, 2);
+                                $count[$employee->id][2]++;
                                 break;
                             case 2:
                                 $PHPExcel->getActiveSheet()->setCellValue($column . $row, 3);
+                                $count[$employee->id][3]++;
                                 break;
                         }
                         $id++;
                     } else {
                         $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
+                        $count[$employee->id][0]++;
                     }
                     $row++;
                 } else {
                     $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
+                    $count[$employee->id][0]++;
                     $row++;
                 }
             }
@@ -127,10 +139,17 @@ class Excel_services
             $row++;
         }
         //data absensi
+        $count_out = [];
         for ($i = 1; $i <= $days; $i++) {
             $id = 0;
             $row = $row - count($employees);
             foreach ($employees as $key => $employee) {
+                if (!isset($count_out[$employee->id][0])) {
+                    $count_out[$employee->id][0] = 0;
+                    $count_out[$employee->id][1] = 0;
+                    $count_out[$employee->id][2] = 0;
+                    $count_out[$employee->id][3] = 0;
+                }
                 $attendance = $attendances_out->attendances->$i;
                 $column = chr(67 + $i);
                 if ((67 + $i) > 90)
@@ -138,14 +157,29 @@ class Excel_services
 
                 if (isset($attendance[$id])) {
                     if ($employee->name == $attendance[$id]->name) {
-                        $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
+                        switch ($attendance[$id]->status) {
+                            case 0:
+                                $PHPExcel->getActiveSheet()->setCellValue($column . $row, 1);
+                                $count_out[$employee->id][1]++;
+                                break;
+                            case 1:
+                                $PHPExcel->getActiveSheet()->setCellValue($column . $row, 2);
+                                $count_out[$employee->id][2]++;
+                                break;
+                            case 2:
+                                $PHPExcel->getActiveSheet()->setCellValue($column . $row, 3);
+                                $count_out[$employee->id][3]++;
+                                break;
+                        }
                         $id++;
                     } else {
                         $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
+                        $count_out[$employee->id][0]++;
                     }
                     $row++;
                 } else {
                     $PHPExcel->getActiveSheet()->setCellValue($column . $row, 0);
+                    $count_out[$employee->id][0]++;
                     $row++;
                 }
             }
@@ -178,23 +212,35 @@ class Excel_services
         $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . (count($employees) + 8), 'Sakit');
         $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . (count($employees) + 8), 'Izin');
 
-        // var_dump(count($employees));
+        // var_dump(($employees[0]->id));
         // die;
         //count(employess == 21)
-        //jumlah ABSEN PAGI
+        // //jumlah ABSEN PAGI
         for ($i = 6; $i < (count($employees) + 6); $i++) {
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";0))');
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";1))');
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";2))');
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";3))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, $count[$employees[$i - 6]->id][0]);
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, $count[$employees[$i - 6]->id][1]);
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, $count[$employees[$i - 6]->id][2]);
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, $count[$employees[$i - 6]->id][3]);
+
+            //rumus excel
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";0))');
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";1))');
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";2))');
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";3))');
         }
 
-        //JUMLAH ABSEN SORE
+        // //JUMLAH ABSEN SORE
         for ($i = (count($employees) + 9); $i < (count($employees) + count($employees) + 9); $i++) {
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";0))');
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";1))');
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";2))');
-            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, 'COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";3))');
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, $count_out[$employees[$i - (count($employees) + 9)]->id][0]);
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, $count_out[$employees[$i - (count($employees) + 9)]->id][1]);
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, $count_out[$employees[$i - (count($employees) + 9)]->id][2]);
+            $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, $count_out[$employees[$i - (count($employees) + 9)]->id][3]);
+
+            //rumus excel
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 1) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";0))');
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 2) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";1))');
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 3) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";2))');
+            //     $PHPExcel->getActiveSheet()->setCellValue('A' . chr(65 + $days - 24 + 4) . $i, '.=COUNTIF(D' . $i . ':AG' . $i . '; CONCATENATE("=";3))');
         }
         ############    style aligment   ####################
         $PHPExcel->getActiveSheet()->getStyle('A' . chr(65 + $days - 24 + 1) . '4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);

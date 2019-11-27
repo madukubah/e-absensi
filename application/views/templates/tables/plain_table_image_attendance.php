@@ -35,10 +35,12 @@
                                                 $attr = $row->$key;
                                             if ($key == 'date' || $key == 'create_date' || $key == 'time')
                                                 $attr =  date("d/m/Y", $row->$key);
-                                            if ( $key == 'status')
+                                            if ($key == 'status')
                                                 $attr = $index[$row->$key];
-                                            if ( $key == 'faction')
+                                            if ($key == 'faction')
                                                 $attr = $faction[$row->$key];
+                                            if ($key == 'position_id')
+                                                $attr = $position[$row->$key - 1]->name . " " . $row->position;
                                             echo $attr;
                                             ?>
                             <?php

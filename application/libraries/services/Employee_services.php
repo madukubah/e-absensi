@@ -32,7 +32,8 @@ class Employee_services
     $table["header"] = array(
       'name' => 'Nama',
       'fingerprint_name' => 'OPD',
-      'position' => 'Jabatan',
+      'main_position' => 'Posisi',
+      // 'position' => 'Jabatan',
       'pin' => 'Kode Pin',
       'faction' => 'Golongan',
       '_image' => 'Foto Pegawai',

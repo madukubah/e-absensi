@@ -28,7 +28,7 @@ class Home extends Opd_Controller
 		$month = ($this->input->get('month', date("m"))) ? $this->input->get('month', date("m")) : date("m");
 		$month = (int) $month;
 		#######################################################
-		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month . '&is_coming=1')));
+		$this->data['chart'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $fingerprint_id . "?group_by=date&month=" . $month. '&is_coming=1')));
 		// echo var_dump( $this->data['chart'] ) ; return;
 		$bar = $this->load->view('templates/chart/bar', $this->data['chart'], true);
 		// $this->data['chart'] = $chart;

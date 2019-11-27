@@ -139,7 +139,7 @@ class Auth extends Public_Controller
                                 $chart = $this->load->view('templates/chart/bar_hor', $this->data['chart'], true);
                                 $this->data['chart'] = $chart;
 
-                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month. '&is_coming=1')));
+                                $this->data['pie'] = json_decode(file_get_contents(site_url("api/attendance/chart/" . $opd . "?date=" . $date . "&month=" . $month . '&is_coming=1')));
                                 $pie = $this->load->view('templates/chart/pie', $this->data['pie'], true);
                                 $this->data['pie'] = $pie;
 

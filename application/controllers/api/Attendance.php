@@ -118,6 +118,94 @@ class Attendance extends REST_Controller
 		return $return;
 	}
 
+	public function test_sync_employee_get($fingerprint_id = NULL)
+	{
+		if ($fingerprint_id === NULL) {
+			$result = array(
+				"message" =>  "url tidak valid",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_NOT_FOUND);
+			return;
+		}
+		#######################################################################
+		$fingerprint = $this->fingerprint_model->fingerprint($fingerprint_id)->row();
+		if ($fingerprint === NULL) {
+			$result = array(
+				"message" =>  "fingerprint tidak Ada",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		$tanggal_awal = date("Y") . '-1-01 00:00:00';
+		$tanggal_akhir = date("Y") . '-12-30 23:00:00';
+		$jumlah_karyawan = 200;
+
+		$data[] = "sdate={$tanggal_awal}";
+		$data[] = "edate={$tanggal_akhir}";
+		$data[] = 'period=1';
+
+		for ($i = 1; $i <= $fingerprint->range_pin; $i++) {
+			// $data[] = "uid=" . ($i) . ""; //."uid=16";
+			// $data[] = "uid=35"; //."uid=16";
+		}
+
+		$result = $this->post_download("http://{$fingerprint->ip_address}/form/Download", implode('&', $data));
+
+		if ($result == FALSE) {
+			$result = array(
+				"message" =>  "Koneksi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+
+		if ($result == "") {
+			$result = array(
+				"message" =>  "Autentikasi Gagal",
+				"status" => 0,
+			);
+			$this->set_response($result, REST_Controller::HTTP_OK);
+			return;
+		}
+		$attendances = explode("\n", $result);
+
+		$user_attendances = array();
+		foreach ($attendances as $i => $attendance) {
+			echo json_encode( $attendance )."<br><br>";
+
+			$attendance = explode("\t", $attendance);
+			if ($i == count($attendances) - 1) break;
+
+			$user_attendances[$attendance[0]][] = $attendance;
+		}
+
+		$ATTENDANCE_ARR = array();
+		foreach ($user_attendances as $key => $user_attendance) {
+			echo json_encode( $user_attendance[0] )."<br><br>";
+			$employee = $this->employee_model->employee_by_pin($key, $fingerprint_id)->row();
+			if ($employee == NULL) {
+				$data_employee = array();
+				$data_employee["fingerprint_id"] = $fingerprint_id;
+				$data_employee["name"] = $user_attendance[0][1];
+				$data_employee["pin"] = $key;
+				$data_employee["position"] = "position";
+				$this->employee_model->create($data_employee);
+			}
+		}
+		return;
+		$this->sync_get($fingerprint_id);
+		############################
+		$result = array(
+			"message" =>  "Sinkronisasi Selesai",
+			"status" => 1,
+		);
+		$this->set_response($result, REST_Controller::HTTP_OK);
+		return;
+	}
+
 	public function sync_employee_get($fingerprint_id = NULL)
 	{
 		if ($fingerprint_id === NULL) {
@@ -160,6 +248,7 @@ class Attendance extends REST_Controller
 			$this->set_response($result, REST_Controller::HTTP_OK);
 			return;
 		}
+
 		if ($result == "") {
 			$result = array(
 				"message" =>  "Autentikasi Gagal",
@@ -192,6 +281,7 @@ class Attendance extends REST_Controller
 				$this->employee_model->create($data_employee);
 			}
 		}
+		// return;
 		$this->sync_get($fingerprint_id);
 		############################
 		$result = array(

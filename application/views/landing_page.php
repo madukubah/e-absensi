@@ -14,26 +14,27 @@
   $(document).ready(function() {
 
     function sync_all( fingerprints ) {
-      // console.log( fingerprints[index].name + " " + fingerprints[index].id + + " " + fingerprints[index].ip_address );
-      // return;
+      
       $.each( fingerprints, function( index ) {
-        // sleep(1000 * 60 ).then(() => {
-          //do stuff
+        
           console.log( fingerprints[index].name + " " + fingerprints[index].id + + " " + fingerprints[index].ip_address )
               $.ajax({
                   url: "<?= site_url() ?>api/attendance/sync/"+fingerprints[index].id,
                   success: function(result) {
                   // result = jQuery.parseJSON( result );
                   console.log( "<?= site_url() ?>api/attendance/sync/"+fingerprints[index].id + " "+ fingerprints[index].name + " "+result.message);
-                    html = "<li>"+"<?= site_url() ?>api/attendance/sync/"+fingerprints[index].id + " "+ fingerprints[index].name + " "+result.message+"</li>";
+                    html = "<li style='color:black'>"+"<?= site_url() ?>api/attendance/sync/"+fingerprints[index].id + " "+ fingerprints[index].name + " "+result.message+"</li>";
                     $("#log").append( html );
                   }
               });
-          // });
         })
-    }
 
-    setInterval(  sync_all( <?php echo json_encode( $fingerprints ) ?> ) , 1000 * 3600 * 2 );
+        setTimeout(function(){ 
+          sync_all( <?php echo json_encode( $fingerprints ) ?> ) ;
+        }, 1000 * 3600 * 2 );
+    }
+    sync_all( <?php echo json_encode( $fingerprints ) ?> ) ;
+    // setInterval(  sync_all( <?php echo json_encode( $fingerprints ) ?> ) , 1000 * 3600 * 2 );
     // sync_all( <?php //echo json_encode( $fingerprints ) ?> );
   });
 </script>

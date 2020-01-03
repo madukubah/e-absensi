@@ -502,6 +502,7 @@ class Ion_auth
 
 		return @unlink($config['upload_path'] . $file_name);
 	}
+	
 	/**
 	 * update
 	 *

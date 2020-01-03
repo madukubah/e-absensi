@@ -1,17 +1,23 @@
     <div class="card p-2" style="background-color : rgba(255, 255, 255, 0.6) !important">
-        <h5 class="justify-content-center text-center" >Absen Keluar</h5>
+        <h5 class="justify-content-center text-center" >ABSEN KELUAR</h5>
         
         <div class="mt-5 ml-5 mr-5 chart">
             <canvas id="bar_absensi_out" style="height:230px; min-height:230px"></canvas>
         </div>
         <div class="container ml-5">
             <div class="row">
+                 <?php
+                    if(  isset( $all_opd ) ):
+                ?>
                 <div class="col-md-6 col-sm-12  ">
-                    <a href="#">Jumlah Hadir : <?= ($sum_attendances) ?></a><br>
-                    <a href="#">Jumlah Sakit : <?= ($sum_sick) ?></a><br>
-                    <a href="#">Jumlah izin : <?= ($sum_permission) ?></a><br>
-                    <a href="#">Jumlah Tidak Hadir : <?= $sum_absences ?> </a>
+                    <a href="#">Jumlah Hadir ( Bulan ) : <?= ($sum_attendances) ?></a><br>
+                    <a href="#">Jumlah Sakit ( Bulan ) : <?= ($sum_sick) ?></a><br>
+                    <a href="#">Jumlah izin ( Bulan ) : <?= ($sum_permission) ?></a><br>
+                    <a href="#">Jumlah Tidak Hadir ( Bulan ) : <?= $sum_absences ?> </a>
                 </div>
+                <?php
+                    endif;
+                ?>
                 <div class="col-md-6 col-sm-12">
                     <span>Jumlah Pegawai : <?= ($employee_count) ?></span><br>
                 </div>
